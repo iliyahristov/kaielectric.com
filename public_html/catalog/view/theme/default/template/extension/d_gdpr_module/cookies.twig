@@ -1,0 +1,52 @@
+<link rel="stylesheet" type="text/css" href="{{ style_link }}"/>
+<script src="{{ script_link }}"></script>
+
+<script>
+    var setting = {
+        "palette": {
+            "popup": {
+                "background": "{{ banner_color }}"
+            },
+            "button": {
+                "background": "{{ button_color }}"
+            }
+        },
+        "content": {
+            "message": "{{ text_message }}",
+            "dismiss": "{{ text_dismiss }}",
+            "link": "{{ text_link }}",
+            "href": "{{ privacy_link }}"
+        },
+        "showLink": {{ show_privacy_link?'true':'false' }},
+        onStatusChange: function (status) {
+            console.log(this.hasConsented() ?
+                'enable cookies' : 'disable cookies');
+
+            this.hasConsented() ? $(function () {
+                $.post("{{ cookie_accepted_route }}", function (t) {
+                })
+            }) : $(function () {
+                $.post("{{ cookie_declined_route }}", function (t) {
+                })
+            });
+        },
+    };
+
+
+
+    {% if position %}
+    setting['position'] = '{{ position }}';
+    {% endif %}
+
+    {% if banner_text_color %}
+    setting['palette']['popup']['text'] = '{{ banner_text_color }}';
+    {% endif %}
+
+    {% if button_text_color %}
+    setting['palette']['button']['text'] = '{{ button_text_color }}';
+    {% endif %}
+
+    window.addEventListener("load", function () {
+        window.cookieconsent.initialise(setting)
+    });
+</script>

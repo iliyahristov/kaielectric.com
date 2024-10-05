@@ -1,0 +1,55 @@
+<div id="tk_adress">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span>
+			<span class="tk_panel_text"> {{ text_pickup }}</span>
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>
+		
+		<div class="tk_panel_body">
+			<div id="tk_adresses">
+				
+				<input type="hidden" id="shipping_to" name="shipping_to" value="pickup"/>
+				<input type="hidden" id="shipping_type" name="shipping_type" value="pickup"/>
+				<input type="hidden" name="zone_id" value="{{ zone_id }}"/>
+				<input type="hidden" name="zone" value="{{ zone }}"/> <input type="hidden" name="city" value="{{ city }}"/>
+				<input type="hidden" name="postcode" value=""/>
+				
+				<div class="tk_12_column tk_center_column">
+					<div class="pickups_locations">
+						{% if (addresses) %}
+							<div class="pickups_location">
+								{% for address in addresses %}
+								<label for="pickup_{{ loop.index }}" >
+									<input type="radio" name="address_1" value="{{ address.name }} - {{ address.address }}" id="pickup_{{ loop.index }}" {% if loop.index == 1 %} checked {% endif %}/>
+									<div class="tk_pickup_txt_box">
+										<span class="tk_pickup_title">{{ address.name }}<br><small>{{ address.address }}</small></span>
+										<div class="tk_clear"></div>
+									</div>
+								</label>
+								{% endfor %}
+							</div>
+						{% else %}
+							<div class="pickups_location">
+								<label for="pickup_a" class="">
+									<input type="radio" name="address_1" value="{{ address_1 }}" id="pickup_a" checked/>
+									<div class="tk_pickup_txt_box">
+										<span class="tk_pickup_title">{{ address_1 }}</span>
+										<div class="tk_clear"></div>
+									</div>
+								</label>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		
+		</div>
+	</div>
+</div>
+<script>
+    $(document).ready(function () {
+        getPaymentMethod();
+    });
+</script>

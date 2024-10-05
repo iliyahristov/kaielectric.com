@@ -1,0 +1,388 @@
+<div id="tk_next_office">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span>
+			<span class="tk_panel_text"> {{ text_office_title }}</span>
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>
+		
+		<div class="tk_panel_body">
+			<div id="tk_next_offices">
+				
+				<input type="hidden" id="shipping_to" name="shipping_to" value="{{ office_type }}"/>
+				<input type="hidden" id="shipping_type" name="shipping_type" value="next"/>
+				<input type="hidden" id="country_iso" name="country_iso" value="{{ country_iso }}"/>
+				<input type="hidden" id="courier_id" name="courier_id" value="{{ courier_id }}"/>
+				<input type="hidden" id="courier_name" name="courier_name" value="{{ courier_name }}"/>
+				
+				{% if module_tk_checkout_zone is not defined or module_tk_checkout_zone == 0 %}
+					<input type="hidden" id="zone_id" name="zone_id" value="{{ zone_id }}"/>
+				{% endif %}
+				
+				{% if (customer_offices) %}
+					<div class="tk_12_column tk_center_column">
+						<label>
+							<input type="radio" name="customer_type" value="existing" checked="checked" {% if (customer_type is defined and customer_type == 'existing') %}checked=""{% endif %} onclick="jQuery('#office_new').hide();jQuery('#office_existing').show();"/>
+							{{ text_office_existing }}
+						</label>
+					</div>
+					
+					<div id="office_existing">
+						<div class="tk_12_column tk_center_column">
+							<select name="next_customer_id">
+								{% for office in customer_offices %}
+									<option value="{{ office['next_customer_id'] }}" {% if (next_customer_id is defined and office['next_customer_id'] == next_customer_id) %}selected="selected"{% endif %}>{{ office['office_name'] }} - {{ office['office_address'] }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<div class="tk_12_column tk_center_column">
+						<label>
+							<input type="radio" name="customer_type" value="new" {% if (customer_type is defined and customer_type == 'new') %}checked=""{% endif %} onclick="jQuery('#office_new').show();jQuery('#office_existing').hide();"/>
+							{{ text_office_new }}
+						</label>
+					</div>
+				
+				{% else %}
+					<input type="hidden" name="customer_type" value="new">
+				{% endif %}
+				
+				<div id="office_new" {% if (customer_offices is not defined or (customer_type is defined and customer_type == 'new')) %} style="display:block" {% else %}style="display:none"{% endif %}>
+					
+					<input type="hidden" id="postcode" name="postcode" value="{{ postcode }}"/>
+					<input type="hidden" id="city_id" name="city_id" value="{{ city_id }}">
+					<input type="hidden" id="city" name="city" value="{{ city }}">
+					<input type="hidden" id="office_id" name="office_id" value="{{ office_id }}">
+					<input type="hidden" id="office_code" name="office_code" value="{{ office_code }}">
+					<input type="hidden" id="office_name" name="office_name" value="{{ office_name }}"/>
+					<input type="hidden" id="office_address" name="office_address" value="{{ office_address }}"/>
+					
+					<div class="tk_6_column tk_center_column box_next_office_city_select tk_required_box {% if (city) %}tk_redy_box{% endif %}" id="box_next_office_city_select">
+						<input type="text" id="next_office_city_select" readonly="true" name="next_office_city_select" value="{{ city }}" placeholder="{{ text_city }}"/>
+						<span class="tk_floating_label">{{ text_city }}</span>
+					</div>
+					
+					<div class="tk_6_column tk_center_column box_next_office_select tk_required_box {% if ((next_offices|length) == 1 or office_id) and city_id %}tk_redy_box{% elseif next_offices is empty and city_id %}tk_not_redy_box{% endif %}" id="box_next_office_select">
+						<input type="text" id="next_office_select" readonly="true" name="next_office_select" value="{% if next_offices is empty and city_id %}{{ text_no_offices }}{% elseif (office_id) %}{{ office_id ~ ' ' ~ office_name }}{% endif %}" placeholder="{{ text_office }}" {% if city_id is not defined %}disabled=""{% endif %} />
+						<span class="tk_floating_label">{{ text_office }}</span>
+					</div>
+					
+					<div class="tk_clear"></div>
+					
+				</div>
+				
+				<div class="tk_clear"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="city_container radio_container mfp-hide" id="next_office_city_locator">
+	<div class="radio_search">
+		<input id="city_search" name="city_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search"> <span class="city_spin"></span>
+	</div>
+	<div class="radio_box" id="city_radio_box">
+			{% for next_city in next_cities %}
+			<div class="radio_elements">
+				<label>
+					<input type="radio" name="city_id" value="{{ next_city['city_id'] }}" {% if (city_id is defined and next_city['city_id'] == city_id) %}checked=""{% endif %} data-name="{{ next_city['city_name'] }}" data-postcode="{{ next_city['postcode'] }}">{{ next_city['postcode'] }} - {{ next_city['city_name'] }}
+				</label>
+			</div>
+			{% endfor %}
+	</div>
+</div>
+
+<div class="office_container radio_container mfp-hide" id="office_locator">
+	<div class="radio_search">
+		<input id="office_search" name="office_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search"> <span class="office_spin"></span>
+	</div>
+	<div class="radio_box" id="office_radio_box">
+		{% if next_offices %}
+		{% for next_office in next_offices %}
+			<div class="radio_elements">
+				<label>
+					<input type="radio" name="office_id" value="{{ next_office['office_id'] }}" {% if (office_id is defined and next_office['office_id'] == office_id) %}checked=""{% endif %} data-name="{{ next_office['office_code'] }} {{ next_office['office_name'] }}"  data-office_code="{{ next_office['office_code'] }}" data-office_name="{{ next_office['office_name'] }}" data-office_address="{{ next_office['office_address'] }}">
+					<span>{{ next_office['office_code'] }}</span> <strong>{{ next_office['office_name'] }}</strong> <br> <i>{{ next_office['office_address'] }}</i>
+				</label>
+			</div>
+		{% endfor %}
+		{% else %}
+			{{ text_no_offices }}
+		{% endif %}
+	</div>
+</div>
+
+<script>
+
+    $(document).ready(function() {
+        getPaymentMethod();
+
+        $('#tk_button_confirm').button('reset');
+        $('.tk_all_spin').html('');
+        $('#tk_checkout').css('opacity', '1');
+        $('#tk_checkout').css('pointer-events', 'auto');
+    });
+
+    //попъп за градове
+    $(document).on('click', '#next_office_city_select', function(e) {
+        e.stopImmediatePropagation();
+        
+        $.magnificPopup.open( {
+            type: 'inline',
+            items: { src: '#next_office_city_locator' }
+        });
+        
+        setTimeout(function () {
+            $('#city_search').focus();
+        } , 200);
+    });
+
+    //въвеждане на град ръчно
+    $('#city_search').on('input',function() {
+        getNextOfficeCities();
+    });
+    
+    //добавяне на селектирания град и извеждаме офисите спрямо него
+    $(document).delegate('#next_office_city_locator .radio_box input[type=\'radio\']', 'click', function(e) {
+        e.stopImmediatePropagation();
+        
+        var city_id = $(this).val();
+        var city = $(this).data('name');
+        var postcode = $(this).data('postcode');
+        
+        $('#city_id').val(city_id);
+        $('#city').val(city);
+        $('#postcode').val(postcode);
+        $('#next_office_city_select').val(city);
+        
+        $('#box_next_office_city_select').addClass('tk_redy_box');
+
+        getNextOffices();
+        getShippingMethodAddress();
+
+        $('#tk_button_confirm').button('reset');
+        $('.tk_all_spin').html('');
+        $('#tk_checkout').css('opacity', '1');
+        $('#tk_checkout').css('pointer-events', 'auto');
+
+        $.magnificPopup.close();
+
+    });
+
+    //попъп за офиси
+    $(document).on('click', '#next_office_select', function(e) {
+        e.stopImmediatePropagation();
+     
+        $.magnificPopup.open( {
+            type: 'inline',
+            items: { src: '#office_locator' }
+        });
+        
+        setTimeout(function () {
+            $('#office_search').focus();
+        } , 500);
+    });
+
+    //въвеждане на офис ръчно
+    $("#office_search").on("keyup", function(e) {
+        e.stopImmediatePropagation();
+        
+        var value = $(this).val().toLowerCase();
+        var bg_value = transliterate(value);
+        var en_value = transliterateEN(value);
+        
+        $("#office_locator .radio_box .radio_elements").filter(function() {
+            $(this).toggle(($(this).text().toLowerCase().indexOf(value) > -1 || $(this).text().toLowerCase().indexOf(bg_value) > -1 || $(this).text().toLowerCase().indexOf(en_value) > -1));
+        });
+    });
+
+    //добавяне на селектирания офис и извеждаме данните за него
+    $(document).delegate('#office_locator .radio_box input[type=\'radio\']', 'click', function(e) {
+        e.stopImmediatePropagation();
+        
+        var office_id = $(this).val();
+        var office_code = $(this).data('office_code');
+        var office_name = $(this).data('office_name');
+        var office_address = $(this).data('office_address');
+
+        $('#office_id').val(office_id);
+        $('#office_name').val(office_name);
+        $('#office_code').val(office_code);
+        $('#office_address').val(office_address);
+
+        $('#next_office_select').val(office_code + ' ' + office_name);
+        $('#box_next_office_select').addClass('tk_redy_box');
+        $('#box_next_office_select').removeClass('tk_not_redy_box');
+
+        saveData();
+        getShippingMethodAddress();
+        
+        $('#tk_button_confirm').button('reset');
+        $('.tk_all_spin').html('');
+        $('#tk_checkout').css('opacity', '1');
+        $('#tk_checkout').css('pointer-events', 'auto');
+
+        $.magnificPopup.close();
+    });
+
+    //извежда списъка с градове в попъпа
+    function getNextOfficeCities() {
+        var url = 'index.php?route=extension/shipping/tk_next/getCities';
+
+        var country_iso = $('#country_iso').val();
+        url += '&country_iso=' + encodeURIComponent(country_iso);
+        
+        var courier = $('#courier_name').val();
+        url += '&courier=' + encodeURIComponent(courier);
+        
+        var name = $('input[name=\'city_search\']').val();
+        if (name) {
+            url += '&name=' + encodeURIComponent(name);
+        }
+        url += '&office={{ office_type }}';
+
+        $.ajax( {
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function() {
+                $('.city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+            } ,
+            success: function(data) {
+                $('.city_spin').html('');
+                $('#city_radio_box').html('{{ text_no_cities }}');
+
+                html = '';
+
+                for (i = 0; i < data.cities.length; i++) {
+                    if({{ city_id }} == data.cities[i]['city_id']) {
+                        var city_checked = 'checked=""';
+                    } else {
+                        var city_checked = '';
+                    }
+
+                    html += '<div class="radio_elements"><label><input type="radio" name="city_id" value="' + data.cities[i]['city_id'] + '" ' + city_checked + ' data-name="' + data.cities[i]['city_name'] + '" data-postcode="' + data.cities[i]['postcode'] + '" >' + data.cities[i]['postcode'] + ' - ' + data.cities[i]['city_name'] + '</label></div>';
+
+                }
+
+                $('#city_radio_box').html(html);
+            }
+        });
+    }
+
+    //извежда офисите спрямо града и извиква призчислени методи за доставка => извежда преизчислени тотали в количката
+    //извиква данните за офиса ако е само 1
+    function getNextOffices() {
+        $('.next_office_select').removeClass('tk_redy_box');
+
+        $('#office_id').val('');
+        $('#office_code').val('');
+        $('#office_name').val('');
+        $('#office_address').val('');
+        $('#next_office_select').val('');
+
+
+        country_iso = $('#country_iso').val();
+        courier = $('#courier_name').val();
+        postcode = $('#postcode').val();
+
+        $.ajax( {
+            url: 'index.php?route=extension/shipping/tk_next/getOffices',
+            type: 'POST',
+            data: 'country_iso=' + encodeURIComponent(country_iso) + '&courier=' + encodeURIComponent(courier) + '&postcode=' + encodeURIComponent(postcode) + '&office={{ office_type }}',
+            dataType: 'json',
+            success: function(data) {
+                
+                if (data) {
+
+                    $('#next_office_select').prop("disabled", false);
+
+                    //ако има повече от 1 офис изкаравме селектор, ако не слектираме автоматично
+                    if(data.offices_count > 1) {
+		                    html = '';
+               
+                        for (i = 0; i < data.offices.length; i++) {
+                            if({{ office_id }} == data.offices[i]['office_id']) {
+                                var office_checked = 'checked=""';
+                            } else {
+                                var office_checked = '';
+                            }
+
+                            html += '<div class="radio_elements"><label><input type="radio" name="office_id" value="' + data.offices[i]['office_id'] + '" ' + office_checked + ' data-name="' + data.offices[i]['postcode'] + ' - ' + data.offices[i]['office_name'] + '" data-office_code="' + data.offices[i]['office_code'] + '" data-office_name="' + data.offices[i]['office_name'] + '" data-office_address="' + data.offices[i]['office_address'] + '"><span>' + data.offices[i]['office_code'] + '</span> <strong>' + data.offices[i]['office_name'] + '</strong><br> <i>' + data.offices[i]['office_address'] + '</i></label></div>';
+
+                        }
+
+                        $('#office_radio_box').html(html);
+                        $('#next_office_select').val('{{ text_office }}');
+                        
+                        $('#box_next_office_select').removeClass('tk_redy_box');
+                        $('#box_next_office_select').removeClass('tk_not_redy_box');
+                        
+                    } else if(data.offices_count == 0) {
+                       
+                        $('#office_id').val('');
+                        $('#office_name').val('');
+                        $('#office_code').val('');
+                        $('#office_address').val('');
+
+                        $('#office_radio_box').html('{{ text_no_offices }}');
+                        $('#next_office_select').val('{{ text_no_offices }}');
+                        
+                        $('#box_next_office_select').removeClass('tk_redy_box');
+                        $('#box_next_office_select').addClass('tk_not_redy_box');
+		                    
+                    } else {
+                        html = '';
+                        
+                        for (i = 0; i < 1; i++) {
+                            html += '<div class="radio_elements"><label><input type="radio" name="office_id" value="' + data.offices[i]['office_id'] + '" checked="" data-name="' + data.offices[i]['office_code'] + ' ' + data.offices[i]['office_name'] + '" data-office_code="' + data.offices[i]['office_code'] + '" data-office_name="' + data.offices[i]['office_name'] + '" data-office_address="' + data.offices[i]['office_address'] + '"><span>' + data.offices[i]['office_code'] + '</span> <strong>' + data.offices[i]['office_name'] + '</strong><br> <i>' + data.offices[i]['office_address'] + '</i></label></div>';
+
+                            office_id = data.offices[i]['office_id'];
+                            office_name = data.offices[i]['office_name'];
+                            office_code = data.offices[i]['office_code'];
+                            office_address = data.offices[i]['office_address'];
+                        }
+
+                        $('#office_id').val(office_id);
+                        $('#office_name').val(office_name);
+                        $('#office_code').val(office_code);
+                        $('#office_address').val(office_address);
+
+                        $('#office_radio_box').html(html);
+                        
+                        $('#next_office_select').val(office_code + ' ' + office_name);
+                        
+                        $('#box_next_office_select').addClass('tk_redy_box');
+                        $('#box_next_office_select').removeClass('tk_not_redy_box');
+
+                    }
+
+                } else {
+                    $('#office_radio_box').html('{{ text_no_offices }}');
+                }
+            }
+        });
+    }
+
+    //транслитерация за търсачката
+    function transliterate(word) {
+        return word.split('').map(function (char) {
+            return Lat2Cyr[char] || char;
+        } ).join("");
+    }
+
+    Lat2Cyr= { "a":"а","b":"б","c":"ц","d":"д","e":"е","f":"ф","g":"г","h":"х","i":"и","j":"ј","k":"к","l":"л","m":"м","n":"н","o":"о","p":"п","q":"","r":"р","s":"с","t":"т","u":"у","v":"в","w":"","x":"","y":"","z":"з","A":"А","B":"Б","C":"Ц","D":"Д","E":"Е","F":"Ф","G":"Г","H":"Х","I":"И","J":"Ј","K":"К","L":"Л","M":"М","N":"Н","O":"О","P":"П","Q":"","R":"Р","S":"С","T":"Т","U":"У","V":"В","W":"","X":"","Y":"","Z":"З","č":"ч","ć":"ћ","đ":"ђ","ž":"ж","š":"ш","Č":"Ч","Ć":"Ћ","Đ":"Ђ","Ž":"Ж","Š":"Ш" } ;
+
+    //транслитерация за търсачката
+    function transliterateEN(word) {
+        return word.split('').map(function (char) {
+            return getKeyByValue(Lat2Cyr,char) || char;
+        } ).join("");
+    }
+
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+
+</script>

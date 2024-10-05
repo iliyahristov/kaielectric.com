@@ -1,0 +1,269 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-custom-field" data-toggle="tooltip" title="{{ button_save }}"
+                        class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                </button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default">
+                    <i class="fa fa-reply"></i>
+                </a>
+            </div>
+            <h1>Наименование модул свързани продукти</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+
+        {% if success %}
+            <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> Добавете наименование на модул за свързани
+                    продукти, по категории на продукти</h3>
+                <p><i>Въвежаденето на наименование на родителска категория, автоматично добавя същото наименование и на
+                        нейните под-категории</i></p>
+                <p><i>Може да добавите след това, специфично за дъщерната категория наименование.</i></p>
+                <p><i>Ако дъщерната категория има подкатегориир те ще присвоят това наиенование и т.н.</i></p>
+            </div>
+            <style>
+                .hidden-kai-row {
+                    display: none
+                }
+
+                .category {
+                    margin-top: 0 !important;
+                    margin-bottom: 0 !important
+                }
+
+            </style>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-custom-field"
+                      class="form-horizontal">
+                    <fieldset>
+                        {% set num = 1 %}
+                        {% for c in categories %}
+                            <div class=" category first-category" data-category="{{ c.category_id }}"
+                                 data-parent="{{ c.parent_id }}">
+                                <div class="form-group required col-sm-12">
+                                    <div class="col-sm-12">
+                                        <label>
+                                            <a href="#" class="toggle-categories show-category"
+                                               data-category="{{ c.category_id }}"
+                                               data-parent="{{ c.parent_id }}">#{{ num }} Категория
+                                            </a>
+                                        </label>
+                                        <input type="hidden" name="data[{{ c.category_id }}][category_id]"
+                                               value="{{ c.category_id }}"/>
+                                        <input type="text" name="data[{{ c.category_id }}][category_name]"
+                                               value="{{ c.name }}" class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <label>Наименование на модул за свързани продукти</label>
+                                        {% set ind = c.category_id %}
+                                        <input type="text" name="data[{{ c.category_id }}][module_name]"
+                                               value="{{ module_names[ind] }}" class="form-control module-name"/>
+                                    </div>
+                                </div><!--1st level category-->
+                                {% set snum = 1 %}
+                                {% for second in c.children %}
+                                    {% if second %}
+                                        <div class="category second-category hidden-kai-row"
+                                             data-category="{{ second.category_id }}"
+                                             data-parent="{{ second.parent_id }}">
+                                            <div class="form-group required col-sm-12">
+                                                <div class="col-sm-12">
+                                                    <label>
+                                                        <a href="#" class="toggle-categories show-category"
+                                                           data-category="{{ second.category_id }}"
+                                                           data-parent="{{ second.parent_id }}">#{{ num }}-{{ snum }}
+                                                            Категория
+                                                        </a>
+                                                    </label>
+                                                    <input type="hidden"
+                                                           name="data[{{ second.category_id }}][category_id]"
+                                                           value="{{ second.category_id }}"/>
+                                                    <input type="text"
+                                                           name="data[{{ second.category_id }}][category_name]"
+                                                           value="{{ second.name }}" class="form-control"/>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <label>Наименование на модул за свързани продукти</label>
+                                                    {% set ind = second.category_id %}
+                                                    <input type="text"
+                                                           name="data[{{ second.category_id }}][module_name]"
+                                                           value="{{ module_names[ind] }}"
+                                                           class="form-control module-name"/>
+                                                </div>
+                                            </div><!--2ndst level category-->
+                                            {% set tnum = 1 %}
+                                            {% for third in second.children %}
+                                                {% if third %}
+                                                    <div class=" category third-category hidden-kai-row"
+                                                         data-category="{{ third.category_id }}"
+                                                         data-parent="{{ third.parent_id }}">
+                                                        <div class="form-group required col-sm-12">
+                                                            <div class="col-sm-12">
+                                                                <label><a href="#"
+                                                                          class="toggle-categories show-category"
+                                                                          data-category="{{ third.category_id }}"
+                                                                          data-parent="{{ third.parent_id }}">#{{ num }}
+                                                                        -{{ snum }}-{{ tnum }} Категория</a></label>
+                                                                <input type="hidden"
+                                                                       name="data[{{ third.category_id }}][category_id]"
+                                                                       value="{{ third.category_id }}"/>
+                                                                <input type="text"
+                                                                       name="data[{{ third.category_id }}][category_name]"
+                                                                       value="{{ third.name }}" class="form-control"/>
+                                                            </div>
+                                                            <div class="col-sm-12">
+                                                                <label>Наименование на модул за свързани
+                                                                    продукти</label>
+                                                                {{ third.category_id }}
+                                                                {% set ind = third.category_id %}
+                                                                <input type="text"
+                                                                       name="data[{{ third.category_id }}][module_name]"
+                                                                       value="{{ module_names[ind] }}"
+                                                                       class="form-control module-name"/>
+                                                            </div>
+                                                        </div><!--3rd level category-->
+                                                        {% set fnum = 1 %}
+                                                        {% for fourth in third.children %}
+                                                            {% if fourth %}
+                                                                <div class=" category fourth-category hidden-kai-row"
+                                                                     data-category="{{ fourth.category_id }}"
+                                                                     data-parent="{{ fourth.parent_id }}">
+                                                                    <div class="form-group required col-sm-12">
+                                                                        <div class="col-sm-12">
+                                                                            <label><a href="#"
+                                                                                      class="toggle-categories show-category"
+                                                                                      data-category="{{ fourth.category_id }}"
+                                                                                      data-parent="{{ fourth.parent_id }}">#{{ num }}
+                                                                                    -{{ snum }}-{{ tnum }}-{{ fnum }}
+                                                                                    Категория</a></label>
+                                                                            <input type="hidden"
+                                                                                   name="data[{{ fourth.category_id }}][category_id]"
+                                                                                   value="{{ fourth.category_id }}"/>
+                                                                            <input type="text"
+                                                                                   name="data[{{ fourth.category_id }}][category_name]"
+                                                                                   value="{{ fourth.name }}"
+                                                                                   class="form-control"/>
+                                                                        </div>
+                                                                        <div class="col-sm-12">
+                                                                            <label>Наименование на модул за свързани
+                                                                                продукти</label>
+                                                                            {% set ind = fourth.category_id %}
+                                                                            <input type="text"
+                                                                                   name="data[{{ fourth.category_id }}][module_name]"
+                                                                                   value="{{ module_names[ind] }}"
+                                                                                   class="form-control module-name"/>
+                                                                        </div>
+                                                                    </div><!--4th level category-->
+                                                                    {% set ffnum = 1 %}
+                                                                    {% for fifth in fourth.children %}
+                                                                        {% if fifth %}
+                                                                            <div class=" category fifth-category hidden-kai-row"
+                                                                                 data-category="{{ fifth.category_id }}"
+                                                                                 data-parent="{{ fifth.parent_id }}">
+                                                                                <div class="form-group required col-sm-12">
+                                                                                    <div class="col-sm-12">
+                                                                                        <label>
+                                                                                            <a href="#"
+                                                                                               class="toggle-categories show-category"
+                                                                                               data-category="{{ fifth.category_id }}"
+                                                                                               data-parent="{{ fifth.parent_id }}">#{{ num }}
+                                                                                                -{{ snum }}-{{ tnum }}
+                                                                                                -{{ fnum }}-{{ ffnum }}
+                                                                                                Категория
+                                                                                            </a>
+                                                                                        </label>
+                                                                                        <input type="hidden"
+                                                                                               name="data[{{ fifth.category_id }}][category_id]"
+                                                                                               value="{{ fifth.category_id }}"/>
+                                                                                        <input type="text"
+                                                                                               name="data[{{ fifth.category_id }}][category_name]"
+                                                                                               value="{{ fifth.name }}"
+                                                                                               class="form-control"/>
+                                                                                    </div>
+                                                                                    <div class="col-sm-12">
+                                                                                        <label>Наименование на модул за
+                                                                                            свързани продукти</label>
+                                                                                        {% set ind = fifth.category_id %}
+                                                                                        <input type="text"
+                                                                                               name="data[{{ fifth.category_id }}][module_name]"
+                                                                                               value="{{ module_names[ind] }}"
+                                                                                               class="form-control module-name"/>
+                                                                                    </div>
+                                                                                </div><!--5th level category-->
+                                                                            </div>
+                                                                            {% set ffnum = ffnum + 1 %}
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </div> <!--end four-->
+                                                                {% set fnum = fnum + 1 %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div><!--end three-->
+                                                    {% set tnum = tnum + 1 %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div> <!--end two-->
+                                        {% set snum = snum + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div><!--end first-->
+                            {% set num = num + 1 %}
+                        {% endfor %}
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{ footer }}
+    <script>
+        //(2,102,106,226,496)
+        $('.category[data-category=2]').removeClass('hidden-kai-row')
+        $('.category[data-category=102]').removeClass('hidden-kai-row');
+        $('.category[data-category=106]').removeClass('hidden-kai-row');
+        $('.category[data-category=226]').removeClass('hidden-kai-row');
+        $('.category[data-category=496]').removeClass('hidden-kai-row');
+        console.log($('.show-category'))
+        $('body').on('click', '.toggle-categories.show-category', function (e) {
+            e.preventDefault()
+            console.log($(this))
+            let categoryId = $(this).data('category')
+            $(this).removeClass('show-category').addClass('hide-category')
+            $('.category.hidden-kai-row[data-parent=' + categoryId + ']').removeClass('hidden-kai-row').addClass('visible-kai-row')
+
+        })
+        $('body').on('click', '.toggle-categories.hide-category', function (e) {
+            e.preventDefault()
+            console.log($(this))
+            let categoryId = $(this).data('category')
+            $(this).removeClass('hide-category').addClass('show-category')
+            $('.category.visible-kai-row[data-parent=' + categoryId + ']').addClass('hidden-kai-row')
+
+        })
+        $('body').on('change', '.module-name', function (e) {
+            let categoryId = $(this).parents('.category').data('category');
+            let childrenCat = $('.category[data-parent=' + categoryId + ']');
+            let value = $(this).val();
+            childrenCat.each(function (index, element) {
+                console.log($(this).find('.module-name').val(value));
+            });
+
+        })
+
+    </script>
+</div>

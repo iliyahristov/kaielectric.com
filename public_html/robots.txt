@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /*&limit
+Disallow: /*?sort
+Disallow: /*&sort
+Disallow: /*?route=checkout/
+Disallow: /*?route=account/
+
+
+Sitemap: https://kaielectric.com/sitemap/sitemap.xml

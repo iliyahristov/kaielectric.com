@@ -1,0 +1,955 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+			<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+			</div>
+			
+			<div class="panel-body">
+				<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-next" class="form-horizontal">
+					
+					<div class="form-group required">
+						<label class="col-sm-4 control-label">{{ text_name }}</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" name="name" value="{{ name }}"/>
+							{% if error_name %}
+								<span class="text-danger">{{ error_name }}</span>
+							{% endif %}
+						</div>
+					</div>
+					
+					<div class="form-group required">
+						<label class="col-sm-4 control-label">{{ text_phone }}</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" name="phone" value="{{ phone }}"/>
+							{% if error_telephone %}
+								<span class="text-danger">{{ error_telephone }}</span>
+							{% endif %}
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">{{ text_mail }}</label>
+						<div class="col-sm-4">
+							<input class="form-control" type="text" name="email" value="{{ email }}"/>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">{{ text_courier }} - {{ country }}, {{ country_iso }}, {{ currency }}</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="courier_id" id="courier_id">
+								{% for cour in couriers %}
+									<option value="{{ cour.id }}" {% if cour.id == courier_id %}selected="selected"{% endif %}>{{ cour.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<input type="hidden" name="courier" id="courier" value="{{ courier }}"/>
+					<input type="hidden" name="country" id="country" value="{{ country }}"/>
+					<input type="hidden" name="country_iso" id="country_iso" value="{{ country_iso }}"/>
+					<input type="hidden" name="currency" id="currency" value="{{ currency }}"/>
+					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">{{ text_delivery_to }}</label>
+						<div class="col-sm-4">
+							<select class="form-control" name="shipping_to" id="shipping_to">
+								<option value="office" {% if shipping_to == 'office' %}selected="selected"{% endif %}>{{ text_to_office }}</option>
+								<option value="address" {% if shipping_to == 'address' %}selected="selected"{% endif %}>{{ text_to_address }}</option>
+								<option value="machine" {% if shipping_to == 'machine' %}selected="selected"{% endif %}>{{ text_to_machine }}</option>
+							</select>
+						</div>
+					</div>
+					
+					<input type="hidden" class="shipping_to_data" id="postcode" name="postcode" value="{{ postcode }}"/>
+					<input type="hidden" class="shipping_to_data" id="city_id" name="city_id" value="{{ city_id }}">
+					<input type="hidden" class="shipping_to_data" id="office_id" name="office_id" value="{{ office_id }}">
+					<input type="hidden" class="shipping_to_data" id="office_code" name="office_code" value="{{ office_code }}">
+					<input type="hidden" class="shipping_to_data" id="city" name="city" value="{{ city }}">
+					<input type="hidden" class="shipping_to_data" id="office_name" name="office_name" value="{{ office_name }}"/>
+					<input type="hidden" class="shipping_to_data" id="office_address" name="office_address" value="{{ office_address }}"/>
+					
+					<div id="office" class="well shipping_to" {% if shipping_to == 'office' %} style=" display:block
+					" {% else %}style="display:none"{% endif %}>
+					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">{{ text_title_city }}</label>
+						<div class="col-sm-4">
+							<input class="form-control shipping_to_data" type="text" id="next_office_city_select" readonly="true" name="next_office_city_select" value="{{ city }}"/>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-4 control-label">{{ text_title_office }}</label>
+						<div class="col-sm-4">
+							<input class="form-control shipping_to_data" type="text" id="next_office_select" readonly="true" name="next_office_select" value="{{ office_id ~ ' ' ~ office_name }}"/>
+						</div>
+					</div>
+					
+					<div class="city_container radio_container mfp-hide" id="next_office_city_locator">
+						<div class="radio_search">
+							<input id="city_office_search" name="city_office_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search">
+							<span class="city_spin"></span>
+						</div>
+						<div class="radio_box" id="city_radio_box">
+							{% for next_city in next_offices_cities %}
+								<div class="radio_elements">
+									<label>
+										<input type="radio" name="city_id" value="{{ next_city['city_id'] }}" {% if (city_id is defined and next_city['city_id'] == city_id) %}checked=""{% endif %} data-name="{{ next_city['city_name'] }}" data-postcode="{{ next_city['postcode'] }}">{{ next_city['postcode'] }}
+										- {{ next_city['city_name'] }}
+									</label>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+					
+					<div class="office_container radio_container mfp-hide" id="office_locator">
+						<div class="radio_search">
+							<input id="office_search" name="office_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search">
+							<span class="office_spin"></span>
+						</div>
+						<div class="radio_box" id="office_radio_box">
+							{% if next_offices %}
+								{% for next_office in next_offices %}
+									<div class="radio_elements">
+										<label>
+											<input type="radio" name="office_id" value="{{ next_office['office_id'] }}" {% if (office_id is defined and next_office['office_id'] == office_id) %}checked=""{% endif %} data-name="{{ next_office['office_code'] }} {{ next_office['office_name'] }}" data-office_code="{{ next_office['office_code'] }}" data-office_name="{{ next_office['office_name'] }}" data-office_address="{{ next_office['office_address'] }}">
+											<span>{{ next_office['office_code'] }}</span> <strong>{{ next_office['office_name'] }}</strong>
+											<br> <i>{{ next_office['office_address'] }}</i> </label>
+									</div>
+								{% endfor %}
+							{% else %}
+								{{ text_no_offices }}
+							{% endif %}
+						</div>
+					</div>
+			
+			</div>
+			
+			<div id="address" class="well shipping_to" {% if shipping_to == 'address' %} style="display:block" {% else %}style="display:none"{% endif %}>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_title_city }}</label>
+					<div class="col-sm-4">
+						<input class="form-control shipping_to_data" type="text" id="next_address_city_select" readonly="true" name="next_address_city_select" value="{{ city }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_street }}</label>
+					<div class="col-sm-4">
+						<input class="form-control shipping_to_data" type="text" id="street"  name="street" value="{{ street }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_street_num }}</label>
+					<div class="col-sm-2">
+						<input class="form-control shipping_to_data" type="text" id="street_num" name="street_num" value="{{ street_num }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_quarter }}</label>
+					<div class="col-sm-4">
+						<input class="form-control shipping_to_data" type="text" id="quarter" name="quarter" value="{{ quarter }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_block }}</label>
+					<div class="col-sm-2">
+						<input class="form-control shipping_to_data" type="text" id="block" name="block" value="{{ block }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_entrance }}</label>
+					<div class="col-sm-2">
+						<input class="form-control shipping_to_data" type="text" id="entrance" name="entrance" value="{{ entrance }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_floor }}</label>
+					<div class="col-sm-2">
+						<input class="form-control shipping_to_data" type="text" id="floor" name="floor" value="{{ floor }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_apartment }}</label>
+					<div class="col-sm-2">
+						<input class="form-control shipping_to_data" type="text" id="apartment" name="apartment" value="{{ apartment }}"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-4 control-label">{{ text_other }}</label>
+					<div class="col-sm-4">
+						<input class="form-control shipping_to_data" type="text" id="other" name="other" value="{{ other }}"/>
+					</div>
+				</div>
+				
+				<div class="city_container radio_container mfp-hide" id="next_address_city_locator">
+					<div class="radio_search">
+						<span class="city_spin pull-right magnific_spin"></span>
+						<input id="city_search" name="city_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search">
+					</div>
+					<div class="radio_box" id="city_radio_box">
+						{% for next_city in next_cities %}
+							<div class="radio_elements">
+								<label>
+									<input type="radio" name="city_id" value="{{ next_city['city_id'] }}" {% if (city_id is defined and next_city['city_id'] == city_id) %}checked=""{% endif %} data-name="{{ next_city['city_name'] }}" data-postcode="{{ next_city['postcode'] }}">{{ next_city['postcode'] }}
+									- {{ next_city['city_name'] }}, {{ next_city['region'] }}
+								</label>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group required">
+				<label class="col-sm-4 control-label">{{ text_contents }}
+					<div style="font-weight: normal">{{ text_contents_letters }}: <strong id="count-contents"></strong></div>
+				</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" id="contents" name="contents" value="{{ contents }}"/>
+					{% if (error_contents) %}
+						<span class="text-danger">{{ error_contents }}</span>
+					{% endif %}
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_ref }}</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" id="ref" name="ref" value="{{ ref }}"/>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_package }}</label>
+				<div class="col-sm-4">
+					<select class="form-control" name="package">
+						{% for pack in packages %}
+							<option value="{{ pack }}" {% if package == pack %}selected="selected"{% endif %}>{{ pack }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group required">
+				<label class="col-sm-4 control-label">{{ text_weight }}</label>
+				<div class="col-sm-4">
+					<input class="form-control" type="text" id="weight" name="weight" value="{{ weight }}"/>
+					{% if (error_weight) %}
+						<span class="text-danger">{{ error_weight }}</span>
+					{% endif %}
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_parcels_count }}</label>
+				<div class="col-sm-4">
+					<input class="form-control" type="text" id="parcels_count" name="parcels_count" value="{{ parcels_count }}"/>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_payer }}</label>
+				<div class="col-sm-4">
+					<select class="form-control" name="payer" id="payer">
+						<option value="receiver" {% if payer == 'receiver' %}selected="selected"{% endif %}>{{ text_recipient }}</option>
+						<option value="sender" {% if payer == 'sender' %}selected="selected"{% endif %}>{{ text_sender }}</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_payment }}</label>
+				<div class="col-sm-8">
+					<label class="radio-inline">
+						<input type="radio" id="payment_code_yes" name="payment_code" value="cod" {% if payment_code == 'cod' %} checked="checked" {% endif %}onclick="$('#total_container').show(); "/>
+							{{ text_payment_code }}
+					</label>
+					<label class="radio-inline">
+						<input type="radio" id="payment_code_no" name="payment_code" value="prepaid" {% if payment_code == 'prepaid' %}checked="checked" {% endif %}onclick="$('#total_container').hide(); "/>
+						{{ text_payment_prepaid }}
+					</label>
+				</div>
+			</div>
+			
+			<div class="form-group" id="total_container" {% if payment_code == 'cod' %}style="display: block;" {% else %}style="display: none;"{% endif %}>
+				<label class="col-sm-4 control-label">{{ text_total }}</label>
+				<div class="col-sm-4">
+					<input type="text" name="total" value="{{ total }}" placeholder="" class="form-control">
+				</div>
+			</div>
+			
+			<div class="form-group" id="speedy_cod_container">
+				<label class="col-sm-4 control-label">{{ text_declared_value }}</label>
+				<div class="col-sm-8">
+						{% if declared_value %}
+							<label class="radio-inline">
+								<input type="radio" id="declared_value_no" name="declared_value" value="0" onclick="$('#declared_total_container').hide(); "/>
+								{{ text_disabled }}
+							</label>
+							<label class="radio-inline">
+								<input type="radio" id="declared_value_yes" name="declared_value" value="1" checked="checked" onclick="$('#declared_total_container').show(); "/>
+								{{ text_enabled }}
+							</label>
+					{% else %}
+						<label class="radio-inline">
+							<input type="radio" id="declared_value_no" name="declared_value" value="0" checked="checked" onclick="$('#declared_total_container').hide(); "/>
+							{{ text_disabled }}
+						</label>
+						<label class="radio-inline">
+							<input type="radio" id="declared_value_yes" name="declared_value" value="1" onclick="$('#declared_total_container').show(); "/>
+							{{ text_enabled }}
+						</label>
+					{% endif %}
+				</div>
+			</div>
+			
+			<div class="form-group" id="declared_total_container" {% if declared_value %}style="display: block;" {% else %}style="display: none;"{% endif %}>
+				<label class="col-sm-4 control-label">{{ text_declared_total }}</label>
+				<div class="col-sm-4">
+					<input type="text" name="declared_total" value="{{ declared_total }}" placeholder="" class="form-control">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_option }}</label>
+				<div class="col-sm-4">
+					<select class="form-control" name="option" id="option">
+						{% if option and option == 'OPEN' %}
+							<option value="0">{{ text_option_without }}</option>
+							<option value="OPEN" selected="selected">{{ text_option_open }}</option>
+							<option value="TEST">{{ text_option_test }}</option>
+						{% elseif option and option == 'TEST' %}
+							<option value="0">{{ text_option_without }}</option>
+							<option value="OPEN">{{ text_option_open }}</option>
+							<option value="TEST" selected="selected">{{ text_option_test }}</option>
+						{% else %}
+							<option value="0" selected="selected">{{ text_option_without }}</option>
+							<option value="OPEN">{{ text_option_open }}</option>
+							<option value="TEST">{{ text_option_test }}</option>
+						{% endif %}
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_return_shipment_payer }}</label>
+				<div class="col-sm-4">
+					<select class="form-control" name="return_shipment_payer" id="return_shipment_payer">
+						<option value="RECIPIENT" {% if return_shipment_payer == 'RECIPIENT' %}selected="selected"{% endif %}>{{ text_recipient }}</option>
+						<option value="SENDER" {% if return_shipment_payer == 'SENDER' %}selected="selected"{% endif %}>{{ text_sender }}</option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_fragile }}</label>
+				<div class="col-sm-4">
+					<select class="form-control" name="fragile" id="fragile">
+						{% if fragile %}
+							<option value="0">{{ text_disabled }}</option>
+							<option value="1" selected="selected">{{ text_enabled }}</option>
+						{% else %}
+							<option value="0" selected="selected">{{ text_disabled }}</option>
+							<option value="1">{{ text_enabled }}</option>
+						{% endif %}
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-4 control-label">{{ text_sd }}</label>
+				<div class="col-sm-4">
+					<select class="form-control" name="sd" id="sd">
+						{% if sd %}
+							<option value="0">{{ text_disabled }}</option>
+							<option value="1" selected="selected">{{ text_enabled }}</option>
+						{% else %}
+							<option value="0" selected="selected">{{ text_disabled }}</option>
+							<option value="1">{{ text_enabled }}</option>
+						{% endif %}
+					</select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="col-sm-4"></div>
+				<div class="col-sm-8">
+					<input type="submit" name="generate" class="btn btn-success" value="{{ text_run }}">
+				</div>
+			</div>
+			
+			</form>
+		</div>
+	
+	</div>
+</div></div>
+
+<style>
+
+    .magnific_spin {
+        margin-right: 40px;
+    }
+
+    .radio_search {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .radio_box_search {
+        max-width: 250px;
+    }
+
+    .radio_container {
+        position: relative;
+        background: #FFF;
+        padding: 20px;
+        width: auto;
+        max-width: 600px;
+        margin: 20px auto;
+        height: 500px;
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 14px;
+
+    }
+
+    .radio_elements label span {
+
+        min-width: 62px;
+        display: inline-block;
+        padding: 0 5px 0 0;
+        font-size: 14px;
+    }
+
+    .radio_elements label {
+        color: #000;
+        font-weight: 300 !important;
+        cursor: pointer;
+        margin-bottom: 0;
+        border-bottom: 1px dashed #aaa;
+        padding: 10px 5px 12px 5px;
+        display: block;
+        transition: 0.3s;
+        font-size: 14px !important;
+    }
+
+    .radio_elements input {
+        margin-right: 10px;
+    }
+
+    .radio_elements input[type="text"] {
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 14px;
+        border: 1px solid #999;
+        background: #ffffff;
+        margin-top: 15px;
+        border-radius: 0.25em !important;
+        display: block;
+        width: 100%;
+        height: 33px;
+        padding: 6px 12px;
+
+        line-height: 1.42857143;
+        color: #555;
+        background-image: none;
+        border-radius: 2px;
+
+        -webkit-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+        -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+
+    .radio_elements label:hover {
+        background: #efefef;
+        transition: 0.3s;
+
+    }
+
+    .radio_box {
+        overflow-y: scroll;
+        max-height: 400px;
+    }
+
+</style>
+
+<script>
+
+    $("#shipping_to").change(function (e) {
+        e.stopImmediatePropagation();
+
+        $('.shipping_to_data').val('');
+
+        $('.shipping_to').hide();
+
+        $('#' + $(this).find("option:selected").val()).show();
+    });
+
+    $("#courier_id").change(function (e) {
+        e.stopImmediatePropagation();
+
+        $('.shipping_to_data').val('');
+
+        $('#courier').val($(this).find("option:selected").text());
+    });
+
+    $('#contents').keyup(countname);
+    $('#contents').keydown(countname);
+
+    function countname() {
+        var cs_1_contents = $(this).val().length;
+        $('#count-contents').text(cs_1_contents);
+
+        if (cs_1_contents > 100 || cs_1_contents == 0) {
+            $('#count-contents').css('color', 'red');
+        } else {
+            $('#count-contents').css('color', 'green');
+        }
+    }
+
+    $(document).ready(function () {
+        var cs_2_contents = $('#contents').val().length;
+        $('#count-contents').text(cs_2_contents);
+
+        if (cs_2_contents > 100 || cs_2_contents == 0) {
+            $('#count-contents').css('color', 'red');
+        } else {
+            $('#count-contents').css('color', 'green');
+        }
+    });
+
+    //попъп за градове office
+    $(document).on('click', '#next_office_city_select', function (e) {
+        e.stopImmediatePropagation();
+
+        $.magnificPopup.open({
+            type: 'inline',
+            items: {src: '#next_office_city_locator'}
+        });
+
+        setTimeout(function () {
+            $('#city_office_search').focus();
+        }, 200);
+    });
+
+    //въвеждане на град ръчно
+    $('#city_office_search').on('input', function () {
+        getNextOfficeCities();
+    });
+
+    //добавяне на селектирания град и извеждаме офисите спрямо него
+    $(document).delegate('#next_office_city_locator .radio_box input[type=\'radio\']', 'click', function (e) {
+        e.stopImmediatePropagation();
+
+        var city_id = $(this).val();
+        var city = $(this).data('name');
+        var postcode = $(this).data('postcode');
+
+        $('#city_id').val(city_id);
+        $('#city').val(city);
+        $('#postcode').val(postcode);
+        $('#next_office_city_select').val(city);
+
+        $('#box_next_office_city_select').addClass('tk_redy_box');
+
+        $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+        $('#tk_checkout').css('opacity', '0.6');
+        $('#tk_checkout').css('pointer-events', 'none');
+        $('#tk_button_confirm').prop('disabled', true);
+
+        getNextOffices();
+
+        $.magnificPopup.close();
+
+    });
+
+    //попъп за офиси
+    $(document).on('click', '#next_office_select', function (e) {
+        e.stopImmediatePropagation();
+
+        $.magnificPopup.open({
+            type: 'inline',
+            items: {src: '#office_locator'}
+        });
+
+        setTimeout(function () {
+            $('#office_search').focus();
+        }, 500);
+    });
+
+    //въвеждане на офис ръчно
+    $("#office_search").on("keyup", function (e) {
+        e.stopImmediatePropagation();
+
+        var value = $(this).val().toLowerCase();
+        var bg_value = transliterate(value);
+        var en_value = transliterateEN(value);
+
+        $("#office_locator .radio_box .radio_elements").filter(function () {
+            $(this).toggle(($(this).text().toLowerCase().indexOf(value) > -1 || $(this).text().toLowerCase().indexOf(bg_value) > -1 || $(this).text().toLowerCase().indexOf(en_value) > -1));
+        });
+    });
+
+    //добавяне на селектирания офис и извеждаме данните за него
+    $(document).delegate('#office_locator .radio_box input[type=\'radio\']', 'click', function (e) {
+        e.stopImmediatePropagation();
+
+        var office_id = $(this).val();
+        var office_code = $(this).data('office_code');
+        var office_name = $(this).data('office_name');
+        var office_address = $(this).data('office_address');
+
+        $('#office_id').val(office_id);
+        $('#office_name').val(office_name);
+        $('#office_code').val(office_code);
+        $('#office_address').val(office_address);
+
+        $('#next_office_select').val(office_code + ' ' + office_name);
+        $('#box_next_office_select').addClass('tk_redy_box');
+        $('#box_next_office_select').removeClass('tk_not_redy_box');
+
+        $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+        $('#tk_checkout').css('opacity', '0.6');
+        $('#tk_checkout').css('pointer-events', 'none');
+        $('#tk_button_confirm').prop('disabled', true);
+
+        $.magnificPopup.close();
+    });
+
+    //извежда списъка с градове в попъпа
+    function getNextOfficeCities() {
+        var url = 'index.php?route=sale/tk_next/getCities&user_token={{ user_token }}';
+
+        var country_iso = $('#country_iso').val();
+        url += '&country_iso=' + encodeURIComponent(country_iso);
+
+        var courier = $('#courier').val();
+        url += '&courier=' + encodeURIComponent(courier);
+
+        var name = $('input[name=\'city_office_search\']').val();
+        if (name) {
+            url += '&name=' + encodeURIComponent(name);
+        }
+        url += '&office={{ office_type }}';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+                $('.city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+            },
+            success: function (data) {
+                $('.city_spin').html('');
+                $('#city_radio_box').html('{{ text_no_cities }}');
+
+                html = '';
+
+                for (i = 0; i < data.cities.length; i++) {
+                    html += '<div class="radio_elements"><label><input type="radio" name="city_id" value="' + data.cities[i]['city_id'] + '" data-name="' + data.cities[i]['city_name'] + '" data-postcode="' + data.cities[i]['postcode'] + '" >' + data.cities[i]['postcode'] + ' - ' + data.cities[i]['city_name'] + '</label></div>';
+
+                }
+
+                $('#city_radio_box').html(html);
+            }
+        });
+    }
+
+    //извежда офисите спрямо града и извиква призчислени методи за доставка => извежда преизчислени тотали в количката
+    //извиква данните за офиса ако е само 1
+    function getNextOffices() {
+        $('.next_office_select').removeClass('tk_redy_box');
+
+        $('#office_id').val('');
+        $('#office_code').val('');
+        $('#office_name').val('');
+        $('#office_address').val('');
+        $('#next_office_select').val('');
+
+
+        country_iso = $('#country_iso').val();
+        courier = $('#courier').val();
+        postcode = $('#postcode').val();
+
+        $.ajax({
+            url: 'index.php?route=sale/tk_next/getOffices&user_token={{ user_token }}',
+            type: 'POST',
+            data: 'country_iso=' + encodeURIComponent(country_iso) + '&courier=' + encodeURIComponent(courier) + '&postcode=' + encodeURIComponent(postcode) + '&office={{ office_type }}',
+            dataType: 'json',
+            success: function (data) {
+
+                if (data) {
+
+                    $('#next_office_select').prop("disabled", false);
+
+                    //ако има повече от 1 офис изкаравме селектор, ако не слектираме автоматично
+                    if (data.offices_count > 1) {
+                        html = '';
+
+		                    html += '<div class="radio_elements"><label><input type="radio" name="office_id" value="' + data.offices[i]['office_id'] + '" data-name="' + data.offices[i]['postcode'] + ' - ' + data.offices[i]['office_name'] + '" data-office_code="' + data.offices[i]['office_code'] + '" data-office_name="' + data.offices[i]['office_name'] + '" data-office_address="' + data.offices[i]['office_address'] + '"><span>' + data.offices[i]['office_code'] + '</span> <strong>' + data.offices[i]['office_name'] + '</strong><br> <i>' + data.offices[i]['office_address'] + '</i></label></div>';
+
+                        $('#office_radio_box').html(html);
+                        $('#next_office_select').val('{{ text_office }}');
+
+                        $('#box_next_office_select').removeClass('tk_redy_box');
+                        $('#box_next_office_select').removeClass('tk_not_redy_box');
+
+                    } else if (data.offices_count == 0) {
+
+                        $('#office_id').val('');
+                        $('#office_name').val('');
+                        $('#office_code').val('');
+                        $('#office_address').val('');
+
+                        $('#office_radio_box').html('{{ text_no_offices }}');
+                        $('#next_office_select').val('{{ text_no_offices }}');
+
+                        $('#box_next_office_select').removeClass('tk_redy_box');
+                        $('#box_next_office_select').addClass('tk_not_redy_box');
+
+                        $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+                        $('#tk_checkout').css('opacity', '0.6');
+                        $('#tk_checkout').css('pointer-events', 'none');
+                        $('#tk_button_confirm').prop('disabled', true);
+
+                    } else {
+                        html = '';
+
+                        for (i = 0; i < 1; i++) {
+                            html += '<div class="radio_elements"><label><input type="radio" name="office_id" value="' + data.offices[i]['office_id'] + '" checked="" data-name="' + data.offices[i]['office_code'] + ' ' + data.offices[i]['office_name'] + '" data-office_code="' + data.offices[i]['office_code'] + '" data-office_name="' + data.offices[i]['office_name'] + '" data-office_address="' + data.offices[i]['office_address'] + '"><span>' + data.offices[i]['office_code'] + '</span> <strong>' + data.offices[i]['office_name'] + '</strong><br> <i>' + data.offices[i]['office_address'] + '</i></label></div>';
+
+                            office_id = data.offices[i]['office_id'];
+                            office_name = data.offices[i]['office_name'];
+                            office_code = data.offices[i]['office_code'];
+                            office_address = data.offices[i]['office_address'];
+                        }
+
+                        $('#office_id').val(office_id);
+                        $('#office_name').val(office_name);
+                        $('#office_code').val(office_code);
+                        $('#office_address').val(office_address);
+
+                        $('#office_radio_box').html(html);
+
+                        $('#next_office_select').val(office_code + ' ' + office_name);
+
+                        $('#box_next_office_select').addClass('tk_redy_box');
+                        $('#box_next_office_select').removeClass('tk_not_redy_box');
+
+                        $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+                        $('#tk_checkout').css('opacity', '0.6');
+                        $('#tk_checkout').css('pointer-events', 'none');
+                        $('#tk_button_confirm').prop('disabled', true);
+
+                    }
+
+
+                } else {
+                    $('#office_radio_box').html(' {{ text_no_offices }}');
+                }
+            }
+        });
+    }
+
+
+    //попъп за градове
+    $(document).on('click', '#next_address_city_select', function (e) {
+        e.stopImmediatePropagation();
+
+        $.magnificPopup.open({
+            type: 'inline',
+            items: {src: '#next_address_city_locator'}
+        });
+
+        getNextCities();
+
+        setTimeout(function () {
+            $('#city_search').focus();
+        }, 500);
+
+    });
+
+    //въвеждане на град ръчно
+    $('#city_search').on('input', function () {
+        getNextCities();
+    });
+
+    //добавяне на селектирания град и извеждаме квартали и улици спрямо него
+    $(document).delegate('#next_address_city_locator .radio_box input[type=\'radio\']', 'click', function (e) {
+        e.stopImmediatePropagation();
+
+        var city_id = $(this).val();
+        var city = $(this).data('name');
+        var postcode = $(this).data('postcode');
+
+        $('#city_id').val(city_id);
+        $('#city').val(city);
+        $('#postcode').val(postcode);
+        $('#next_address_city_select').val(city);
+
+        $('#box_next_address_city_select').addClass('tk_redy_box');
+
+        $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+        $('#tk_checkout').css('opacity', '0.6');
+        $('#tk_checkout').css('pointer-events', 'none');
+        $('#tk_button_confirm').prop('disabled', true);
+
+        getNextStreets();
+
+        $.magnificPopup.close();
+
+    });
+ 
+    //извежда списъка с градове в попъпа
+    function getNextCities() {
+        var url = 'index.php?route=sale/tk_next/getCities&user_token={{ user_token }}';
+
+        var country_iso = $('#country_iso').val();
+        url += '&country_iso=' + encodeURIComponent(country_iso);
+
+        var courier = $('#courier').val();
+        url += '&courier=' + encodeURIComponent(courier);
+
+        var name = $('input[name=\'city_search\']').val();
+        if (name) {
+            url += '&name=' + encodeURIComponent(name);
+        }
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+                $('.city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+            },
+            success: function (data) {
+                $('.city_spin').html('');
+                $('#city_radio_box').html('{{ text_no_cities }}');
+
+                html = '';
+
+                for (i = 0; i < data.cities.length; i++) {
+
+                    html += '<div class="radio_elements"><label><input type="radio" name="city_id" value="' + data.cities[i]['city_id'] + '" data-name="' + data.cities[i]['city_name'] + '" data-postcode="' + data.cities[i]['postcode'] + '" >' + data.cities[i]['postcode'] + ' - ' + data.cities[i]['city_name'] + ', ' + data.cities[i]['region'] + '</label></div>';
+
+                }
+
+                $('#city_radio_box').html(html);
+            }
+        });
+    }
+    
+    //транслитерация за търсачката
+    function transliterate(word) {
+        return word.split('').map(function (char) {
+            return Lat2Cyr[char] || char;
+        }).join("");
+    }
+
+    Lat2Cyr = {
+        "a": "а",
+        "b": "б",
+        "c": "ц",
+        "d": "д",
+        "e": "е",
+        "f": "ф",
+        "g": "г",
+        "h": "х",
+        "i": "и",
+        "j": "ј",
+        "k": "к",
+        "l": "л",
+        "m": "м",
+        "n": "н",
+        "o": "о",
+        "p": "п",
+        "q": "",
+        "r": "р",
+        "s": "с",
+        "t": "т",
+        "u": "у",
+        "v": "в",
+        "w": "",
+        "x": "",
+        "y": "",
+        "z": "з",
+        "A": "А",
+        "B": "Б",
+        "C": "Ц",
+        "D": "Д",
+        "E": "Е",
+        "F": "Ф",
+        "G": "Г",
+        "H": "Х",
+        "I": "И",
+        "J": "Ј",
+        "K": "К",
+        "L": "Л",
+        "M": "М",
+        "N": "Н",
+        "O": "О",
+        "P": "П",
+        "Q": "",
+        "R": "Р",
+        "S": "С",
+        "T": "Т",
+        "U": "У",
+        "V": "В",
+        "W": "",
+        "X": "",
+        "Y": "",
+        "Z": "З",
+        "č": "ч",
+        "ć": "ћ",
+        "đ": "ђ",
+        "ž": "ж",
+        "š": "ш",
+        "Č": "Ч",
+        "Ć": "Ћ",
+        "Đ": "Ђ",
+        "Ž": "Ж",
+        "Š": "Ш"
+    };
+
+    //транслитерация за търсачката
+    function transliterateEN(word) {
+        return word.split('').map(function (char) {
+            return getKeyByValue(Lat2Cyr, char) || char;
+        }).join("");
+    }
+
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+</script>
+
+{{ footer }}

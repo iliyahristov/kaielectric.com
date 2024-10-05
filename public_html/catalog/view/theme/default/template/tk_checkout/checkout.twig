@@ -1,0 +1,991 @@
+{{ header }}
+<section id="tk_checkout" class="tk_checkout_lable_{{ module_tk_checkout_title }}">
+	<div class="tk_container" id="tk_no_payment">
+		
+		{% if (error_warning) %}
+			<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		
+		{{ content_top }}
+		<div class="tk_clear"></div>
+		
+		<h1 class="tk_left">{{ checkout_title }}</h1>
+		<div class="tk_right tk_login_buttons">
+			{% if (customer_id is not defined or customer_id == 0) %}
+				<button type="button" class="tk_btn_clear tk_btn_login" id="tk_login"><span class="tk_icon-login"></span> {{ text_account_have }}</button>
+				{% if (tk_checkout_fbq_app_id is defined and tk_checkout_fbq_app_id) %}
+				<a href="{{ facebook_login_url }}" class="tk_btn_clear tk_btn_facebook"><i class="tk_icon-facebook"></i> {{ text_account_facebook }}</a>
+			{% endif %}
+			{% endif %}
+			<a href="{{ home }}" class="tk_btn_clear home_again tk_btn_home"><span class="tk_icon-cart"></span> {{ text_buy_more }}
+			</a>
+		</div>
+		<div class="tk_clear"></div>
+		{% if (customer_id is not defined or customer_id == 0) %}
+			{{ column_login }}
+		{% endif %}
+		<div class="tk_clear"></div>
+		
+		<hr>
+		
+		<div id="tk_text_top">
+			{{ text_top }}
+			<div class="tk_clear"></div>
+		</div>
+		<form {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %} >
+			<div class="tk_form">
+				<input type="hidden" name="fax" value=""/>
+				<input type="hidden" name="company" value=""/>
+				<input type="hidden" name="company_id" value=""/>
+				<input type="hidden" name="tax_id" value=""/>
+				<input type="hidden" name="address_2" value=""/>
+				<input type="hidden" name="address_zone_id" value="{{ address_zone_id }}"/>
+				
+				{% if (customer_id is not defined or customer_id == 0) and random_password %}
+					<input type="hidden" name="register" value="1">
+					<input type="hidden" name="password" value="{{ random_password }}" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}>
+					<input type="hidden" name="confirm" value="{{ random_password }}" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}>
+				{% endif %}
+				
+				<div id="tk_error_box"></div>
+				
+				{% if module_tk_checkout_column == 2 %}
+				<div class="tk_5_column tk_left_column">
+				{% else %}
+				<div class=" tk_order_column">
+				{% endif %}
+				
+					<div id="tk_user_data">
+						<div class="tk_panel">
+							<div class="tk_panel_heading">
+								<span class="tk_panel_icon"><span class="tk_icon-user"></span></span>
+								<span class="tk_panel_text"> {{ text_persondata }}</span>
+								<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+							</div>
+							<div class="tk_panel_body">
+								{% if ((customer_id is defined and customer_id > 0) or (count_customer_groups == 1)) %}
+									<input type="hidden" name="customer_group_id" value="{{ customer_group_id }}"/>
+								{% else %}
+									{% if module_tk_checkout_customer_group is defined and module_tk_checkout_customer_group == 1 %}
+										{% for customer_count,customer_group in customer_groups %}
+											{% if (customer_group['customer_group_id'] == customer_group_id or customer_count == 0) %}
+												<div class="tk_6_column tk_center_column">
+													<label class="customer_group_id"><input type="radio" name="customer_group_id" value="{{ customer_group['customer_group_id'] }}" checked="checked" onclick="var temp = getAccountCustomFields();getAddressCustomFields(); return temp;"/>{{ customer_group['name'] }}</label>
+												</div>
+											{% else %}
+												<div class="tk_6_column tk_center_column">
+													<label class="customer_group_id"><input type="radio" name="customer_group_id" value="{{ customer_group['customer_group_id'] }}" onclick="var temp = getAccountCustomFields();getAddressCustomFields(); return temp;"/>{{ customer_group['name'] }}</label>
+												</div>
+											{% endif %}
+										{% endfor %}
+										<div class="tk_clear"></div>
+										<hr class="bottom_zero">
+									{% endif %}
+									<div class="tk_clear"></div>
+								{% endif %}
+								<div class="tk_6_column tk_center_column tk_required_box">
+									<input type="text" name="firstname" value="{% if (firstname is defined) %}{{ firstname }}{% endif %}" id="firstname" placeholder="{{ entry_firstname|replace({ ":": "" }) }}" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}/>
+									<span class="tk_floating_label">{{ entry_firstname|replace({ ":": "" }) }}</span>
+								</div>
+								<div class="tk_6_column tk_center_column tk_required_box">
+									<input type="text" name="lastname" value="{% if (lastname is defined) %}{{ lastname }}{% endif %}" id="lastname" placeholder="{{ entry_lastname|replace({ ":": "" }) }}" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}/>
+									<span class="tk_floating_label">{{ entry_lastname|replace({ ":": "" }) }}</span>
+								</div>
+								<div class="tk_clear"></div>
+								{% if module_tk_checkout_required_phone == 3 %}
+									<input type="hidden" name="telephone" value="not_required" id="telephone"/>
+								{% else %}
+									<div class="tk_6_column tk_center_column {% if module_tk_checkout_required_phone == 0 or module_tk_checkout_required_phone == 2 %}tk_required_box{% endif %}">
+										<input type="text" name="telephone" value="{% if (telephone is defined) %}{{ telephone }}{% endif %}" id="telephone" placeholder="{{ entry_telephone|replace({ ":": "" }) }}" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}/>
+										<span class="tk_floating_label">{{ entry_telephone|replace({ ":": "" }) }}</span>
+									</div>
+								{% endif %}
+								{% if module_tk_checkout_required_email == 3 %}
+									<input type="hidden" name="email" value="{{ module_tk_checkout_customer_mail }}" id="email"/>
+								{% else %}
+									<div class="tk_6_column tk_center_column {% if module_tk_checkout_required_email == 0 %}tk_required_box{% endif %}">
+										<input type="text" name="email" value="{% if (email is defined) %}{{ email }}{% endif %}" id="email" placeholder="{{ entry_email|replace({ ":": "" }) }}" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}/>
+										<span class="tk_floating_label">{{ entry_email|replace({ ":": "" }) }}</span>
+									</div>
+								{% endif %}
+								<div class="tk_clear"></div>
+								{% if count_countries > 1 %}
+									{% if module_tk_checkout_country_count > 1 %}
+										<div class="tk_6_column tk_center_column tk_required_box">
+											<select name="country_id" id="country_id" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}>
+												<option value="0">{{ text_select }}</option>
+												{% for country in countries %}
+													{% if country['country_id'] in module_tk_checkout_country %}
+														{% if (country['country_id'] == country_id) %}
+															<option value="{{ country['country_id'] }}" selected="selected">{{ country['name'] }}</option>
+														{% else %}
+															<option value="{{ country['country_id'] }}">{{ country['name'] }}</option>
+														{% endif %}
+													{% endif %}
+												{% endfor %}
+											</select>
+											<span class="tk_floating_label">{{ entry_country|replace({ ":": "" }) }}</span>
+										</div>
+									{% elseif module_tk_checkout_country_count == 0 %}
+										<div class="tk_6_column tk_center_column tk_required_box">
+											<select name="country_id" id="country_id" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}>
+												<option value="0">{{ text_select }}</option>
+												{% for country in countries %}
+													{% if (country['country_id'] == country_id) %}
+														<option value="{{ country['country_id'] }}" selected="selected">{{ country['name'] }}</option>
+													{% else %}
+														<option value="{{ country['country_id'] }}">{{ country['name'] }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+											<span class="tk_floating_label">{{ entry_country|replace({ ":": "" }) }}</span>
+										</div>
+									{% else %}
+										{% for country in module_tk_checkout_country %}
+											<input type="hidden" name="country_id" value="{{ country }}"/>
+										{% endfor %}
+									{% endif %}
+								{% else %}
+									{% for country in countries %}
+										<input type="hidden" name="country_id" value="{{ country['country_id'] }}"/>
+									{% endfor %}
+								{% endif %}
+								{% if module_tk_checkout_zone is defined and module_tk_checkout_zone == 1 %}
+									<div class="tk_6_column tk_center_column tk_required_box">
+										<select name="zone_id" id="input-payment-zone" class="form-control" {% if (module_tk_checkout_autocomplete is not defined or module_tk_checkout_autocomplete == 0) %}autocomplete="off"{% else %}autocomplete="on"{% endif %}>
+											<option value="0" selected="selected">{{ entry_zone|replace({ ":": "" }) }}</option>
+											{% for zona in zone %}
+												{% if (zona['zone_id'] == zone_id) %}
+													<option value="{{ zona['zone_id'] }}" selected="selected">{{ zona['name'] }}</option>
+												{% else %}
+													<option value="{{ zona['zone_id'] }}">{{ zona['name'] }}</option>
+												{% endif %}
+											{% endfor %}
+										</select>
+										<span class="tk_floating_label">{{ entry_zone|replace({ ":": "" }) }}</span>
+									</div>
+								{% endif %}
+								<div class="tk_clear"></div>
+								{% if (customer_id is not defined or customer_id == 0) and module_tk_checkout_register == 2 %}
+								<div id="tk_register_top">
+									{% if (config_checkout_guest is defined and config_checkout_guest == 1) %}
+										{% if (module_tk_checkout_required_email != 3) %}
+											<div class="tk_12_column tk_center_column">
+												<input type="checkbox" name="register" onclick="$('#tk_register_form').toggle();$('#tk_newsletter').toggle();" id="tk_register">
+												<label for="tk_register">{{ text_register }}
+												</label>
+											</div>
+										{% endif %}
+									{% else %}
+										<input type="hidden" name="register" value="1">
+									{% endif %}
+
+									<div id="tk_register_form" {% if ((config_checkout_guest is defined and config_checkout_guest == 1) or module_tk_checkout_required_email == 3) %}style="display:none"{% endif %}>
+										<div class="tk_6_column tk_center_column">
+											<input type="password" name="password" value="" placeholder="{{ entry_password|replace({ ":": "" }) }}" autocomplete="off"/>
+											<span class="tk_floating_label">{{ entry_password|replace({ ":": "" }) }}</span>
+										</div>
+										<div class="tk_6_column tk_center_column">
+											<input type="password" name="confirm" value="" placeholder="{{ entry_confirm|replace({ ":": "" }) }}" autocomplete="off"/>
+											<span class="tk_floating_label">{{ entry_confirm|replace({ ":": "" }) }}</span>
+										</div>
+										<div class="tk_clear"></div>
+										
+											{% if customer_id is not defined or customer_id == 0 and count_customer_groups > 1 and module_tk_checkout_customer_group is defined and module_tk_checkout_customer_group == 1 %}
+												{% for customer_count,customer_group in customer_groups %}
+													{% if (customer_group['customer_group_id'] == customer_group_id or customer_count == 0) %}
+														<div class="tk_6_column tk_center_column">
+															<label class="customer_group_id"><input type="radio" name="customer_group_id" value="{{ customer_group['customer_group_id'] }}" checked="checked" onclick="var temp = getAccountCustomFields();getAddressCustomFields(); return temp;"/>{{ customer_group['name'] }}</label>
+														</div>
+													{% else %}
+														<div class="tk_6_column tk_center_column">
+															<label class="customer_group_id"><input type="radio" name="customer_group_id" value="{{ customer_group['customer_group_id'] }}" onclick="var temp = getAccountCustomFields();getAddressCustomFields(); return temp;"/>{{ customer_group['name'] }}</label>
+														</div>
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+									</div>
+									<div class="tk_clear"></div>
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+
+					<div id="tk_account_custom_fields_table">
+						{% if (account_custom_fields is defined and account_custom_fields) %}
+							<div class="tk_account_custom_fields">
+								<div class="tk_panel">
+									<div class="tk_panel_heading">
+										<span class="tk_panel_icon"><span class="tk_icon-briefcas"></span></span>
+										<span class="tk_panel_text"> {{ text_invoice }}</span>
+										<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+									</div>
+									<div class="tk_panel_body">
+										{% set invoice_checkbox = constant('false') %}
+										{% for custom_field in account_custom_fields %}
+											{% if (custom_field['location'] == 'account') %}
+												{% if (custom_field['type'] == 'checkbox') %}
+													{% for custom_field_value in custom_field['custom_field_value'] %}
+														{% if ((custom_field['custom_field_id'] == module_tk_checkout_invoice)) %}
+															{% set invoice_checkbox = true %}
+															<div class="tk_12_column tk_center_column">
+																<label for="invoice_checkbox">
+																	<input type="checkbox" id="invoice_checkbox" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}][]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (account_custom_field[custom_field['custom_field_id']][0] is defined and account_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %} {% set account_custom_field_open = 1 %} data-invoice="1" checked="" {% endif %}data-invoice="0" {% if (invoice_checkbox) %}onclick="jQuery('.invoice-form').toggle()"{% endif %} />
+																	{{ custom_field['name'] }}
+																</label>
+															</div>
+														{% endif %}
+													{% endfor %}
+
+													<div class="tk_clear"></div>
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+										{% if module_tk_checkout_invoice == 9999 %}
+											{% set account_custom_field_open = 1 %}
+										{% endif %}
+										<div class="invoice-form" {% if (account_custom_field_open is defined) %}style="display:block" {% else %}style="display:none" {% endif %}>
+											{% if (invoice_checkbox == true) %}
+												<hr class="bottom_zero">{% endif %}
+											{% for custom_field in account_custom_fields %}
+												{% if (custom_field['location'] == 'account') %}
+													{% if (custom_field['type'] == 'text') %}
+														<div class="tk_6_column tk_center_column">
+															<input type="text" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]"
+															value="{% if (account_custom_field[custom_field['custom_field_id']] is defined) %}{{ account_custom_field[custom_field['custom_field_id']] }}{% endif %}" id="custom_field{{ custom_field['custom_field_id'] }}" class="form-control custom_field" placeholder="{{ custom_field['name'] }}"/>
+															<span class="tk_floating_label">{{ custom_field['name'] }}</span>
+														</div>
+													{% endif %}
+													{% if (custom_field['type'] == 'checkbox') %}
+													{% for custom_field_value in custom_field['custom_field_value'] %}
+														{% if (custom_field['custom_field_id'] != module_tk_checkout_invoice) %}
+															<div class="tk_12_column tk_center_column">
+																<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}"><input type="checkbox" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}][]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (account_custom_field[custom_field['custom_field_id']][0] is defined and account_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %} checked=""{% endif %} />{{ custom_field['name'] }}</label>
+															</div>
+														{% endif %}
+													{% endfor %}
+												{% endif %}
+													{% if (custom_field['type'] == 'radio') %}
+													<div class="tk_12_column tk_center_column">
+															<label>{{ custom_field['name'] }}</label>
+														</div>
+														{% for custom_field_value in custom_field['custom_field_value'] %}
+														<div class="tk_12_column tk_center_column">
+																<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}"><input type="radio" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (account_custom_field[custom_field['custom_field_id']][0] is defined and account_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %} checked=""{% endif %} />{{ custom_field_value['name'] }}</label>
+															</div>
+													{% endfor %}
+												{% endif %}
+													{% if (custom_field['type'] == 'select') %}
+													<div class="tk_12_column tk_center_column">
+															<select name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" id="input-payment-custom-field{{ custom_field.custom_field_id }}" class="form-control">
+																<option value="">{{ text_select }}</option>
+																{% for custom_field_value in custom_field.custom_field_value %}
+																	<option value="{{ custom_field_value.custom_field_value_id }}">{{ custom_field_value.name }}</option>
+																{% endfor %}
+															</select>
+														</div>
+												{% endif %}
+												{% endif %}
+											{% endfor %}
+										</div>
+										<div class="tk_clear"></div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+
+					<div id="tk_address_custom_fields_table">
+						{% if (address_custom_fields is defined and address_custom_fields) %}
+							<div class="tk_address_custom_fields">
+								<div class="tk_panel">
+									<div class="tk_panel_heading">
+										<span class="tk_panel_icon"><span class="tk_icon-user"></span></span>
+										<span class="tk_panel_text"> {{ text_other }}</span>
+										<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+									</div>
+									<div class="tk_panel_body">
+										{% for custom_field in address_custom_fields %}
+											{% if (custom_field['location'] == 'address') %}
+												{% if (custom_field['type'] == 'text') %}
+													<div class="tk_6_column tk_center_column">
+														<input type="text" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]"
+														value="{% if (address_custom_field[custom_field['custom_field_id']] is defined) %}{{ address_custom_field[custom_field['custom_field_id']] }}{% endif %}" id="custom_field{{ custom_field['custom_field_id'] }}" class="form-control custom_field" placeholder="{{ custom_field['name']|replace({ ":": "" }) }}"/>
+														<span class="tk_floating_label">{{ custom_field['name']|replace({ ":": "" }) }}</span>
+													</div>
+												{% endif %}
+												{% if (custom_field['type'] == 'checkbox') %}
+												{% for custom_field_value in custom_field['custom_field_value'] %}
+													<div class="tk_12_column tk_center_column">
+															<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}">
+																<input type="checkbox" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}][]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (address_custom_field[custom_field['custom_field_id']][0] is defined and address_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %}checked=""{% endif %} />
+																{{ custom_field['name'] }}
+															</label>
+														</div>
+												{% endfor %}
+											{% endif %}
+												{% if (custom_field['type'] == 'radio') %}
+												<div class="tk_12_column tk_center_column">
+														<label>
+															{{ custom_field['name'] }}
+														</label>
+													</div>
+													{% for custom_field_value in custom_field['custom_field_value'] %}
+													<div class="tk_12_column tk_center_column">
+															<input type="radio" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (address_custom_field[custom_field['custom_field_id']][0] is defined and address_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %}checked=""{% endif %} />
+															<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}">
+																{{ custom_field_value['name'] }}
+															</label>
+														</div>
+												{% endfor %}
+											{% endif %}
+												{% if (custom_field['type'] == 'select') %}
+												<div class="tk_12_column tk_center_column">
+														<select name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" id="input-payment-custom-field{{ custom_field.custom_field_id }}" class="form-control">
+															<option value="">{{ text_select }}</option>
+															{% for custom_field_value in custom_field.custom_field_value %}
+																<option value="{{ custom_field_value.custom_field_value_id }}">{{ custom_field_value.name }}</option>
+															{% endfor %}
+														</select>
+													</div>
+											{% endif %}
+											{% endif %}
+										{% endfor %}
+										<div class="tk_clear"></div>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+					
+					{% if (shipping_error_warning) %}
+						<div class="tk_alert_stay"> {{ shipping_error_warning }}</div>
+					{% endif %}
+					
+					{% if (shipping_methods) %}
+						<div id="tk_shipping_methods">
+							<div class="tk_panel">
+								<div class="tk_panel_heading">
+									<span class="tk_panel_icon"><span class="tk_icon-delivery"></span></span>
+									<span class="tk_panel_text"> {{ text_shiping_select }}</span>
+									<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+								</div>
+								<div class="tk_panel_body">
+									<div class="tk_12_column tk_center_column">
+										<input type="hidden" name="shipping_method_error" value=""/>
+										<div id="tk_shipping_table">
+											<div class="tk_shipping_methods">
+												{% set counter = 0 %}
+												{% for key,shipping_method in shipping_methods %}
+													{% if (not shipping_method['error']) %}
+														{% set counter_quote = 0 %}
+														{% for quote in shipping_method['quote'] %}
+															<div class="tk_shipping_method">
+																<label for="shipping_check_{{ quote['code'] }}" class="{{ quote['code']|replace({ ".": "_" }) }}">
+																	{% if (shipping_method_code['code'] is defined and quote['code'] == shipping_method_code['code']) %}
+																		<input type="radio" name="shipping_method" value="{{ quote['code'] }}" title="{{ quote['title'] }}" checked="checked" id="shipping_check_{{ quote['code'] }}"/>
+																	{% else %}
+																		{% if (counter == 0 and counter_quote == 0) %}
+																			<input type="radio" class="shipping_method" name="shipping_method" value="{{ quote['code'] }}" title="{{ quote['title'] }}" checked="checked" id="shipping_check_{{ quote['code'] }}"/>
+																		{% else %}
+																			<input type="radio" class="shipping_method" name="shipping_method" value="{{ quote['code'] }}" title="{{ quote['title'] }}" id="shipping_check_{{ quote['code'] }}"/>
+																		{% endif %}
+																	{% endif %}
+																	<div class="tk_shipping_method_txt_box">
+																		<span class="{{ quote['code']|replace({ ".": "_" }) }} {% if quote['name'] is defined %}tk_next_{{ quote['name']}}{% endif %} {{key }} tk_shipping_method_icon "></span><span class="tk_shipping_method_title">{{ quote['title'] }}{% if quote['description'] %}
+																				<br>
+																				<small>{{ quote['description'] }}</small>{% endif %}</span>
+																		<span class="tk_shipping_method_price">{{ quote['text'] }}</span>
+																		<div class="tk_clear"></div>
+																	</div>
+																</label>
+															</div>
+															{% set counter_quote = counter_quote + 1 %}
+														{% endfor %}
+													{% else %}
+														<div class="tk_alert">{{ shipping_method['error'] }}</div>
+													{% endif %}
+													{% set counter = counter + 1 %}
+												{% endfor %}
+											</div>
+											<div class="tk_clear"></div>
+										</div>
+										<div id="tk_text_free_shipping_table"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% else %}
+					<input type="hidden" name="shipping_method_error" value=""/>
+						<div id="tk_shipping_table">
+							<div class="tk_shipping_methods"></div>
+						</div>
+						<script>
+							$(document).ready(function () {
+								getPaymentMethod();
+							});
+						</script>
+					{% endif %}
+					
+					<div id="tk_address_table"></div>
+					
+					<div id="tk_payment_methods">
+						<div class="tk_panel">
+							<div class="tk_panel_heading">
+								<span class="tk_panel_icon"><span class="tk_icon-money"></span></span>
+								<span class="tk_panel_text"> {{ text_payment_select }}</span>
+								<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+							</div>
+							<div class="tk_panel_body">
+								<div class="tk_12_column tk_center_column">
+									<input type="hidden" name="payment_method_error" value=""/>
+									<div id="tk_payment_table">
+										{% if (payment_error_warning) %}
+											<div class="tk_alert_stay"> {{ payment_error_warning }}</div>
+										{% endif %}
+										{% if (payment_methods) %}
+											<div class="tk_payment_methods">
+												{% set counter = 0 %}
+												{% for payment_method in payment_methods %}
+													<input type="hidden" name="payment_method_popup_{{ payment_method['code'] }}" value="{{ payment_method['popup_payment'] }}"/>
+													<div class="tk_payment_method" id="payment_code_{{ payment_method['code'] }}">
+														<label for="payment_check_{{ payment_method['code'] }}">
+															<input type="radio" name="payment_method" value="{{ payment_method['code'] }}" title="{{ payment_method['title'] }}" id="payment_check_{{ payment_method['code'] }}" {% if (payment_method_code == payment_method['code']) %}checked="checked" {% elseif (counter == 0) %}checked="checked"{% endif %} />
+															<span class="payment_check_bgr">{{ payment_method['title'] }}</span>
+														</label>
+													</div>
+													{% set counter = counter + 1 %}
+												{% endfor %}
+											</div>
+										{% endif %}
+									</div>
+								</div>
+								<div class="tk_clear"></div>
+								<style>
+									#tk_payment_triger #button-confirm {display: none;}
+									#tk_payment_display #button-confirm {display: none;}
+								</style>
+								<div id="tk_payment_display"></div>
+								<div id="tk_payment_triger"></div>
+							</div>
+						</div>
+					</div>
+					<div class="tk_clear"></div>
+					
+				{% if module_tk_checkout_column == 2 %}
+				</div>
+				<div class="tk_7_column tk_right_column">
+				{% endif %}
+				
+					<div id="tk_cart">
+						<div class="tk_panel">
+							<div class="tk_panel_heading">
+								<span class="tk_panel_icon"><span class="tk_icon-cart"></span></span> 
+								<span class="tk_panel_text"> {{ text_cart }} {% if (config_cart_weight is defined and config_cart_weight == 1) %}(
+										<span class="tk_weight_cart">{{ weight_cart }}</span>){% endif %}</span>
+								<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+							</div>
+							<div class="tk_panel_body">
+								<table class="tk_table">
+									<thead>
+									<tr>
+										<th>{{ column_image }}</th>
+										<th>{{ column_name }}</th>
+										<th class="tk_only_desctop" style=" min-width: 130px;">{{ column_quantity }}</th>
+										<th class="tk_only_desctop">{{ column_price }}</th>
+										<th class="tk_text_right">{{ column_total }}</th>
+									</tr>
+									</thead>
+									<tbody>
+									{% for product in products %}
+										<tr id="tk_cart_product_{{ product.cart_id }}">
+											<td class="tk_text_center">
+												{% if (product.thumb) %}
+													<a href="{{ product.href }}"><img src="{{ product.thumb }}"/></a>
+												{% endif %}
+											</td>
+											<td>
+												{% if not product.stock %}
+													<div class="tk_alert_stay">***</div>
+												{% endif %}
+												<a href="{{ product.href }}">{{ product.name }}</a>
+												{% for option in product.option %}
+													<br/>
+													<small> - {{ option.name }}
+														: {% if (option.option_value is defined and option.option_value is not empty) %}{{ option.option_value }}{% elseif (option.value is defined) %}{{ option.value }}{% endif %}</small>
+												{% endfor %}
+												{% if (product.reward) %}
+													<br/>
+													<small>{{ product.reward }}</small>
+												{% endif %}
+												{% if (product.recurring) %}
+													<br/>
+													<span class="label label-info">{{ text_recurring_item }}</span>
+													<br/>
+													<small>{{ product.recurring }}</small>
+												{% endif %}
+												<div class="tk_only_mobile">
+													<span id="tk_save_m">
+														<input type="text" value="{{ product.quantity }}" class="tk_qantity_input_m" name="quantity[{{ product.cart_id }}]">
+														<button class="tk_btn_update" type="button" onclick="updateCart('{{ product.cart_id }}', $('#tk_save_m input[name=\'quantity[{{ product.cart_id }}]\']').val(), '{{ lang }}');"><i class="tk_icon-refresh"></i></button>
+														<button type="button" onclick="removeCart('{{ product.cart_id }}');" title="Премахване" class="tk_btn_remove"><i class="tk_icon-close"></i></button>
+													</span>
+												</div>
+											</td>
+											<td class="tk_only_desctop">
+												<span id="tk_save_d">		
+													<input type="text" value="{{ product.quantity }}" class="tk_qantity_input_d" name="quantity[{{ product.cart_id }}]">
+													<button class="tk_btn_update" type="button" onclick="updateCart('{{ product.cart_id }}', $('#tk_save_d input[name=\'quantity[{{ product.cart_id }}]\']').val(), '{{ lang }}');"><i class="tk_icon-refresh"></i></button>
+													<button type="button" onclick="removeCart('{{ product.cart_id }}');" title="Премахване" class="tk_btn_remove"><i class="tk_icon-close"></i></button>
+												</span>
+											</td>
+											<td class="tk_only_desctop">
+												<span id="tk_cart_product_price_{{ product.cart_id }}">{{ product.price }}</span>
+											</td>
+											<td class="tk_text_right">
+												<span id="tk_cart_product_total_{{ product.cart_id }}">{{ product.total }}</span>
+											</td>
+										</tr>
+									{% endfor %}
+									{% for voucher_cart in vouchers %}
+										<tr>
+											<td>*</td>
+											<td>{{ voucher_cart.description }}</td>
+											<td class="tk_only_desctop">1</td>
+											<td class="tk_only_desctop">{{ voucher_cart.amount }}</td>
+											<td class="tk_text_right">{{ voucher_cart.amount }}</td>
+										</tr>
+									{% endfor %}
+									</tbody>
+								</table>
+								<div class="tk_clear"></div>
+								<div id="tk_cart_table">
+									{% for total in totals %}
+										<div class="tk_totals_price c-{{ total.code }}">
+											<div class="tk_totals_left"><strong>{{ total.title }}:</strong></div>
+											<div class="tk_totals_right">{{ total.text }}</div>
+											<div class="tk_clear"></div>
+										</div>
+									{% endfor %}
+								</div>
+								<div class="tk_clear"></div>
+								{% if (tk_special_totals) %}
+								<div id="tk_special_totals" style="margin-top: 15px;text-align: right;">
+									<hr>
+									{% for tk_special_total in tk_special_totals %}
+										<div class="tk_check_box">
+											<input type="checkbox" name="tk_special_total[{{ tk_special_total.special_total_id }}]" class="tk_special_total" id="tk_special_total_{{ tk_special_total.special_total_id }}"  {% if (tk_special_total.status) %}checked{% endif %}>
+											<label for="tk_special_total_{{ tk_special_total.special_total_id }}">{{ tk_special_total.title }}</label>
+										</div>
+									{% endfor %}
+								</div>
+									<script>
+                      $(document).on('click', '.tk_special_total', function(e) {
+                          e.stopImmediatePropagation();
+                          $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+                          $('#tk_checkout').css('opacity','0.6');
+                          $('#tk_checkout').css('pointer-events','none');
+                          $('#tk_button_confirm').prop('disabled', true);
+                          getShippingMethodAddress();
+                      });
+									</script>
+								{% endif %}
+								
+								{% if (reward_status) %}
+									<div id="tk_reward" {% if (reward) %}class="tk_remove_reward_ok"{% endif %}>
+										<input type="button" value="{{ button_reward }}" id="tk_confirm_reward" data-loading-text="{{ text_loading }}" class="tk_btn_primary"/>
+										<input type="text" name="reward" value="{{ reward }}" placeholder="{{ txt_entry_reward }}" id="tk_input_reward"/>
+										<span id="tk_remove_reward_box">
+											{% if (reward) %}
+												<span class="tk_right tk_remove" id="tk_remove_reward"><i class="tk_icon-close"></i></span>
+											{% endif %}
+										</span>
+										<div class="tk_clear"></div>
+										<div class="tk_checkout_reward"></div>
+									</div>
+								{% endif %}
+								{% if (coupon_status) %}
+									<div id="tk_coupon" {% if (coupon) %}class="tk_remove_coupon_ok"{% endif %}>
+										<input type="button" value="{{ button_coupon }}" id="tk_confirm_coupon" data-loading-text="{{ text_loading }}" class="tk_btn_primary"/>
+										<input type="text" name="coupon" value="{{ coupon }}" placeholder="{{ txt_entry_coupon }}" id="tk_input_coupon"/>
+										<span id="tk_remove_coupon_box">
+											{% if (coupon) %}
+												<span class="tk_right tk_remove" id="tk_remove_coupon"><i class="tk_icon-close"></i></span>
+											{% endif %}
+										</span>
+										<div class="tk_clear"></div>
+										<div class="tk_checkout_coupon"></div>
+									</div>
+								{% endif %}
+								{% if (voucher_status) %}
+									<div id="tk_voucher" {% if (voucher) %} class="tk_remove_voucher_ok"{% endif %}>
+										<input type="button" value="{{ button_voucher }}" id="tk_confirm_voucher" data-loading-text="{{ text_loading }}" class="tk_btn_primary"/>
+										<input type="text" name="voucher" value="{{ voucher }}" placeholder="{{ txt_entry_voucher }}" id="tk_input_voucher"/>
+										<span id="tk_remove_voucher_box">
+											{% if (voucher) %}
+												<span class="tk_right tk_remove" id="tk_remove_voucher"><i class="tk_icon-close"></i></span>
+											{% endif %}
+										</span>
+										<div class="tk_clear"></div>
+										<div class="tk_checkout_voucher"></div>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					
+					{% if (customer_id is not defined or customer_id == 0) and module_tk_checkout_register == 0 %}
+					<div id="tk_register_bottom">
+						{% if (config_checkout_guest is defined and config_checkout_guest == 1) %}
+							{% if (module_tk_checkout_required_email != 3) %}
+								<div class="tk_check_box">
+									<input type="checkbox" name="register" onclick="$('#tk_register_form').toggle();$('#tk_newsletter').toggle();" id="tk_register">
+									<label for="tk_register">{{ text_register }}
+									</label>
+								</div>
+							{% endif %}
+						{% else %}
+							<input type="hidden" name="register" value="1">
+						{% endif %}
+						<div id="tk_register_form" {% if ((config_checkout_guest is defined and config_checkout_guest == 1) or module_tk_checkout_required_email == 3) %}style="display:none"{% endif %}>
+							<div class="tk_panel">
+								<div class="tk_panel_heading">
+									<span class="tk_panel_icon"><span class="tk_icon-login"></span></span>
+									<span class="tk_panel_text"> {{ text_register_account }}</span>
+									<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+								</div>
+								<div class="tk_panel_body">
+									<div class="tk_6_column tk_center_column">
+										<input type="password" name="password" value="" placeholder="{{ entry_password|replace({ ":": "" }) }}"/>
+										<span class="tk_floating_label">{{ entry_password|replace({ ":": "" }) }}</span>
+									</div>
+									<div class="tk_6_column tk_center_column">
+										<input type="password" name="confirm" value="" placeholder="{{ entry_confirm|replace({ ":": "" }) }}"/>
+										<span class="tk_floating_label">{{ entry_confirm|replace({ ":": "" }) }}</span>
+									</div>
+									<div class="tk_clear"></div>
+									
+									{% if customer_id is not defined or customer_id == 0 and count_customer_groups > 1 and module_tk_checkout_customer_group is defined and module_tk_checkout_customer_group == 1 %}
+										{% for customer_count,customer_group in customer_groups %}
+											{% if (customer_group['customer_group_id'] == customer_group_id or customer_count == 0) %}
+												<div class="tk_6_column tk_center_column">
+													<label class="customer_group_id"><input type="radio" name="customer_group_id" value="{{ customer_group['customer_group_id'] }}" checked="checked" onclick="var temp = getAccountCustomFields();getAddressCustomFields(); return temp;"/>{{ customer_group['name'] }}</label>
+												</div>
+											{% else %}
+												<div class="tk_6_column tk_center_column">
+													<label class="customer_group_id"><input type="radio" name="customer_group_id" value="{{ customer_group['customer_group_id'] }}" onclick="var temp = getAccountCustomFields();getAddressCustomFields(); return temp;"/>{{ customer_group['name'] }}</label>
+												</div>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+									<div class="tk_clear"></div>
+									
+								</div>
+							</div>
+						</div>
+						<div class="tk_clear"></div>
+					</div>
+					{% endif %}
+					
+					<div id="tk_confirm">
+						<div class="tk_panel">
+							<div class="tk_panel_body">
+								<div class="tk_12_column tk_center_column">
+									<textarea name="comment" rows="2" placeholder="{{ text_comments }}">{{ comment }}</textarea>
+									<div class="tk_agree" id="tk_newsletter" {% if customer_id or random_password or config_checkout_guest == 0 or config_checkout_guest is not defined %}style="display:block" {% else %}style="display:none"{% endif %}>
+										<label for="tk_newsletter_input">
+											<input type="checkbox" name="newsletter" id="tk_newsletter_input" value="1" {% if newsletter %}checked=""{% endif %} >
+											{{ entry_newsletter }}
+										</label>
+									</div>
+									{% if (text_agree is defined and text_agree) %}
+										<div class="tk_agree">
+											<label for="tk_agree_button">
+												<input type="checkbox" id="tk_agree_button" name="agree" value="1"/>
+												<strong style="color: #ff0000;">*</strong>
+												<strong id="tk_agree_popup">{{ text_agree }}</strong>
+											</label>
+										</div>
+									{% else %}
+										<input type="hidden" id="tk_agree_button" name="agree" value="1"/>
+									{% endif %}
+									
+									{% if (text_agree_2 is defined and text_agree_2) %}
+										<div class="tk_agree_2">
+											<label for="tk_agree_2_button">
+												<input type="checkbox" id="tk_agree_2_button" name="agree_2" value="1"/>
+												<strong style="color: #ff0000;">*</strong>
+												<strong id="tk_agree_popup">{{ text_agree_2 }}</strong>
+											</label>
+										</div>
+									{% else %}
+										<input type="hidden" id="tk_agree_2_button" name="agree_2" value="1"/>
+									{% endif %}
+									
+									<div class="error"></div>
+									
+									{% if (error_warning is defined and error_warning) %}
+										<div class="tk_alert"> {{ error_warning }}</div>
+									{% endif %}
+									<button type="button" class="tk_btn_success" data-loading-text="{{ text_loading }} ..." id="tk_button_confirm">{{ text_send }}</button>
+									<div class="tk_clear"></div>
+									<p class="tk_req_text">{{ text_req_text }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tk_clear"></div>
+					<div id="tk_text_under_button">
+						{{ text_under_button }}
+						<div class="tk_clear"></div>
+					</div>
+				</div>
+				<div class="tk_clear"></div>
+			</div>
+		</form>
+		<div id="tk_text_bottom">
+			{{ text_bottom }}
+			<div class="tk_clear"></div>
+		</div>
+	</div>
+	{% if (customer_id is not defined or customer_id == 0) %}
+		<div id="tk_quick_login">
+			<div class="tk_login_form">
+				<button title="Close (Esc)" type="button" class="mfp-close">×</button>
+				<form class="form-inline">
+					<div class="tk_12_column tk_center_column">
+						<label for="input-email">{{ entry_email }}</label>
+						<input type="text" name="login_email" value="" placeholder="{{ entry_email|replace({ ":": "" }) }}" id="input-email"/>
+					</div>
+					<div class="tk_12_column tk_center_column">
+						<label class="control-label" for="input-password">{{ entry_password }}</label>
+						<input type="password" name="login_password" value="" placeholder="{{ entry_password|replace({ ":": "" }) }}" id="input-password"/>
+					</div>
+					<div class="tk_12_column tk_center_column">
+						<input type="button" value="{{ button_login }}" id="tk_button_login" data-loading-text="{% if (text_loading is defined) %}{{ text_loading }}{% else %}{{ 'loading ...' }}{% endif %}" class="tk_btn_success"/>
+					</div>
+				</form>
+				<div class="tk_message_login"></div>
+				<hr>
+				<div class="tk_12_column tk_center_column tk_text_center"><a href="{{ forgotten }}">{{ text_forgotten }}</a></div>
+			</div>
+		</div>
+	{% endif %}
+	<div class="tk_clear"></div>
+	{{ content_bottom }}
+</section>
+
+<div id="tk_payment_triger_run"></div>
+<script>
+	$(document).ready(function () {
+		var invoice = $('#invoice_checkbox').data('invoice');
+		if (invoice == '1') {
+			$('.invoice-form').css('display', 'block');
+		}
+	});
+
+	$('.tk_form input').change(function () {
+		saveData();
+	});
+	$('.tk_form select').change(function () {
+		saveData();
+	});
+	$('.tk_form textarea').change(function () {
+		saveData();
+	});
+
+	$('#tk_checkout').css('opacity', '0.6');
+	$('#tk_checkout').css('pointer-events', 'none');
+	$('#tk_button_confirm').prop('disabled', true);
+	
+	$(document).delegate('select[name=\'country_id\']', 'change', function () {
+		$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+		$('#tk_checkout').css('opacity', '0.6');
+		$('#tk_checkout').css('pointer-events', 'none');
+		$('#tk_button_confirm').prop('disabled', true);
+		
+		$('#speedy_city_locator .radio_box_html').html('');
+		$('#speedy_city_id').val('');
+		$('#speedy_city').val('');
+		$('#speedy_city_select').val('');
+		$('#speedy_quarter_id').val('');
+		$('#speedy_quarter').val('');
+		$('#speedy_quarter_select').val('');
+		$('#speedy_street_id').val('');
+		$('#speedy_street').val('');
+		$('#speedy_street_select').val('');
+		$('#speedy_street_num').val('');
+		$('#speedy_block_no').val('');
+		$('#speedy_other').val('');
+		$('#speedy_address_postcode').val('');
+		
+		$('#speedy_office_id').val('');
+		$('#speedy_office_city_id').val('');
+		$('#speedy_office_name').val('');
+		$('#speedy_office_select').val('');
+		$('#speedy_office_address').val('');
+		$('#speedy_office_city').val('');
+		$('#speedy_office_city_select').val('');
+		$('#speedy_office_postcode').val('');
+		
+		$('.tk_speedy_address_city_select').removeClass('tk_redy_box');
+		$('.tk_speedy_quarter_select').removeClass('tk_redy_box');
+		$('.tk_speedy_street_select').removeClass('tk_redy_box');
+		$('.tk_speedy_office_select').removeClass('tk_redy_box');
+		$('.tk_speedy_office_city_select').removeClass('tk_redy_box');
+		$('.tk_speedy_office_city_id').removeClass('tk_redy_box');
+		
+		$('#econt_city_locator .radio_box_html').html('');
+		$('#econt_city_id').val('');
+		$('#econt_city').val('');
+		$('#econt_city_select').val('');
+		$('#econt_quarter_id').val('');
+		$('#econt_quarter').val('');
+		$('#econt_quarter_select').val('');
+		$('#econt_street_id').val('');
+		$('#econt_street').val('');
+		$('#econt_street_select').val('');
+		$('#econt_street_num').val('');
+		$('#econt_block_no').val('');
+		$('#econt_other').val('');
+		$('#econt_address_postcode').val('');
+		
+		$('#econt_office_id').val('');
+		$('#econt_office_city_id').val('');
+		$('#econt_office_name').val('');
+		$('#econt_office_select').val('');
+		$('#econt_office_address').val('');
+		$('#econt_office_city').val('');
+		$('#econt_office_city_select').val('');
+		$('#econt_office_postcode').val('');
+		
+		$('.tk_econt_address_city_select').removeClass('tk_redy_box');
+		$('.tk_econt_quarter_select').removeClass('tk_redy_box');
+		$('.tk_econt_street_select').removeClass('tk_redy_box');
+		$('.tk_econt_office_select').removeClass('tk_redy_box');
+		$('.tk_econt_office_city_select').removeClass('tk_redy_box');
+		$('.tk_econt_office_city_id').removeClass('tk_redy_box');
+
+
+		$.ajax({
+			url: 'index.php?route=tk_checkout/checkout/get_country&country_id=' + this.value,
+			dataType: 'json',
+			beforeSend: function () {
+			},
+			complete: function () {
+			},
+			success: function (json) {
+				html = '';
+				if (json['zone'] && json['zone'] != '') {
+					html += '<option value="0">{{ entry_zone|replace({ ":": "" }) }}</option>';
+					for (i = 0; i < json['zone'].length; i++) {
+						html += '<option value="' + json['zone'][i]['zone_id'] + '"';
+						if (json['zone'][i]['zone_id'] == '<?php echo $zone_id; ?>') {
+							html += ' selected="selected"';
+						}
+						html += '>' + json['zone'][i]['name'] + '</option>';
+					}
+				} else {
+					html += '<option value="0" selected="selected">{{ text_none|replace({ ":": "" }) }}</option>';
+				}
+				$('select[name=\'zone_id\']').html(html);
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+		getShippingMethod();
+	});
+
+	$(document).delegate('select[name=\'zone_id\']', 'change', function () {
+		$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+		$('#tk_checkout').css('opacity', '0.6');
+		$('#tk_checkout').css('pointer-events', 'none');
+		$('#tk_button_confirm').prop('disabled', true);
+		
+		var address_zone_id = $('input[name=\'address_zone_id\']').val();
+		
+		if (address_zone_id > 0) {
+			if ($(this).val() != address_zone_id) {
+				$("input:radio[name='base_address_type'][value='existing']").prop('checked', false);
+				$("input:radio[name='base_address_type'][value='new']").prop('checked', true);
+				jQuery('#address_new').show();
+			} else {
+				$("input:radio[name='base_address_type'][value='existing']").prop('checked', true);
+				$("input:radio[name='base_address_type'][value='new']").prop('checked', false);
+				jQuery('#address_new').hide();
+			}
+		}
+
+		getShippingMethod();
+	});
+
+	$('#tk_register').click(function () {
+		$('#tk_newsletter input').prop('checked', true)
+	});
+
+</script>
+<style>
+	.tk_panel_text::after {
+		background: {{ module_tk_checkout_color }} !important;
+	}
+	.tk_panel_icon {
+		color: {{ module_tk_checkout_color }} !important;
+	}
+	.tk_btn_clear:active:hover, .tk_btn_clear:active:focus, .tk_btn_clear:hover {
+		border-color: {{ module_tk_checkout_color }} !important;
+	}
+	.tk_btn_clear span, .tk_btn_clear i {
+		color: {{ module_tk_checkout_color }} !important;
+	}
+	#tk_checkout input:focus {
+		border: 1px solid {{ module_tk_checkout_color }} !important;
+	}
+	.tk_container {
+		max-width: {{ module_tk_checkout_size }}px !important;
+	}
+	
+	{{ module_tk_checkout_css }}
+
+	{% if module_tk_checkout_column == 1 %}
+	.tk_panel_heading .tk_panel_icon {
+		left: 25px !important;
+	}
+	{% if module_tk_checkout_size > 600 %}
+	.tk_payment_method {
+		width: 33.33% !important;
+	}
+	{% endif %}
+	{% endif %}
+	
+	.tk_btn_success {
+		background-color: {{ module_tk_checkout_color_button }} !important;
+		border-color: {{ module_tk_checkout_color_button }} !important;
+	}
+	.tk_btn_success:hover {
+		background-color: {{ module_tk_checkout_color_button_hover }} !important;
+		border-color: {{ module_tk_checkout_color_button_hover }} !important;
+	}
+
+	{% for key, shipping_image in module_tk_checkout_shipping_image %}
+	{% if shipping_image %}
+	#tk_checkout .tk_shipping_method .tk_shipping_method_icon.{{ key }} {
+		background-image: url('{{ shipping_image }}') !important;
+	}
+
+	{% endif %}
+	{% endfor %}
+
+	{% for key, payment_image in module_tk_checkout_payment_image %}
+	{% if payment_image %}
+	#tk_checkout #payment_code_{{ key }}.tk_payment_method .payment_check_bgr {
+		background-image: url('{{ payment_image }}') !important;
+	}
+
+	{% endif %}
+	{% endfor %}
+</style>
+{{ footer }} 

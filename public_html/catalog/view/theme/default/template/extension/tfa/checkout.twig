@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-sm-6">
+        <h2>{{ text_new_customer }}</h2>
+        <p>{{ text_checkout }}</p>
+        <div class="radio">
+            <label> {% if account == 'register' %}
+                    <input type="radio" name="account" value="register" checked="checked" />
+                {% else %}
+                    <input type="radio" name="account" value="register" />
+                {% endif %}
+                {{ text_register }}</label>
+        </div>
+        {% if checkout_guest %}
+            <div class="radio">
+                <label> {% if account == 'guest' %}
+                        <input type="radio" name="account" value="guest" checked="checked" />
+                    {% else %}
+                        <input type="radio" name="account" value="guest" />
+                    {% endif %}
+                    {{ text_guest }}</label>
+            </div>
+        {% endif %}
+        <p>{{ text_register_account }}</p>
+        <input type="button" value="{{ button_continue }}" id="button-account" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+    </div>
+    <div class="col-sm-6">
+        <h2>{{ text_tfa }}</h2>
+        <p>{{ text_tfa_description }}</p>
+        <div class="form-group">
+            <label class="control-label" for="input-code">{{ entry_code }}</label>
+            <input type="text" name="code" value="" placeholder="{{ entry_code }}" id="input-code" class="form-control" />
+        </div>
+        <input type="button" value="{{ button_authenticate }}" id="button-login" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+    </div>
+</div>

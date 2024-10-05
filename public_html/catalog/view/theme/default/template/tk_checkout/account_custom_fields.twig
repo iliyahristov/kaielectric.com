@@ -1,0 +1,105 @@
+{% if (account_custom_fields is defined and account_custom_fields) %} 
+										
+						<div class="tk_account_custom_fields">
+							<div class="tk_panel">
+								<div class="tk_panel_heading">
+									<span class="tk_panel_icon"><span class="tk_icon-briefcas"></span></span> 
+									<span class="tk_panel_text"> {{ text_invoice }}</span>
+								</div>
+								<div class="tk_panel_body">
+								{% set invoice_checkbox = constant('false') %} 
+								
+								{% for custom_field in account_custom_fields %} 
+								{% if (custom_field['location'] == 'account') %} 
+								
+								{% if (custom_field['type'] == 'checkbox') %} 
+								{% for custom_field_value in custom_field['custom_field_value'] %} 
+								{% if ((custom_field['custom_field_id'] == module_tk_checkout_invoice)) %} 
+								{% set invoice_checkbox = constant('true') %} 
+								<div class="tk_12_column tk_center_column" >
+									<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}">		
+										<input type="checkbox" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}][]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (account_custom_field[custom_field['custom_field_id']][0] is defined and account_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %} {% set account_custom_field_open = constant('true') %}checked=""{% endif %} {% if (invoice_checkbox) %}onclick="jQuery('.invoice-form').toggle()"{% endif %} />
+										{{ custom_field['name'] }} 
+									</label>
+								</div>
+								{% endif %} 
+								{% endfor %} 
+								<div class="tk_clear"></div>
+								
+								{% endif %} 
+								{% endif %} 
+								{% endfor %} 
+								
+								{% if module_tk_checkout_invoice == 9999 %} 
+								{% set account_custom_field_open = constant('true') %}
+								{% endif %} 
+														
+								<div class="invoice-form" {% if (account_custom_field_open is defined and account_custom_field_open ) %}style="display:block"{% else %}style="display:none" {% endif %}>
+								
+									{% if (invoice_checkbox == constant('true')) %}<hr class="bottom_zero">{% endif %} 
+									{% for custom_field in account_custom_fields %} 
+									{% if (custom_field['location'] == 'account') %} 
+																
+									{% if (custom_field['type'] == 'text') %}			
+									<div class="tk_6_column tk_center_column">
+										<input type="text" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" 
+										value="{% if (account_custom_field[custom_field['custom_field_id']] is defined) %}{{ account_custom_field[custom_field['custom_field_id']] }}{% endif %}" id="custom_field{{ custom_field['custom_field_id'] }}" class="form-control custom_field" placeholder="{{custom_field['name'] }}" />
+										<span class="tk_floating_label">{{custom_field['name'] }}</span>
+									</div>
+									{% endif %} 
+																	
+
+									{% if (custom_field['type'] == 'checkbox') %} 
+									{% for custom_field_value in custom_field['custom_field_value'] %} 
+									{% if (custom_field['custom_field_id'] != module_tk_checkout_invoice) %} 
+									<div class="tk_12_column tk_center_column">
+										<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}">		
+											<input type="checkbox" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}][]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (account_custom_field[custom_field['custom_field_id']][0] is defined and account_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %} checked=""{% endif %} />
+											{{ custom_field['name'] }} 
+										</label>
+									</div>
+									{% endif %} 
+									{% endfor %} 
+									{% endif %} 
+																		
+									{% if (custom_field['type'] == 'radio') %}	
+									<div class="tk_12_column tk_center_column">
+										<label>
+											{{ custom_field['name'] }} 
+										</label>
+									</div>			
+									{% for custom_field_value in custom_field['custom_field_value'] %} 
+									<div class="tk_12_column tk_center_column">
+										<label for="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}">
+											<input type="radio" name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" value="{{ custom_field_value['custom_field_value_id'] }}" id="custom_field_{{ custom_field['location'] }}_{{ custom_field_value['custom_field_value_id'] }}" class="custom_field" {% if (account_custom_field[custom_field['custom_field_id']][0] is defined and account_custom_field[custom_field['custom_field_id']][0] == custom_field_value['custom_field_value_id']) %} checked=""{% endif %} />		
+											{{ custom_field_value['name'] }} 
+										</label>
+									</div>			
+									{% endfor %}			
+									{% endif %} 
+									
+									{% if (custom_field['type'] == 'select') %}			
+									<div class="tk_12_column tk_center_column">
+										<select name="custom_field[{{ custom_field['location'] }}][{{ custom_field['custom_field_id'] }}]" id="input-payment-custom-field{{ custom_field.custom_field_id }}" class="form-control">
+								 <option value="">{{ text_select }}</option>
+								 {% for custom_field_value in custom_field.custom_field_value %}
+								 <option value="{{ custom_field_value.custom_field_value_id }}">{{ custom_field_value.name }}</option>
+								 {% endfor %}
+								 </select>
+									</div>	
+									{% endif %} 
+								
+								
+																		
+									{% endif %} 
+								
+									{% endfor %} 
+								</div>	
+								<div class="tk_clear"></div>
+							</div>										
+							</div>
+						</div>
+						{% endif %}
+<script type="text/javascript">
+	$('.tk_account_custom_fields input').change(function() { saveData(); } );
+</script>

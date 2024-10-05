@@ -1,0 +1,117 @@
+{# location: admin/view #}
+
+{{ header }} {{ column_left }}
+
+<div id="content">
+    <div id="gdpr-module">
+        <gdpr-module></gdpr-module>
+    </div>
+</div>
+{% for template in vueTemplates %}
+    {{ template }}
+{% endfor %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        d_gdpr_module.initState({{ json|json_encode(constant('JSON_FORCE_OBJECT') b-or constant('JSON_NUMERIC_CHECK')) }});
+
+        Vue.use(Vuex);
+        Vue.use(VueRouter)
+        Vue.use(new VueOptions({{ options|json_encode }}));
+        Vue.directive(VueModelVuex);
+
+        var store = new Vuex.Store(d_gdpr_module);
+
+        //checkbox
+        const routes = [
+            {
+                path: '/setting',
+                component: {
+                    template: '<gdpr-section-setting></gdpr-section-setting>'
+                }
+            },
+            {
+                path: '/gdpr',
+                component: {
+                    template: '<gdpr-section-tables></gdpr-section-tables>'
+                }
+            },
+            {
+                path: '/welcome',
+                component: {
+                    template: '<gdpr-welcome></gdpr-welcome>'
+                }
+            }
+        ];
+        const router = new VueRouter({
+            routes: routes
+        });
+
+        router.beforeEach(function(to, from, next){
+            switch(to.path) {
+                case '/welcome':
+                    if(!store.getters.setup_status) {
+                        next()
+                    } else {
+                        next({
+                            path: '/gdpr',
+                            replace: true
+                        })
+                    }
+                    break;
+                case '/setting':
+                    if(store.getters.setup_status) {
+                        next()
+                    } else {
+                        next({
+                            path: '/welcome',
+                            replace: true
+                        })
+                    }
+                    break;
+                case '/gdpr':
+                    if(store.getters.setup_status) {
+                        next()
+                    } else {
+                        next({
+                            path: '/welcome',
+                            replace: true
+                        })
+                    }
+                    break;
+                default: {
+                    if(store.getters.setup_status) {
+                        next({
+                            path: '/gdpr',
+                            replace: true
+                        })
+                    } else {
+                        next({
+                            path: '/welcome',
+                            replace: true
+                        })
+                    }
+                    break
+                }
+            }
+        });
+
+        var local = {{ local|json_encode }}
+            app = new Vue({
+                store,
+                router,
+                i18n: new VueI18n({
+                    locale: '{{ language_id }}',
+                    messages: local
+                }),
+                methods: {
+                    o: function (value) {
+                        return value
+                    }
+                }
+            }).$mount('#gdpr-module');
+
+        store.dispatch('LOAD_CONTENT');
+    });
+
+    </script>
+{{ footer }}

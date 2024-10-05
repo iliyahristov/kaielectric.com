@@ -1,0 +1,1064 @@
+{{ header }}{{ column_left }}
+{% set weight_value_row = 0 %}
+{% set percent_value_row = 0 %}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				
+				<button type="submit" form="form-econt" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+			
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+ 
+		{% if error_warning %}
+		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+ 
+		{% if success %}
+		<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+ 
+		<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-econt" class="form-horizontal">
+			
+			{% if module_tk_checkout_token %} 
+
+			{% if shipping_tk_econt_logged %}
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">{{ text_get_data_info }}</label>
+						<div class="col-sm-9">
+							<a id="get_data" onclick="if (!$(this).attr('disabled')) { refreshData(); } " class="btn btn-primary"><span id="get_data_text">{{ button_get_data }}</span></a>
+							<span id="data_error">{% if error_get_data %}{{ error_get_data }} {% endif %}</span>
+							
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="shipping_tk_econt_username">{{ entry_username }}</label>
+						<div class="col-sm-9">
+							<input type="text" id="shipping_tk_econt_username" value="{{ shipping_tk_econt_username }}" readonly class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label"></label>
+						<div class="col-sm-9">
+							<a onclick="econtButtonLogout();" class="btn btn-primary"><span>{{ entry_button_logout }}</span></a>
+						</div>
+					</div>
+					
+					<hr>
+
+					<div class="form-group">
+						<div class="col-sm-3 text-right"><p><b>Крон за ъпдейт на офиси:</b></p></div>
+						<div class="col-sm-9">
+							<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}catalog/controller/tk_checkout/cron_econt.php {{ web_url }} > /dev/null 2>&1</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-3 text-right"><p><b>Крон за ъпдейт на пратки:</b></p></div>
+						<div class="col-sm-9">
+							<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}catalog/controller/tk_checkout/cron_econt_shipping.php {{ web_url }} > /dev/null 2>&1</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+					
+			{% if not shipping_tk_econt_logged  %}
+			<div class="panel panel-default">
+				<div class="panel-body">
+ 
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="shipping_tk_econt_test"><span data-toggle="tooltip" title="{{ text_environment_info }}">{{ entry_test }}</span></label>
+						<div class="col-sm-9">
+							<select class="form-control" id="shipping_tk_econt_test" name="shipping_tk_econt_test">
+								{% if shipping_tk_econt_test %}
+								<option value="0">{{ text_real_environment }}</option>
+								<option value="1" selected="selected">{{ text_demo_environment }}</option>
+								{% else %}
+								<option value="0" selected="selected">{{ text_real_environment }}</option>
+								<option value="1">{{ text_demo_environment }}</option>
+								{% endif %}
+							</select>
+						</div>
+					</div>
+ 
+					<div class="form-group required">
+						<label class="col-sm-3 control-label" for="shipping_tk_econt_username">{{ entry_username }}</label>
+						<div class="col-sm-9">
+							<input type="text" id="shipping_tk_econt_username" name="shipping_tk_econt_username" value="{{ shipping_tk_econt_username }}" placeholder="{{ shipping_tk_econtusername }}" class="form-control" />
+							{% if error_username %}
+							<span class="text-danger">{{ error_username }}</span>
+							{% endif %}
+						</div>
+					</div>
+ 
+					<div class="form-group required">
+						<label class="col-sm-3 control-label" for="shipping_tk_econt_password">{{ entry_password }}</label>
+						<div class="col-sm-9">
+							<input type="password" id="shipping_tk_econt_password" name="shipping_tk_econt_password" value="{{ shipping_tk_econt_password }}" placeholder="{{ shipping_tk_econt_password }}" class="form-control" />
+							{% if error_password %}
+							<span class="text-danger">{{ error_password }}</span>
+							{% endif %}
+						</div>
+					</div>
+ 
+					<div class="form-group">
+						<label class="col-sm-3 control-label"></label>
+						<div class="col-sm-9">
+							<a id="login_button" onclick="econtButtonLogin();" class="btn btn-primary"><span id="login_text">{{ button_login }}</span></a>
+							<span id="login_error"></span>
+						</div>
+					</div>
+ 
+				</div>
+			</div>
+			{% else %}
+			
+			<div class="panel panel-default">
+				<div class="panel-body" id="additional_table">
+	
+					{% if cities %}
+					
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab-general" data-toggle="tab">{{ entry_general_settings }}</a></li>
+						<li><a href="#tab-delivery" data-toggle="tab">{{ text_delivery_settings }}</a></li>
+						<li><a href="#tab-price" data-toggle="tab">{{ text_tab_price }}</a></li>
+						<li><a href="#tab-price_weight" data-toggle="tab">Ценообрзвуане спрямо килограми</a></li>
+						<li><a href="#tab-price_percent" data-toggle="tab">Ценообрзвуане в %</a></li>
+						<li><a href="#tab-status" data-toggle="tab">{{ text_tab_status }}</a></li>
+						<li><a href="#tab-lang" data-toggle="tab">Текстове</a></li>
+					</ul>
+			          
+					<div class="tab-content">
+			          
+						<div class="tab-pane active" id="tab-general">
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_status">{{ entry_status }}</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_econt_status" id="input-shipping_tk_econt_status" class="form-control">
+										{% if shipping_tk_econt_status %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_geo_zone_id">{{ entry_geo_zone }}</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_geo_zone_id" name="shipping_tk_econt_geo_zone_id">
+										<option value="0">{{ text_all_zones }}</option>
+										{% for geo_zone in geo_zones %}
+										{% if geo_zone.geo_zone_id == shipping_tk_econt_geo_zone_id %}
+										<option value="{{ geo_zone.geo_zone_id }}" selected="selected">{{ geo_zone.name }}</option>
+										{% else %}
+										<option value="{{ geo_zone.geo_zone_id }}">{{ geo_zone.name }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-tax-class">Данъчен клас</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_econt_tax_class_id" id="input-tax-class" class="form-control">
+										<option value="0">{{ text_none }}</option>
+										{% for tax_class in tax_classes %}
+											{% if tax_class.tax_class_id == shipping_tk_econt_tax_class_id %}
+												<option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+											{% else %}
+												<option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_sort_order">{{ entry_sort_order }}</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" id="shipping_tk_econt_sort_order" name="shipping_tk_econt_sort_order" value="{{ shipping_tk_econt_sort_order }}" size="1" />
+								</div>
+							</div>
+						</div>
+							
+						<div class="tab-pane" id="tab-delivery">
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="econt_client_id">Избери клиенстки профил</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_profile_id" name="shipping_tk_econt_profile_id">
+										{% for client in clients %}
+										<option value="{{ client.id }}"{% if client.id == shipping_tk_econt_profile_id %} selected="selected"{% endif %}>{{ client.name }}</option>
+										{% endfor %}
+									</select>
+					              
+									<input type="hidden" id="shipping_tk_econt_company_name" name="shipping_tk_econt_company_name" value="{{ shipping_tk_econt_company_name }}" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_cd_agreement">Избери номер на споразумение</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_cd_agreement" name="shipping_tk_econt_cd_agreement">
+										<option value="0">без споразумение</option>
+										{% for agreement in cd_agreement %}
+											<option value="{{ agreement }}"{% if agreement == shipping_tk_econt_cd_agreement %} selected="selected"{% endif %}>{{ agreement }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+          					
+          					{% for store in stores %}
+          					<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_store_kay_{{ store.store_id }}">{{ text_delivery_code }}<br> <strong>Мултистор - {{ store.name }}</strong></label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" id="shipping_tk_econt_store_kay_{{ store.store_id }}" name="shipping_tk_econt_store_kay[{{ store.store_id }}]" value="{{ shipping_tk_econt_store_kay[store.store_id] }}" size="1" />
+								</div>
+							</div>
+							{% endfor %}
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_auto_label">{{ entry_auto_label }}</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_auto_label" name="shipping_tk_econt_auto_label">
+										{% if shipping_tk_econt_auto_label %}
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %}
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							
+							{% if custom_fields %}
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_company">Поле за име на фирма</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_econt_company" id="shipping_tk_econt_company" class="form-control">
+											<option value="9999">{{ text_no_company}}</option>
+											{% for custom_field in custom_fields %}
+												{% if custom_field.custom_field_id == shipping_tk_econt_company %}
+													<option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+												{% else %}
+													<option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+												{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+							{% endif %}
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_shipment_product_name">Името на продукта в описанието на пратката</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_shipment_product_name" name="shipping_tk_econt_shipment_product_name">
+										{% if shipping_tk_econt_shipment_product_name %}
+											<option value="0">{{ text_no }}</option>
+											<option value="1" {% if shipping_tk_econt_shipment_product_name == 1 %}selected="selected"{% endif %}>Продукт</option>
+											<option value="2" {% if shipping_tk_econt_shipment_product_name == 2 %}selected="selected"{% endif %}>Продукт и модел номер</option>
+											<option value="3" {% if shipping_tk_econt_shipment_product_name == 3 %}selected="selected"{% endif %}>Само модел номер</option>
+										{% else %}
+											<option value="0" selected="selected">{{ text_no }}</option>
+											<option value="1" >{{ text_yes }}</option>
+											<option value="2" >Продукт и модел номер</option>
+											<option value="3" >Само модел номер</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-tk_econt_shipment_description">{{ text_shipment_description }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_shipment_description" value="{{ shipping_tk_econt_shipment_description }}" placeholder="{{ text_shipment_description }}" id="input-tk_econt_shipment_description" class="form-control" />
+								</div>
+							</div>
+					
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-tk_econt_shipment_opis">Текст заменящ името на продукта в описа</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_shipment_opis" value="{{ shipping_tk_econt_shipment_opis }}" placeholder="Остави празно за да не се замени името" id="input-tk_econt_shipment_opis" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_weight_type">Мерна единица</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_weight_type" name="shipping_tk_econt_weight_type">
+										<option value="kilogram" {% if shipping_tk_econt_weight_type == 'kilogram' %}selected="selected"{% endif %}>Килограм</option>
+										<option value="gram" {% if shipping_tk_econt_weight_type == 'gram' %}selected="selected"{% endif %}>Грам</option>
+									</select>
+								</div>
+							</div>
+					
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-weight-total">{{ entry_weight_total }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_weight_total" value="{{ shipping_tk_econt_weight_total }}" placeholder="{{ entry_weight_total }}" id="input-weight-total" class="form-control" />
+									<i>В кг.</i>
+								</div>
+							</div>
+							
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_machine_enabled">{{ entry_machine_enabled }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-2">
+											<select class="form-control" id="shipping_tk_econt_machine_enabled" name="shipping_tk_econt_machine_enabled">
+												{% if shipping_tk_econt_machine_enabled %}
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %}
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %}
+											</select>
+										</div>
+									
+										<label class="col-sm-2 control-label" for="shipping_tk_econt_machine_sort">Подредба</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_econt_machine_sort" value="{{ shipping_tk_econt_machine_sort }}" placeholder="Подредба" id="shipping_tk_econt_machine_sort" class="form-control" />
+										</div>
+										
+										<label class="col-sm-2 control-label" for="shipping_tk_econt_machine_weight">До кг.</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_econt_machine_weight" value="{{ shipping_tk_econt_machine_weight }}" placeholder="До кг." id="shipping_tk_econt_machine_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_office_enabled">{{ entry_office_enabled }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-2">
+											<select class="form-control" id="shipping_tk_econt_office_enabled" name="shipping_tk_econt_office_enabled">
+												{% if shipping_tk_econt_office_enabled %}
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %}
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %}
+											</select>
+										</div>
+									
+										<label class="col-sm-2 control-label" for="shipping_tk_econt_office_sort">Подредба</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_econt_office_sort" value="{{ shipping_tk_econt_office_sort }}" placeholder="Подредба" id="shipping_tk_econt_office_sort" class="form-control" />
+										</div>
+										<label class="col-sm-2 control-label" for="shipping_tk_econt_office_weight">До кг.</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_econt_office_weight" value="{{ shipping_tk_econt_office_weight }}" placeholder="До кг." id="shipping_tk_econt_office_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_address_enabled">{{ entry_address_enabled }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-2">
+											<select class="form-control" id="shipping_tk_econt_address_enabled" name="shipping_tk_econt_address_enabled">
+												{% if shipping_tk_econt_address_enabled %}
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %}
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %}
+											</select>
+										</div>
+									
+										<label class="col-sm-2 control-label" for="shipping_tk_econt_address_sort">Подредба</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_econt_address_sort" value="{{ shipping_tk_econt_address_sort }}" placeholder="Подредба" id="shipping_tk_econt_address_sort" class="form-control" />
+										</div>
+										<label class="col-sm-2 control-label" for="shipping_tk_econt_address_weight">До кг.</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_econt_address_weight" value="{{ shipping_tk_econt_address_weight }}" placeholder="До кг." id="shipping_tk_econt_address_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+							
+						<div class="tab-pane" id="tab-price">
+							
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_shipping_in">Добави сумата на транспорта като продукт в описа:</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_shipping_in" name="shipping_tk_econt_shipping_in">
+										{% if shipping_tk_econt_shipping_in %}
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %}
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							
+							<input type="hidden" name="shipping_tk_econt_payment_receiver_method" value="1"  />
+						
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_econt_bank_fee">Отстъпка при плащане по банка:</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_bank_fee" value="{{ shipping_tk_econt_bank_fee }}" placeholder="Отстъпка при плащане по банка" id="input-shipping_tk_econt_bank_fee" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_cod_sum">Какво включва сумата за дсотавка:</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_econt_cod_sum" name="shipping_tk_econt_cod_sum">
+											<option value="1" {% if shipping_tk_econt_cod_sum == 1 %}selected="selected"{% endif %}>Всичко</option>
+											<option value="2" {% if shipping_tk_econt_cod_sum == 2 %}selected="selected"{% endif %}>Само доставка без такси</option>
+											<option value="3" {% if shipping_tk_econt_cod_sum == 3 %}selected="selected"{% endif %}>Само доставка без такси и то само за безплатна доставка</option>
+									</select>
+								</div>
+							</div>
+ 					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-machine_cost">{{ entry_machine_cost }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_econt_machine_free" value="{{ shipping_tk_econt_machine_free }}" placeholder="{{ entry_machine_cost }}" id="input-office_cost" class="form-control" />
+										</div>
+									
+										<label class="col-sm-4 control-label" for="input-machine_cost">Тегло за безплатна доставка до Еконтомат</label>
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_econt_machine_free_weight" value="{{ shipping_tk_econt_machine_free_weight }}" placeholder="Тегло" id="input-office_cost" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-office_cost">{{ entry_office_cost }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_econt_office_free" value="{{ shipping_tk_econt_office_free }}" placeholder="{{ entry_office_cost }}" id="input-office_cost" class="form-control" />
+										</div>
+										<label class="col-sm-4 control-label" for="input-office_cost">Тегло за безплатна доставка до офис</label>
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_econt_office_free_weight" value="{{ shipping_tk_econt_office_free_weight }}" placeholder="Тегло" id="input-office_cost" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+					
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-address_cost">{{ entry_door_cost }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_econt_door_free" value="{{ shipping_tk_econt_door_free }}" placeholder="{{ entry_door_cost }}" id="input-address_cost" class="form-control" />
+										</div>
+										<label class="col-sm-4 control-label" for="input-office_cost">Тегло за безплатна доставка до адрес</label>
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_econt_door_free_weight" value="{{ shipping_tk_econt_door_free_weight }}" placeholder="Тегло" id="input-office_cost" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><span data-toggle="tooltip" title="Избери списък със суми които да се пресмятат за сума която трябва да се достигне преди да се активира отстъпката.">Избери суми</span></label>
+								<div class="col-sm-9">
+									<div class="well well-sm" style="height: 180px; overflow: auto;" id="totals">
+										{% for total in oc_totals %}
+										<div class="checkbox col-sm-4"><label><input type="checkbox" name="shipping_tk_econt_totals[]" value="{{ total.code }}" {% if total.code in shipping_tk_econt_totals %}checked="checked"{% endif %} />{{ total.name }}</label></div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">{{ entry_machine_fixed_cost }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_machine_fixed_cost" value="{{ shipping_tk_econt_machine_fixed_cost }}" placeholder="{{ entry_machine_fixed_cost }}" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">{{ entry_office_fixed_cost }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_office_fixed_cost" value="{{ shipping_tk_econt_office_fixed_cost }}" placeholder="{{ entry_office_fixed_cost }}" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">{{ entry_door_fixed_cost }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_econt_door_fixed_cost" value="{{ shipping_tk_econt_door_fixed_cost }}" placeholder="{{ entry_door_fixed_cost }}" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+							
+							
+							<div id="calculate_settings">
+
+								<div class="form-group">
+									<div class="col-sm-3 text-right"></div>
+									<div class="col-sm-9">
+										<br><br><h4><b>{{ entry_auto_price_settings }}</b></h4>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_calculate_enabled">{{ entry_calculate_enabled }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_calculate_enabled" name="shipping_tk_econt_calculate_enabled">
+											{% if shipping_tk_econt_calculate_enabled %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+
+ 				
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_discount">{{ entry_discount }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_discount" name="shipping_tk_econt_discount">
+											{% if shipping_tk_econt_discount %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_np_enabled">{{ entry_np }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_np_enabled" name="shipping_tk_econt_np_enabled">
+											{% if shipping_tk_econt_np_enabled %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+						
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_os_enabled">{{ entry_os }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_os_enabled" name="shipping_tk_econt_os_enabled">
+											{% if shipping_tk_econt_os_enabled %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="input-shipping_tk_econt_os_price">Над каква сума да се прилага услугата обявена стойност</label>
+									<div class="col-sm-9">
+										<input type="text" name="shipping_tk_econt_os_price" value="{{ shipping_tk_econt_os_price }}" placeholder="Сума за обавена стойност" id="input-shipping_tk_econt_os_price" class="form-control" />
+									</div>
+								</div>
+ 
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_sms_enabled">{{ entry_sms }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_sms_enabled" name="shipping_tk_econt_sms_enabled">
+											{% if shipping_tk_econt_sms_enabled and shipping_tk_econt_sms_enabled == 1 %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="2">Клиента да избере сам</option>
+											<option value="0">{{ text_no }}</option>
+											{% elseif shipping_tk_econt_sms_enabled and shipping_tk_econt_sms_enabled == 2 %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="2" selected="selected">Клиента да избере сам</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="2">Клиента да избере сам</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+ 
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_dc_enabled">{{ entry_dc }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_dc_enabled" name="shipping_tk_econt_dc_enabled">
+											{% if shipping_tk_econt_dc_enabled %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_econt_get_door_enabled">{{ entry_get_address }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_econt_get_door_enabled" name="shipping_tk_econt_get_door_enabled">
+											{% if shipping_tk_econt_get_door_enabled %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %}
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+ 
+ 	
+							</div>
+ 
+						</div>
+ 
+						<div class="tab-pane" id="tab-status">
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_econt_order_status_id">Статус на поръчката след генериране на товарителница:</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_econt_order_status_id" id="shipping_tk_econt_order_status_id" class="form-control">
+										<option value="0">Без смяна на статуса</option>
+										{% for order_status in order_statuses %} 
+								
+										{% if (order_status['order_status_id'] == shipping_tk_econt_order_status_id) %} 
+										<option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+										{% else %} 
+										<option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+										{% endif %} 
+										{% endfor %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_econt_order_status_id_mail">Да се пратили и-меил след генериране на товарителница:</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_econt_order_status_id_mail" id="input-shipping_tk_econt_order_status_id_mail" class="form-control">
+										{% if  shipping_tk_econt_order_status_id_mail %} 
+										<option value="0">{{ entry_no }}</option>
+										<option value="1" selected="selected">{{ entry_yes }}</option>
+										{% else %} 
+										<option value="0" selected="selected">{{ entry_no }}</option>
+										<option value="1">{{ entry_yes }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_econt_order_status_id_mail_text">Текст към и-меила след генериране на товарителница<br> ({shipment_number} - заменя номера на товарителница в текста):</label>
+								<div class="col-sm-9">
+									<textarea name="shipping_tk_econt_order_status_id_mail_text" rows="3" placeholder="Въведи текст" id="input-shipping_tk_econt_order_status_id_mail_text" class="form-control">{{ shipping_tk_econt_order_status_id_mail_text }}</textarea>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-3 text-right"></div>
+								<div class="col-sm-9">
+									<br><br><h4><b>Синхронизиране на статуси между Еконт и Opencart и изпращане на и-мейл до клиента</b></h4>
+								</div>
+							</div>
+
+							{% for key,text_status in text_statuses %}
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ text_status }}</label>
+							
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-3">Избери статус за синхронизиране</div>
+										<div class="col-sm-3">
+											<select name="shipping_tk_econt_order_status[{{ key }}]" id="input-shipping_tk_econt_order_status" class="form-control">
+												<option value="">Без смяна на статуса</option>
+												{% for order_status in order_statuses %}
+												{% if  shipping_tk_econt_order_status[key] == order_status.order_status_id %} 
+												<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+												{% else %} 
+												<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+												{% endif %} 
+												{% endfor %} 
+											</select>
+										</div>
+										<div class="col-sm-3">Да се изпратили и-мейл до клиента</div>
+										<div class="col-sm-3">
+											<select name="shipping_tk_econt_order_status_mail[{{ key }}]" id="input-shipping_tk_econt_order_status_mail" class="form-control">
+												{% if  shipping_tk_econt_order_status_mail[key] %} 
+												<option value="0">{{ entry_no }}</option>
+												<option value="1" selected="selected">{{ entry_yes }}</option>
+												{% else %} 
+												<option value="0" selected="selected">{{ entry_no }}</option>
+												<option value="1">{{ entry_yes }}</option>
+												{% endif %} 
+											</select>
+										</div>
+										<div class="clearfix"></div>
+										<br>
+									
+										<div class="col-sm-3">Допълнителен текст към и-меила</div>
+										<div class="col-sm-9">
+											<textarea name="shipping_tk_econt_order_status_mail_text[{{ key }}]" rows="3" placeholder="Въведи текст" id="input-shipping_tk_econt_order_status_mail_text" class="form-control">{{ shipping_tk_econt_order_status_mail_text[key] }}</textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %} 
+					
+						</div>
+						
+						<div class="tab-pane" id="tab-price_weight">
+						
+							<table id="weight-value" class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										<td class="text-left required">Килограми - От</td>
+										<td class="text-left required">Килограми - До (включително)</td>
+										<td class="text-left required">Твърда цена</td>
+										<td class="text-left required">Вид доставка</td>
+										<td></td>
+									</tr>
+								</thead>
+								<tbody>
+              
+									
+									{% for weight_value in shipping_tk_econt_weight_value %}
+									<tr id="weight-value-row{{ weight_value_row }}">
+										<td class="text-right"><input type="text" name="shipping_tk_econt_weight_value[{{ weight_value_row }}][from]" value="{{ weight_value.from }}" class="form-control" /></td>
+										<td class="text-right"><input type="text" name="shipping_tk_econt_weight_value[{{ weight_value_row }}][to]" value="{{ weight_value.to }}" class="form-control" /></td>
+										<td class="text-right"><input type="text" name="shipping_tk_econt_weight_value[{{ weight_value_row }}][price]" value="{{ weight_value.price }}" class="form-control" /></td>
+										<td class="text-right">
+											<select class="form-control" name="shipping_tk_econt_weight_value[{{ weight_value_row }}][type]">
+												<option value="machine" {% if  weight_value.type == 'machine' %}selected="selected"{% endif %}>До автомат</option>
+												<option value="office" {% if  weight_value.type == 'office' %}selected="selected"{% endif %}>До офис</option>
+												<option value="door" {% if  weight_value.type == 'door' %}selected="selected"{% endif %}>До адрес</option>
+											</select>
+										</td>
+										<td class="text-right"><button type="button" onclick="$('#weight-value-row{{ weight_value_row }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+									</tr>
+									{% set weight_value_row = weight_value_row + 1 %}
+									{% endfor %}
+								</tbody>
+              
+								<tfoot>
+									<tr>
+										<td colspan="4"></td>
+										<td class="text-right"><button type="button" onclick="addWeightValue();" data-toggle="tooltip" title="{{ button_weight_value_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+									</tr>
+								</tfoot>
+							</table>
+						
+						</div>
+ 						
+						<div class="tab-pane" id="tab-price_percent">
+						
+							<table id="percent-value" class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										<td class="text-left required">Сума - От</td>
+										<td class="text-left required">Сума - До (включително)</td>
+										<td class="text-left required">Процент който ще плати клиента</td>
+										<td class="text-left required">Вид доставка</td>
+										<td></td>
+									</tr>
+								</thead>
+								<tbody>
+              
+									
+									{% for percent_value in shipping_tk_econt_percent_value %}
+									<tr id="percent-value-row{{ percent_value_row }}">
+										<td class="text-right"><input type="text" name="shipping_tk_econt_percent_value[{{ percent_value_row }}][from]" value="{{ percent_value.from }}" class="form-control" /></td>
+										<td class="text-right"><input type="text" name="shipping_tk_econt_percent_value[{{ percent_value_row }}][to]" value="{{ percent_value.to }}" class="form-control" /></td>
+										<td class="text-right"><input type="text" name="shipping_tk_econt_percent_value[{{ percent_value_row }}][percent]" value="{{ percent_value.percent }}" class="form-control" /></td>
+										<td class="text-right">
+											<select class="form-control" name="shipping_tk_econt_percent_value[{{ percent_value_row }}][type]">
+												<option value="machine" {% if  percent_value.type == 'machine' %}selected="selected"{% endif %}>До автомат</option>
+												<option value="office" {% if  percent_value.type == 'office' %}selected="selected"{% endif %}>До офис</option>
+												<option value="door" {% if  percent_value.type == 'door' %}selected="selected"{% endif %}>До адрес</option>
+											</select>
+										</td>
+										<td class="text-right"><button type="button" onclick="$('#percent-value-row{{ percent_value_row }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+									</tr>
+									{% set percent_value_row = percent_value_row + 1 %}
+									{% endfor %}
+								</tbody>
+              
+								<tfoot>
+									<tr>
+										<td colspan="4"></td>
+										<td class="text-right"><button type="button" onclick="addPercentValue();" data-toggle="tooltip" title="{{ button_percent_value_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+									</tr>
+								</tfoot>
+							</table>
+						
+						</div>
+						
+						<div class="tab-pane" id="tab-lang">
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Автомат - заглавие</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_econt_text[{{ language.language_id }}][machine_title]" value="{{ shipping_tk_econt_text[language.language_id].machine_title ? shipping_tk_econt_text[language.language_id].machine_title : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Автомат - текст </label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_econt_text[{{ language.language_id }}][machine_text]" value="{{ shipping_tk_econt_text[language.language_id]['machine_text'] ? shipping_tk_econt_text[language.language_id]['machine_text'] : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Офис - заглавие</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_econt_text[{{ language.language_id }}][office_title]" value="{{ shipping_tk_econt_text[language.language_id].office_title ? shipping_tk_econt_text[language.language_id].office_title : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Офис - текст</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_econt_text[{{ language.language_id }}][office_text]" value="{{ shipping_tk_econt_text[language.language_id].office_text ? shipping_tk_econt_text[language.language_id].office_text : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Адрес - заглавие</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_econt_text[{{ language.language_id }}][address_title]" value="{{ shipping_tk_econt_text[language.language_id].address_title ? shipping_tk_econt_text[language.language_id].address_title : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Адрес - текст</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_econt_text[{{ language.language_id }}][address_text]" value="{{ shipping_tk_econt_text[language.language_id].address_text ? shipping_tk_econt_text[language.language_id].address_text : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+						
+						</div>
+						
+					</div>
+					{% else %}
+					<div class="form-group">
+						<div class="col-sm-3"></div>
+						<div class="col-sm-9">
+							<b>{{ text_sync_info_warning }}</b>
+						</div>
+					</div>
+					{% endif %}
+					
+				</div>
+			</div>
+			{% endif %}
+			
+			{% else %}
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<h3>Трябва да активирате модула TK Checkout за да позлвате Доставка с Еконт</h3>
+				</div>
+			</div>					
+			
+			{% endif %}
+			
+
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript"><!--
+	
+	$('select[name=shipping_tk_econt_profile_id]').change(function(){
+			var name = $('select[name=shipping_tk_econt_profile_id] option:selected').text();
+			$('input[name=shipping_tk_econt_company_name]').val(name);
+		});
+
+
+	var weight_value_row = {{ weight_value_row}};
+
+	function addWeightValue() {
+		html  = '<tr id="weight-value-row' + weight_value_row + '">';
+		html += '  <td class="text-right"><input type="text" name="shipping_tk_econt_weight_value[' + weight_value_row + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+		html += '  <td class="text-right"><input type="text" name="shipping_tk_econt_weight_value[' + weight_value_row + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+		html += '  <td class="text-right"><input type="text" name="shipping_tk_econt_weight_value[' + weight_value_row + '][price]" value="" placeholder="0.00" class="form-control" /></td>';
+		html += '  <td class="text-right"><select class="form-control" name="shipping_tk_econt_weight_value[' + weight_value_row + '][type]"><option value="machine">До автомат</option><option value="office">До офис</option><option value="door">До адрес</option></select></td>';
+		html += '  <td class="text-right"><button type="button" onclick="$(\'#weight-value-row' + weight_value_row + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+		html += '</tr>';
+
+		$('#weight-value tbody').append(html);
+
+		weight_value_row++;
+	}
+	
+	var percent_value_row = {{ percent_value_row}};
+
+	function addPercentValue() {
+		html  = '<tr id="percent-value-row' + percent_value_row + '">';
+		html += '  <td class="text-right"><input type="text" name="shipping_tk_econt_percent_value[' + percent_value_row + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+		html += '  <td class="text-right"><input type="text" name="shipping_tk_econt_percent_value[' + percent_value_row + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+		html += '  <td class="text-right"><input type="text" name="shipping_tk_econt_percent_value[' + percent_value_row + '][percent]" value="" placeholder="0" class="form-control" /></td>';
+		html += '  <td class="text-right"><select class="form-control" name="shipping_tk_econt_percent_value[' + percent_value_row + '][type]"><option value="machine">До автомат</option><option value="office">До офис</option><option value="door">До адрес</option></select></td>';
+		html += '  <td class="text-right"><button type="button" onclick="$(\'#percent-value-row' + percent_value_row + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+		html += '</tr>';
+
+		$('#percent-value tbody').append(html);
+
+		percent_value_row++;
+	}
+	//--></script>
+
+	<script type="text/javascript">
+
+	function econtButtonLogin() {
+		$('#loading').remove();
+		$('#login_error').html('').removeClass("text-danger");
+		$('#login_button').after('<span id="loading" class="attention" style="padding: 5px;">Моля, изчакайте.</span>');
+
+		$.ajax({
+				url: 'index.php?route=extension/shipping/tk_econt/login&user_token={{ user_token }}',
+				type: 'POST',
+				data: 'username=' + encodeURIComponent($('#shipping_tk_econt_username').val()) + '&password=' + encodeURIComponent($('#shipping_tk_econt_password').val()) + '&test=' + encodeURIComponent($('#shipping_tk_econt_test').val()),
+				dataType: 'json',
+				success: function(data) {
+					if (data) {
+						$('#loading').remove();
+
+						if (data.success) {
+							window.location = window.location;
+						} else {
+							$('#login_error').html(data.message).addClass('text-danger');
+						} 
+					} 
+				} ,
+				error: function(request) {
+					$('#loading').remove();
+
+					$('#login_error').html('{{ error_general }}').addClass("text-danger");
+				} 
+			});
+	} 
+
+
+	function refreshData() {
+		$('#data_error').html('').removeClass("text-danger");
+		$('#get_data').attr('disabled', true);
+		$('#get_data').after('<span id="loading" class="attention" style="padding: 5px;">{{ text_get_data }}</span>');
+
+
+		$.ajax({
+				url: 'index.php?route=extension/shipping/tk_econt/update&user_token={{ user_token }}',
+				type: 'POST',
+				data: '',
+				dataType: 'json',
+				success: function(data) {
+					if (data) {
+						if (data.success) {
+							window.location = window.location;
+						} else if (data.error) {
+							$('#data_error').html(data.message).addClass('text-danger');
+						} 
+					} 
+				} ,
+				error: function(request) {
+					$('#data_error').html('{{ error_general }}').addClass("text-danger");
+				} ,
+				complete: function() {
+					$('#loading').remove();
+				} 
+			});
+	}
+
+	function econtButtonLogout() {
+		if (confirm('{{ text_warning_logout }}')) {
+			$.get('index.php?route=extension/shipping/tk_econt/logout&user_token={{ user_token }}').done(function() {
+					window.location = window.location;
+				});
+		} 
+	} 
+
+</script>
+
+{{ footer}}

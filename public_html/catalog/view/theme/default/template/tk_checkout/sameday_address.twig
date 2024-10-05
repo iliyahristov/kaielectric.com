@@ -1,0 +1,324 @@
+<div id="tk_sameday_address">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span>
+			<span class="tk_panel_text"> {{ text_address }}</span>
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>
+		
+		<div class="tk_panel_body">
+			<div id="tk_sameday_addresses">
+				
+				<input type="hidden" id="shipping_to" name="shipping_to" value="address"/>
+				<input type="hidden" id="shipping_type" name="shipping_type" value="sameday"/>
+				<input type="hidden" id="service" name="service" value="{{ service }}"/>
+				<input type="hidden" id="country_iso" name="country_iso" value="{{ country_iso }}"/>
+				
+				<input type="hidden" id="sameday_postcode" name="postcode" value="{{ postcode }}"/>
+				
+				<input type="hidden" id="sameday_county_id" name="county_id" value="{{ county_id }}">
+				<input type="hidden" id="sameday_county" name="county" value="{{ county }}"/>
+				<input type="hidden" id="sameday_city_id" name="city_id" value="{{ city_id }}"/>
+				<input type="hidden" id="sameday_city" name="city" value="{{ city }}"/>
+				
+				{% if module_tk_checkout_zone is not defined or module_tk_checkout_zone == 0 %}
+					<input type="hidden" id="zone_id" name="zone_id" value="{{ zone_id }}"/>
+				{% endif %}
+				
+				{% if (customer_addresses) %}
+					<div class="tk_12_column tk_center_column">
+						<label>
+							<input type="radio" name="customer_type" value="existing" checked="checked" {% if (customer_type is defined and customer_type == 'existing') %}checked=""{% endif %} onclick="jQuery('#address_new').hide();jQuery('#address_existing').show();"/>
+							{{ text_address_existing }}
+						</label>
+					</div>
+					
+					<div id="address_existing">
+						<div class="tk_12_column tk_center_column">
+							<select name="sameday_customer_id">
+								{% for address in customer_addresses %}
+									<option value="{{ address['sameday_customer_id'] }}" {% if (sameday_customer_id is defined and address['sameday_customer_id'] == sameday_customer_id) %}selected="selected"{% endif %}>{{ address['postcode'] }}
+										- {{ address['city'] }}, {{ address['address'] }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<div class="tk_12_column tk_center_column">
+						<label>
+							<input type="radio" name="customer_type" value="new" {% if (customer_type is defined and customer_type == 'new') %}checked=""{% endif %} onclick="jQuery('#address_new').show();jQuery('#address_existing').hide();"/>
+							{{ text_address_new }}
+						</label>
+					</div>
+				
+				{% else %}
+					<input type="hidden" name="customer_type" value="new">
+				{% endif %}
+				
+				<div id="address_new" {% if (customer_addresses is not defined or (customer_type is defined and customer_type == 'new')) %} style="display:block" {% else %}style="display:none"{% endif %}>
+					
+					<div class="tk_6_column tk_center_column tk_required_box {% if (county) %} tk_redy_box{% endif %}" id="box_sameday_address_county_select">
+						<input type="text" id="sameday_address_county_select" readonly="true" name="sameday_address_county_select" value="{{ county }}" placeholder="{{ text_county }}"/>
+						<span class="tk_floating_label">{{ text_county }}</span>
+					</div>
+					
+					<div class="tk_6_column tk_center_column tk_required_box {% if (city) %} tk_redy_box{% endif %}" id="box_sameday_address_city_select">
+						<input type="text" id="sameday_address_city_select" readonly="true" name="sameday_address_city_select" value="{{ city }}" placeholder="{{ text_city }}" {% if (not county_id) %}disabled=""{% endif %}/>
+						<span class="tk_floating_label">{{ text_city }}</span>
+					</div>
+					
+					<div class="tk_clear"></div>
+					
+					<div class="tk_12_column tk_center_column " id="sameday_address_address_select">
+						<input type="text" id="sameday_address" name="address" value="{{ address }}" placeholder="{{ text_address }}"/>
+						<span class="tk_floating_label">{{ text_address }}</span>
+					</div>
+					<div class="tk_clear"></div>
+					
+				</div>
+				<div class="tk_clear"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="radio_container mfp-hide" id="sameday_address_county_locator">
+		<div class="radio_search">
+			<input id="sameday_address_county_search" name="sameday_address_county_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search" style="float: left;">
+			<span class="sameday_county_spin magnific_spin" style="float: left;"></span>
+			<div style="clear: both"></div>
+		</div>
+		<div class="radio_box">
+			{% for sameday_county in sameday_counties %}
+				<div class="radio_elements">
+					<label>
+						<input type="radio" name="sameday_address_locator_county_id" value="{{ sameday_county['county_id'] }}" {% if (county_id is defined and sameday_county['county_id'] == county_id) %}checked=""{% endif %} data-name="{{ sameday_county['county'] }}">{{ sameday_county['county'] }}
+					</label>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	
+	<div class="radio_container mfp-hide" id="sameday_address_city_locator">
+		<div class="radio_search">
+			<input id="sameday_address_city_search" name="sameday_address_city_search" type="text" placeholder="Търсене.." class="radio_box_search" style="float: left;">
+			<span class="sameday_city_spin magnific_spin" style="float: left;"></span>
+			<div style="clear: both"></div>
+		</div>
+		<div class="radio_box">
+			{% for sameday_city in sameday_cities %}
+				<div class="radio_elements">
+					<label>
+						<input type="radio" name="sameday_address_locator_city_id" value="{{ sameday_city['city_id'] }}" {% if (city_id is defined and sameday_city['city_id'] == city_id) %}checked=""{% endif %} data-name="{{ sameday_city['city'] }}" data-postcode="{{ sameday_city['postcode'] }}">{{ sameday_city['city'] }}
+					</label>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<script>
+
+      $(document).ready(function () {
+          getPaymentMethod();
+      });
+      
+      $('#sameday_address').change(function () {
+          saveData();
+      });
+
+      //попъп за области
+      $(document).on('click', '#box_sameday_address_county_select', function (e) {
+          e.stopImmediatePropagation();
+
+          $.magnificPopup.open({
+              type: 'inline',
+              items: {src: '#sameday_address_county_locator'}
+          });
+
+		  $('.sameday_county_spin').html(' <i class="tk_icon-spin rotating"></i>');
+
+          setTimeout(function () {
+              $('#sameday_address_county_search').focus();
+          }, 200);
+      });
+
+      //въвеждане на област ръчно
+      $('#sameday_address_county_search').on('input', function (e) {
+          e.stopImmediatePropagation();
+          
+          getAddressCounties();
+      });
+
+      //добавяне на селектирана област и извеждаме градове спрямо нея
+      $(document).delegate('#sameday_address_county_locator .radio_box input[type=\'radio\']', 'click', function (e) {
+          e.stopImmediatePropagation();
+
+          $('#sameday_county_id').val($(this).val());
+          $('#sameday_county').val($(this).data('name'));
+          $('#sameday_address_county_select').val($(this).data('name'));
+          $('#sameday_address_county_select').addClass('tk_redy_box');
+
+          $('#sameday_city_id').val('');
+          $('#sameday_city').val('');
+          $('#sameday_address_city_select').val('');
+          $('#sameday_address_city_locator .radio_box').html('');
+          $("#sameday_address_city_select").prop('disabled', false);
+
+          $('#box_sameday_address_city_select').removeClass('tk_redy_box');
+
+          $('#sameday_address').val('');
+
+		      $('#sameday_address_city_locator .radio_box').html('');
+		      
+          getAddressCities();
+
+          $.magnificPopup.close();
+      });
+
+      //попъп за градове
+      $(document).on('click', '#box_sameday_address_city_select', function (e) {
+          e.stopImmediatePropagation();
+
+          $.magnificPopup.open({
+              type: 'inline',
+              items: {src: '#sameday_address_city_locator'}
+          });
+
+		  $('.sameday_city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+
+          setTimeout(function () {
+              $('#sameday_address_city_search').focus();
+          }, 200);
+      });
+
+      //въвеждане на град ръчно
+      $('#sameday_address_city_search').on('input', function (e) {
+          e.stopImmediatePropagation();
+          
+          getAddressCities();
+      });
+
+      //добавяне на селектирания град
+      $(document).delegate('#sameday_address_city_locator .radio_box input[type=\'radio\']', 'click', function (e) {
+          e.stopImmediatePropagation();
+
+          $('#sameday_postcode').val($(this).data('postcode'));
+
+          $('#sameday_city_id').val($(this).val());
+          $('#sameday_city').val($(this).data('name'));
+          $('#sameday_address_city_select').val($(this).data('name'));
+          $("#sameday_address_city_select").prop('disabled', false);
+
+          $('#box_sameday_address_city_select').addClass('tk_redy_box');
+
+          $('#sameday_address').val('');
+
+          saveData();
+          getShippingMethodAddress();
+
+          $('#tk_button_confirm').button('reset');
+          $('.tk_all_spin').html('');
+          $('#tk_checkout').css('opacity', '1');
+          $('#tk_checkout').css('pointer-events', 'auto');
+          
+          $.magnificPopup.close()
+
+      });
+
+      //извежда списъка с градове в попъпа
+      function getAddressCounties() {
+          var url = 'index.php?route=extension/shipping/tk_sameday/getCounties';
+
+          var country_iso = $('#country_iso').val();
+          url += '&country_iso=' + encodeURIComponent(country_iso);
+
+          var name = $('input[name=\'sameday_address_county_search\']').val();
+          if (name) {
+              url += '&name=' + encodeURIComponent(name);
+          }
+
+          $.ajax({
+              url: url,
+              type: 'GET',
+              dataType: 'json',
+			  beforeSend: function () {
+				  $('.sameday_county_spin').html(' <i class="tk_icon-spin rotating"></i>');
+			  },
+			  success: function (data) {
+				  $('.sameday_county_spin').html('');
+
+                  $('#sameday_address_county_locator .radio_box').html('{{ text_no_counties }}');
+
+                  html = '';
+
+                  for (i = 0; i < data.counties.length; i++) {
+                      html += '<div class="radio_elements"><label><input type="radio" name="sameday_address_locator_county_id" value="' + data.counties[i]['county_id'] + '" ' + ' data-name="' + data.counties[i]['name'] + '">' + data.counties[i]['name'] + '</label></div>';
+                  }
+
+                  $('#sameday_address_county_locator .radio_box').html(html);
+                  
+                  saveData();
+              }
+          });
+
+          $('#tk_button_confirm').button('reset');
+          $('.tk_all_spin').html('');
+          $('#tk_checkout').css('opacity', '1');
+          $('#tk_checkout').css('pointer-events', 'auto');
+      }
+
+      //извежда кварталите и улиците спрямо избрания град
+      function getAddressCities() {
+          var url = 'index.php?route=extension/shipping/tk_sameday/getCities';
+
+          var country_iso = $('#country_iso').val();
+          url += '&country_iso=' + encodeURIComponent(country_iso);
+
+          var county_id = $('input[name=\'county_id\']').val();
+   
+          if (county_id) {
+              url += '&county_id=' + encodeURIComponent(county_id);
+            
+	          var name = $('input[name=\'sameday_address_city_search\']').val();
+	          if (name) {
+	              url += '&name=' + encodeURIComponent(name);
+	          }
+
+	          $.ajax({
+	              url: url,
+	              type: 'GET',
+	              dataType: 'json',
+				  beforeSend: function () {
+					  $('.sameday_city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+				  },
+				  success: function (data) {
+					  $('.sameday_city_spin').html('');
+	
+	                  $('#sameday_address_city_locator .radio_box').html('{{ text_no_cities }}');
+	
+	                  html = '';
+	
+	                  for (i = 0; i < data.cities.length; i++) {
+	                      if ({{ city_id }} == data.cities[i]['city_id']){
+	                          var city_checked = 'checked=""';
+	                      } else {
+	                          var city_checked = '';
+	                      }
+	
+	                      html += '<div class="radio_elements"><label><input type="radio" name="sameday_address_locator_city_id" value="' + data.cities[i]['city_id'] + '" ' + city_checked + ' data-name="' + data.cities[i]['name'] + '" data-postcode="' + data.cities[i]['postcode'] + '" >' + data.cities[i]['postcode'] + ' - ' + data.cities[i]['name'] + '</label></div>';
+	                  }
+	
+	                  $('#sameday_address_city_locator .radio_box').html(html);
+                    
+                    saveData();
+	              }
+	          });
+          } else {
+              $('#sameday_address_city_locator .radio_box').html('{{ text_no_cities }}');
+          }
+
+          $('#tk_button_confirm').button('reset');
+          $('.tk_all_spin').html('');
+          $('#tk_checkout').css('opacity', '1');
+          $('#tk_checkout').css('pointer-events', 'auto');
+      }
+	
+	</script>

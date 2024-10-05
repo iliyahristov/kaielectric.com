@@ -1,0 +1,1063 @@
+{{ header }}{{ column_left }} 
+{% set weight_value_row = 0 %}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				{% if (shipping_tk_sameday_logged) %}
+					<button type="submit" form="form-sameday" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+						<i class="fa fa-save"></i></button>
+				{% endif %}
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		
+		{% if (error_warning) %}
+			<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		
+		{% if (success) %}
+			<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		
+		<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-sameday" class="form-horizontal">
+			
+			{% if module_tk_checkout_token %}
+				
+				{% if shipping_tk_sameday_logged %}
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">Token | expire</label>
+								<div class="col-sm-9">
+									{{ tk_sameday_token }} | {{ tk_sameday_expire }}
+								</div>
+							</div>
+							
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">USERNAME</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_sameday_username" value="{{ shipping_tk_sameday_username }}" placeholder="USERNAME" class="form-control" disabled/>
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">PASSWORD</label>
+								<div class="col-sm-9">
+									<input type="password" name="shipping_tk_sameday_password" value="{{ shipping_tk_sameday_password }}" placeholder="PASSWORD" class="form-control" disabled/>
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">TEST MOD</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_sameday_test" value="{{ shipping_tk_sameday_test }}" placeholder="TEST MOD" class="form-control" disabled/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">
+									<a onclick="samedayButtonLogout();" class="btn btn-primary"><span>{{ button_logout }}</span></a>
+								</div>
+							</div>
+							<hr>
+							<div class="form-group">
+								<div class="col-sm-3 text-right"><p><b>{{ text_cron_lockers }}:</b></p></div>
+								<div class="col-sm-9">
+									<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}
+										catalog/controller/tk_checkout/cron_sameday.php {{ web_url }} > /dev/null 2>&1</p>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-3 text-right"><p><b>{{ text_cron_shipping }}:</b></p></div>
+								<div class="col-sm-9">
+									<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}
+										catalog/controller/tk_checkout/cron_sameday_shipping.php {{ web_url }} > /dev/null 2>&1</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				
+				{% if not shipping_tk_sameday_logged %}
+					
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="shipping_tk_sameday_username">USERNAME</label>
+								<div class="col-sm-9">
+									<input type="text" id="shipping_tk_sameday_username" name="shipping_tk_sameday_username" value="{{ shipping_tk_sameday_username }}" placeholder="USERNAME" class="form-control"/>
+									{% if (error_username) %}
+										<span class="text-danger">{{ error_username }}</span>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="shipping_tk_sameday_password">PASSWORD</label>
+								<div class="col-sm-9">
+									<input type="password" id="shipping_tk_sameday_password" name="shipping_tk_sameday_password" value="{{ shipping_tk_sameday_password }}" placeholder="PASSWORD" class="form-control"/>
+									{% if (error_password) %}
+										<span class="text-danger">{{ error_password }}</span>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="shipping_tk_sameday_test">TEST MOD</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_sameday_test" name="shipping_tk_sameday_test">
+										{% if (shipping_tk_sameday_test) %}
+											<option value="1" selected="selected">{{ text_enabled }}</option>
+											<option value="0">{{ text_disabled }}</option>
+										{% else %}
+											<option value="1">{{ text_enabled }}</option>
+											<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">
+									<a id="login_button" onclick="samedayButtonLogin();" class="btn btn-primary"><span id="login_text">{{ button_login }}</span></a>
+									<div id="login_error"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				
+				{% else %}
+					
+					<div class="panel panel-default">
+						<div class="panel-body" id="additional_table">
+							
+							<div class="col-sm-2">
+								<ul class="nav nav-pills nav-stacked">
+									<li class="active">
+										<a href="#v-pills-settings" data-toggle="tab">{{ text_settings }}</a>
+									</li>
+									{% if sameday_countries %}
+									<li>
+										<a href="#v-pills-statuses" data-toggle="tab">{{ text_statuses }}</a>
+									</li>
+									{% for sameday_country in sameday_countries %}
+										<li>
+											<a href="#v-pills-{{ sameday_country.code }}" data-toggle="tab">{{ sameday_country.country }}</a>
+										</li>
+									{% endfor %}
+									{% endif %}
+								</ul>
+							</div>
+							
+							<div class="col-sm-10">
+								<div class="tab-content">
+									
+									<div class="tab-pane fade in active" id="v-pills-settings">
+										
+										<div class="form-group">
+											<div class="col-sm-3 control-label">
+												<a onclick="samedayPickup();" class="btn btn-info" id="button_pickup"><span>{{ button_sinc_pickup_point }}</span></a>
+												<div class="button_pickup_error"></div>
+											</div>
+											<div class="col-sm-9">
+												<div class="table-responsive">
+													<table class="table table-bordered table-hover">
+														<thead>
+														<tr>
+															<td class="text-left">{{ column_samedayId }}</td>
+															<td class="text-left">{{ column_alias }}</td>
+															<td class="text-left">{{ column_city }}</td>
+															<td class="text-left">{{ column_county }}</td>
+															<td class="text-left">{{ column_address }}</td>
+															<td class="text-left">{{ column_default_address }}</td>
+														</tr>
+														</thead>
+														<tbody>
+														{% if sameday_pickups %}
+															{% for pickup in sameday_pickups %}
+																<tr>
+																	<td>{{ pickup.sameday_id }}</td>
+																	<td>{{ pickup.sameday_alias }}</td>
+																	<td>{{ pickup.city }}</td>
+																	<td>{{ pickup.county }}</td>
+																	<td>{{ pickup.address }}</td>
+																	<td>{{ pickup.default_pickup_point == 1 ? text_yes : text_no }}</td>
+																</tr>
+															{% endfor %}
+														{% else %}
+															<tr>
+																<td class="text-center" colspan="5">{{ text_pickup_points_empty }}</td>
+															</tr>
+														{% endif %}
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+					
+										{% if sameday_countries %}
+										{% if sameday_pickups %}
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="shipping_tk_sameday_pickup">{{ text_sameday_pickup }}</label>
+												<div class="col-sm-9">
+													<select class="form-control" id="shipping_tk_sameday_pickup" name="shipping_tk_sameday_pickup">
+														{% for pickup in sameday_pickups %}
+															<option value="{{ pickup.sameday_id }}" {% if (pickup.sameday_id == shipping_tk_sameday_pickup) %}selected="selected"{% endif %}>{{ pickup.sameday_id }} - {{ pickup.sameday_alias }} - {{ pickup.address }}</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+											
+											{% if shipping_tk_sameday_pickup and sameday_contact_persons %}
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="shipping_tk_sameday_contact_person">{{ text_sameday_contact_persons }}</label>
+												<div class="col-sm-9">
+													<select class="form-control" id="shipping_tk_sameday_contact_person" name="shipping_tk_sameday_contact_person">
+														{% for person in sameday_contact_persons[shipping_tk_sameday_pickup] %}
+															<option value="{{ person.id }}" {% if (person.id == shipping_tk_sameday_contact_person) %}selected="selected"{% endif %}>{{ person.id }} - {{ person.name }} - {{ person.phoneNumber }}</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+											{% endif %}
+										{% endif %}
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_sameday_package_type">{{ text_package_type }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_sameday_package_type" name="shipping_tk_sameday_package_type">
+													<option value="0" {% if (shipping_tk_sameday_package_type == 0) %}selected="selected"{% endif %}>Package</option>
+													<option value="1" {% if (shipping_tk_sameday_package_type == 1) %}selected="selected"{% endif %}>Envelope</option>
+													<option value="2" {% if (shipping_tk_sameday_package_type == 2) %}selected="selected"{% endif %}>Large Package</option>
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_sameday_shipment_type">{{ text_shipment_type }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_sameday_shipment_type" name="shipping_tk_sameday_shipment_type">
+													<option value="A6" {% if (shipping_tk_sameday_shipment_type == 'A6') %}selected="selected"{% endif %}>A6</option>
+													<option value="A4" {% if (shipping_tk_sameday_shipment_type == 'A4') %}selected="selected"{% endif %}>A4</option>
+												</select>
+											</div>
+										</div>
+										
+										{% if custom_fields %}
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="shipping_tk_sameday_company">{{ text_field_company }}</label>
+												<div class="col-sm-9">
+													<select name="shipping_tk_sameday_company" id="shipping_tk_sameday_company" class="form-control">
+														<option value="9999">{{ text_no_company}}</option>
+														{% for custom_field in custom_fields %}
+															{% if custom_field.custom_field_id == shipping_tk_sameday_company %}
+																<option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+															{% else %}
+																<option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+															{% endif %}
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+										{% endif %}
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_sameday_geo_zone_id">{{ text_geo_zone }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_sameday_geo_zone_id" name="shipping_tk_sameday_geo_zone_id">
+													<option value="0">{{ text_all_zones }}</option>
+													{% for geo_zone in geo_zones %}
+														{% if (geo_zone['geo_zone_id'] == shipping_tk_sameday_geo_zone_id) %}
+															<option value="{{ geo_zone['geo_zone_id'] }}" selected="selected">{{ geo_zone['name'] }}</option>
+														{% else %}
+															<option value="{{ geo_zone['geo_zone_id'] }}">{{ geo_zone['name'] }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+											
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="input-tax-class">Данъчен клас</label>
+												<div class="col-sm-9">
+													<select name="shipping_tk_sameday_tax_class_id" id="input-tax-class" class="form-control">
+														<option value="0">{{ text_none }}</option>
+														{% for tax_class in tax_classes %}
+															{% if tax_class.tax_class_id == shipping_tk_sameday_tax_class_id %}
+																<option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+															{% else %}
+																<option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+															{% endif %}
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+										
+										{% endif %}
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" >{{ text_send_country }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" name="shipping_tk_sameday_send_country">
+													{% for sameday_country in sameday_countries %}
+														<option value="{{ sameday_country.code }}" {% if (shipping_tk_sameday_send_country == sameday_country.code) %}selected="selected"{% endif %}>{{ sameday_country.country }}</option>
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_sameday_sort_order">{{ text_sort_order }}</label>
+											<div class="col-sm-9">
+												<input class="form-control" type="text" id="shipping_tk_sameday_sort_order" name="shipping_tk_sameday_sort_order" value="{{ shipping_tk_sameday_sort_order }}" size="1"/>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_sameday_status">{{ text_debug }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_sameday_debug" name="shipping_tk_sameday_debug">
+													{% if (shipping_tk_sameday_debug) %}
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+														<option value="0">{{ text_disabled }}</option>
+													{% else %}
+														<option value="1">{{ text_enabled }}</option>
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+													{% endif %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_sameday_status">{{ text_status }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_sameday_status" name="shipping_tk_sameday_status">
+													{% if (shipping_tk_sameday_status) %}
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+														<option value="0">{{ text_disabled }}</option>
+													{% else %}
+														<option value="1">{{ text_enabled }}</option>
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+													{% endif %}
+												</select>
+											</div>
+										</div>
+									
+									</div>
+									{% if sameday_countries %}
+									<div class="tab-pane" id="v-pills-statuses">
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label">{{ text_statuses_10 }}:</label>
+											<div class="col-sm-9">
+												<select name="shipping_tk_sameday_order_status_id" class="form-control">
+													<option value="0">{{ text_statuses_9 }}</option>
+													{% for order_status in order_statuses %}
+														
+														{% if (order_status['order_status_id'] == shipping_tk_sameday_order_status_id) %}
+															<option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+														{% else %}
+															<option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label">{{ text_statuses_8 }}:</label>
+											<div class="col-sm-9">
+												<select name="shipping_tk_sameday_order_status_id_mail" class="form-control">
+													{% if  shipping_tk_sameday_order_status_id_mail %}
+														<option value="0">{{ text_disabled }}</option>
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+													{% else %}
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+														<option value="1">{{ text_enabled }}</option>
+													{% endif %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label">{{ text_statuses_1 }}<br> {shipment_number}
+												- {{ text_statuses_2 }}:</label>
+											<div class="col-sm-9">
+												<textarea name="shipping_tk_sameday_order_status_id_mail_text" rows="3" class="form-control">{{ shipping_tk_sameday_order_status_id_mail_text }}</textarea>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<div class="col-sm-3 text-right"></div>
+											<div class="col-sm-9">
+												<br><br><h4><b>{{ text_statuses_3 }}</b></h4>
+											</div>
+										</div>
+										
+										{% for sameday_text_status in sameday_statuses.data %}
+											<div class="form-group">
+												<label class="col-sm-3 control-label">{{ sameday_text_status.id }} - {{ sameday_text_status.label }}</label>
+												
+												<div class="col-sm-9">
+													<div class="row">
+														<div class="col-sm-3">{{ text_statuses_4 }}</div>
+														<div class="col-sm-3">
+															<select name="shipping_tk_sameday_order_status[{{ sameday_text_status.id }}]" class="form-control">
+																<option value="">{{ text_statuses_5 }}</option>
+																{% for order_status in order_statuses %}
+																	{% if  shipping_tk_sameday_order_status[sameday_text_status.id] == order_status.order_status_id %}
+																		<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+																	{% else %}
+																		<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+														<div class="col-sm-3">{{ text_statuses_6 }}</div>
+														<div class="col-sm-3">
+															<select name="shipping_tk_sameday_order_status_mail[{{ sameday_text_status.id }}]" class="form-control">
+																{% if  shipping_tk_sameday_order_status_mail[sameday_text_status.id] %}
+																	<option value="0">{{ text_disabled }}</option>
+																	<option value="1" selected="selected">{{ text_enabled }}</option>
+																{% else %}
+																	<option value="0" selected="selected">{{ text_disabled }}</option>
+																	<option value="1">{{ text_enabled }}</option>
+																{% endif %}
+															</select>
+														</div>
+														<div class="clearfix"></div>
+														<br>
+														
+														<div class="col-sm-3">{{ text_statuses_7 }}</div>
+														<div class="col-sm-9">
+															<textarea name="shipping_tk_sameday_order_status_mail_text[{{ sameday_text_status.id }}]" rows="3" placeholder="{{ text_add_text }}" class="form-control">{{ shipping_tk_sameday_order_status_mail_text[sameday_text_status.id] }}</textarea>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endfor %}
+									
+									</div>
+									
+									{% for sameday_country in sameday_countries %}
+										<div class="tab-pane fade" id="v-pills-{{ sameday_country.code }}">
+											
+											<div class="form-group">
+												<div class="col-sm-12">
+													<h3>{{ sameday_country.country }}
+														<small>{{ text_code }}:{{ sameday_country.code }}</small> <small>{{ text_currency }}
+															:{{ sameday_country.currency }}</small>
+													</h3>
+												</div>
+											</div>
+											
+											<input type="hidden" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][id]" value="{{ sameday_country.country_id }}"/>
+											<input type="hidden" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][code]" value="{{ sameday_country.code }}"/>
+											<input type="hidden" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][currency]" value="{{ sameday_country.currency }}"/>
+											<input type="hidden" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][country]" value="{{ sameday_country.country }}"/>
+											
+											<div class="form-group">
+												<label class="col-sm-3 control-label">{{ text_status }}</label>
+												<div class="col-sm-9">
+													{% if shipping_tk_sameday_countries[sameday_country.code]['status'] %}
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][status]" value="0" class="input-{{ sameday_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_disabled }}</span> </label>
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][status]" value="1" checked="checked" class="input-{{ sameday_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_enabled }}</span> </label>
+													{% else %}
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][status]" value="0" checked="checked" class="input-{{ sameday_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_disabled }}</span> </label>
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][status]" value="1" class="input-{{ sameday_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_enabled }}</span> </label>
+													{% endif %}
+												</div>
+											</div>
+											
+											<div id="box-{{ sameday_country.code }}-status" {% if shipping_tk_sameday_countries[sameday_country.code]['status'] %}style="display: block" {% else %}style="display: none"{% endif %}>
+												
+												<div class="form-group">
+													<div class="col-sm-3 control-label">
+													
+													</div>
+													<div class="col-sm-9">
+														<a id="button_lockers_{{ sameday_country.code }}" onclick="if (!$(this).attr('disabled')) { samedayLocers('{{ sameday_country.code }}', 1); } " class="btn btn-info"><span id="button_lockers_text">{{ button_sinc_lockers }}</span></a>
+														<div id="button_lockers_error_{{ sameday_country.code }}"></div>
+													</div>
+												</div>
+										{% if sameday_services.data %}
+												<ul class="nav nav-tabs">
+													{% for service in sameday_services.data %}
+														<li class="{% if loop.first %}active{% endif %}">
+															<a href="#tab-{{ sameday_country.code }}-{{ service.id }}" data-toggle="tab">{{ service.name }}</a>
+														</li>
+													{% endfor %}
+												</ul>
+												
+												<div class="tab-content">
+													
+													{% for service in sameday_services.data %}
+														<div class="tab-pane {% if loop.first %}active{% endif %}" id="tab-{{ sameday_country.code }}-{{ service.id }}">
+															
+															<input type="hidden" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][id]" value="{{ service.id }}"/>
+															<input type="hidden" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][name]" value="{{ service.name }}"/>
+															
+															<div class="form-group">
+																<label class="col-sm-3 control-label">{{ service.name }}</label>
+																<div class="col-sm-9">
+																	{% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['status'] %}
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][status]" value="0" class="input-{{ sameday_country.code }}-{{ service.id }}-status"/>
+																			<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][status]" value="1" checked="checked" class="input-{{ sameday_country.code }}-{{ service.id }}-status"/>
+																			<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																	{% else %}
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][status]" value="0" checked="checked" class="input-{{ sameday_country.code }}-{{ service.id }}-status"/>
+																			<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][status]" value="1" class="input-{{ sameday_country.code }}-{{ service.id }}-status"/>
+																			<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																	{% endif %}
+																</div>
+															</div>
+															
+															<div id="box-{{ sameday_country.code }}-{{ service.id }}-status" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['status'] %}style="display: block" {% else %}style="display: none"{% endif %}>
+																
+																<ul class="nav nav-tabs">
+																	<li class="active">
+																		<a href="#tab-{{ sameday_country.code }}-{{ service.id }}-settings" data-toggle="tab">{{ text_settings }}</a>
+																	</li>
+																	
+																	<li>
+																			<a href="#tab-{{ sameday_country.code }}-{{ service.id }}-prices" data-toggle="tab">{{ text_prices }}</a>
+																	</li>
+																	
+																</ul>
+																
+																<div class="tab-content">
+																	
+																	<div class="tab-pane active" id="tab-{{ sameday_country.code }}-{{ service.id }}-settings">
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_services_type }}</label>
+																			<div class="col-sm-9">
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][type]" value="address" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['type'] is defined and shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['type'] == 'address' %}checked="checked"{% endif %}/>
+																					<span class="btn btn-default">{{ text_services_type_addres }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][type]" value="machine" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['type'] is not defined or shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['type'] == 'machine' %}checked="checked"{% endif %}/>
+																					<span class="btn btn-default">{{ text_services_type_machine }}</span> </label>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group row">
+																			<label class="col-sm-3 control-label">{{ text_shipping_title }}</label>
+																			<div class="col-sm-9">
+																				{% for language in languages %}
+																					<div class="input-group" style="margin-bottom: 5px">
+																						<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/></span>
+																						<input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][title][{{ language.code }}]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['title'][language.code] }}" class="form-control"/>
+																					</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																		
+																		<div class="form-group row">
+																			<label class="col-sm-3 control-label">{{ text_shipping_text }}</label>
+																			<div class="col-sm-9">
+																				{% for language in languages %}
+																					<div class="input-group" style="margin-bottom: 5px">
+																						<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/></span>
+																						<input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][text][{{ language.code }}]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['text'][language.code] }}" class="form-control"/>
+																					</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_sort_order }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][sort]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['sort'] }}"/>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_on_to_weight }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight'] }}"/>
+																			</div>
+																		</div>
+																	
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_insured_value }}</label>
+																			<div class="col-sm-9">
+																				{% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['insured_value'] %}
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][insured_value]" value="0"/>
+																						<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][insured_value]" value="1" checked="checked"/>
+																						<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																				{% else %}
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][insured_value]" value="0" checked="checked"/>
+																						<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][insured_value]" value="1"/>
+																						<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																				{% endif %}
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_option }}</label>
+																			<div class="col-sm-9">
+																				
+																				{% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['opening'] %}
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][opening]" value="0"/>
+																						<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][opening]" value="1" checked="checked"/>
+																						<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																				{% else %}
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][opening]" value="0" checked="checked"/>
+																						<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][opening]" value="1"/>
+																						<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																				{% endif %}
+																			</div>
+																		</div>
+												
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_shipment_description }}</label>
+																			<div class="col-sm-5">
+																				<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][shipment_description]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['shipment_description'] }}"/>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_shipment_product }} </label>
+																			<div class="col-sm-5">
+																				<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][shipment_product]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['shipment_product'] }}"/>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_product_name }}</label>
+																			<div class="col-sm-3">
+																				<select class="form-control" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][product_name]">
+																					<option value="none" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['product_name'] == 'none' %}selected="selected"{% endif %}>{{ text_product_name_none }}</option>
+																					<option value="contents" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['product_name'] == 'contents' %}selected="selected"{% endif %}>{{ text_product_name_contents }}</option>
+																					<option value="ref" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['product_name'] == 'ref' %}selected="selected"{% endif %}>{{ text_product_name_ref }}</option>
+																				</select>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_weight_type }}</label>
+																			<div class="col-sm-3">
+																				<select class="form-control" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_type]">
+																					<option value="kilogram" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight_type'] == 'kg' %}selected="selected"{% endif %}>{{ text_kg }}</option>
+																					<option value="gram" {% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight_type'] == 'gr' %}selected="selected"{% endif %}>{{ text_gr }}</option>
+																				</select>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_weight_total }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_total]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight_total'] }}"/>
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label"><span data-toggle="tooltip" title="{{ help_totals }}">{{ text_totals }}</span></label>
+																			<div class="col-sm-9">
+																				<div class="well well-sm" style="height: 180px; overflow: auto;" id="totals">
+																					{% for total in oc_totals %}
+																						<div class="checkbox col-sm-4">
+																							<label><input type="checkbox" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][totals][]" value="{{ total.code }}" {% if total.code in shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['totals'] %}checked="checked"{% endif %} />{{ total.name }}
+																							</label></div>
+																					{% endfor %}
+																				</div>
+																			</div>
+																		</div>
+																	
+																	</div>
+																	
+																	
+																		<div class="tab-pane" id="tab-{{ sameday_country.code }}-{{ service.id }}-prices">
+								
+																				
+																				
+																				<div class="form-group">
+																					<label class="col-sm-3 control-label">{{ text_calculate_price }}</label>
+																					<div class="col-sm-9">
+																						{% if shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['calculate'] %}
+																							<label class="button-label">
+																								<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][calculate]" value="0"/>
+																								<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																							<label class="button-label">
+																								<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][calculate]" value="1" checked="checked"/>
+																								<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																						{% else %}
+																							<label class="button-label">
+																								<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][calculate]" value="0" checked="checked"/>
+																								<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																							<label class="button-label">
+																								<input type="radio" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][calculate]" value="1"/>
+																								<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																						{% endif %}
+																					</div>
+																				</div>
+																				
+																			<div class="form-group">
+																				<label class="col-sm-3 control-label">{{ text_fixed_price }}{{ sameday_country.currency }}</label>
+																				<div class="col-sm-3">
+																					<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][fixed_price]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['fixed_price'] }}"/>
+																				</div>
+																			</div>
+																			
+																			<div class="form-group">
+																				<label class="col-sm-3 control-label">{{ text_fixed_weight }}{{ sameday_country.currency }}</label>
+																				<div class="col-sm-3">
+																					<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][fixed_weight]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['fixed_weight'] }}"/>
+																				</div>
+																			</div>
+																			
+																			<div class="form-group">
+																				<label class="col-sm-3 control-label">{{ text_fixed_weight_price }}{{ sameday_country.currency }}</label>
+																				<div class="col-sm-3">
+																					<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][fixed_weight_price]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['fixed_weight_price'] }}"/>
+																				</div>
+																			</div>
+																				
+																				<div class="form-group">
+																					<label class="col-sm-3 control-label">{{ text_free_total }}{{ sameday_country.currency }}</label>
+																					<div class="col-sm-3">
+																						<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][free_total]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['free_total'] }}"/>
+																					</div>
+																				</div>
+																				
+																				<div class="form-group">
+																					<label class="col-sm-3 control-label">{{ text_free_weight }}</label>
+																					<div class="col-sm-3">
+																						<input class="form-control" type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][free_weight]" value="{{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['free_weight'] }}"/>
+																					</div>
+																				</div>
+																				
+																				<hr>
+																				<div class="form-group">
+																					<label class="col-sm-12 text-left">{{ text_weight_price_title }} {{ sameday_country.currency }}</label>
+																				</div>
+																				<table id="weight-value-{{ sameday_country.code }}-{{ service.id }}-address" class="table table-striped table-bordered table-hover">
+																					<thead>
+																					<tr>
+																						<td class="text-left required">{{ text_weight_from }}</td>
+																						<td class="text-left required">{{ text_weight_to }}</td>
+																						<td class="text-left required">{{ text_weight_price }}</td>
+																						<td></td>
+																					</tr>
+																					</thead>
+																					<tbody>
+																					{% for weight_value in shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight_price'] %}
+																						<tr id="weight-value-row{{ loop.index }}">
+																							<td class="text-right">
+																								<input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_price][{{ loop.index }}][from]" value="{{ weight_value['from'] }}" class="form-control"/>
+																							</td>
+																							<td class="text-right">
+																								<input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_price][{{ loop.index }}][to]" value="{{ weight_value['to'] }}" class="form-control"/>
+																							</td>
+																							<td class="text-right">
+																								<input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_price][{{ loop.index }}][price]" value="{{ weight_value['price'] }}" class="form-control"/>
+																							</td>
+																							<td class="text-right">
+																								<button type="button" onclick="$('#weight-value-row{{ loop.index }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger">
+																									<i class="fa fa-minus-circle"></i></button>
+																							</td>
+																						</tr>
+																					{% endfor %}
+																					</tbody>
+																					
+																					<tfoot>
+																					<tr>
+																						<td colspan="3"></td>
+																						<td class="text-right">
+																							<button type="button" onclick="addWeight_{{ sameday_country.code }}_{{ service.id }}();" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">
+																								<i class="fa fa-plus-circle"></i></button>
+																						</td>
+																					</tr>
+																					</tfoot>
+																				</table>
+																				<script>
+																					{% if(shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight_price']) %}
+                                          var weight_value_row_{{ service.id }} = {{ shipping_tk_sameday_countries[sameday_country.code]['services'][service.id]['weight_price']|length }} +1;
+																					{% else %}
+                                          var weight_value_row_{{ service.id }} = 1;
+																					{% endif %}
+																						
+                                            function addWeight_{{ sameday_country.code }}_{{ service.id }}() {
+                                                html = '<tr id="weight-value-row' + weight_value_row_{{ service.id }} + '">';
+                                                html += '  <td class="text-right"><input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_price][' + weight_value_row_{{ service.id }} + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+                                                html += '  <td class="text-right"><input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_price][' + weight_value_row_{{ service.id }} + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+                                                html += '  <td class="text-right"><input type="text" name="shipping_tk_sameday_countries[{{ sameday_country.code }}][services][{{ service.id }}][weight_price][' + weight_value_row_{{ service.id }} + '][price]" value="" placeholder="0.00" class="form-control" /></td>';
+                                                html += '  <td class="text-right"><button type="button" onclick="$(\'#weight-value-row' + weight_value_row_{{ service.id }} + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+                                                html += '</tr>';
+
+                                                $('#weight-value-{{ sameday_country.code }}-{{ service.id }}-address tbody').append(html);
+
+                                                weight_value_row_{{ service.id }}++;
+                                            }
+																				
+																				</script>
+																				
+																		</div>
+																	
+																</div>
+															
+															</div>
+														</div>
+													{% endfor %}
+													{% endif %}
+												
+												</div>
+											
+											</div>
+										</div>
+									{% endfor %}
+									{% endif %}
+										
+										</div>
+							</div>
+						
+						</div>
+					</div>
+				{% endif %}
+			
+			{% else %}
+				
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<h3>{{ error_tk_checkout }}</h3>
+					</div>
+				</div>
+			
+			{% endif %}
+		</form>
+	
+	</div>
+</div>
+
+<style>
+    .button-label input {
+        display: none;
+    }
+
+    .button-label span {
+        color: #666;
+        background-color: #fff;
+        border-color: #ddd;
+    }
+
+    .button-label input:checked + span {
+        color: #fff;
+        background-color: #3c933c;
+        border-color: #2f722f;
+    }
+
+    .button-label input:checked + span.btn-danger {
+        color: #fff;
+        background-color: #e3503e;
+        border-color: #dd3520;
+    }
+
+    .button-label i {
+        font-size: 15px;
+        transition: 0.5s all;
+    }
+</style>
+
+<script>
+    $(document).delegate('select[name=\'shipping_tk_sameday_pickup\']', 'change', function () {
+        $("#form-sameday").submit();
+    });
+
+	{% for sameday_country in sameday_countries %}
+  $('.input-{{ sameday_country.code }}-status').on('change', function () {
+      if ($(this).val() > 0) {
+          $('#box-{{ sameday_country.code }}-status').fadeIn();
+      } else {
+          $('#box-{{ sameday_country.code }}-status').fadeOut();
+      }
+  });
+	
+	{% for service in sameday_services.data %}
+  $('.input-{{ sameday_country.code }}-{{ service.id }}-status').on('change', function () {
+      if ($(this).val() > 0) {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-status').fadeIn();
+      } else {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-status').fadeOut();
+      }
+  });
+
+  $('.input-{{ sameday_country.code }}-{{ service.id }}-option').on('change', function () {
+      if ($(this).val() != 0) {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-option').fadeIn();
+      } else {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-option').fadeOut();
+      }
+  });
+
+  $('.input-{{ sameday_country.code }}-{{ service.id }}-status').on('change', function () {
+      if ($(this).val() != 0) {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-status').fadeIn();
+      } else {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-status').fadeOut();
+      }
+  });
+
+  $('.input-{{ sameday_country.code }}-{{ service.id }}-office-status').on('change', function () {
+      if ($(this).val() != 0) {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-office-status').fadeIn();
+      } else {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-office-status').fadeOut();
+      }
+  });
+
+  $('.input-{{ sameday_country.code }}-{{ service.id }}-machine-status').on('change', function () {
+      if ($(this).val() != 0) {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-machine-status').fadeIn();
+      } else {
+          $('#box-{{ sameday_country.code }}-{{ service.id }}-status-status').fadeOut();
+      }
+  });
+	{% endfor %}
+	{% endfor %}
+
+  function samedayLocers(country, page) {
+      $('#button_lockers_error_' + country).html('').removeClass("text-danger");
+      $('#button_lockers_' + country).attr('disabled', true);
+		  
+      if(page == 1){
+        $('#button_lockers_' + country).after('<span id="loading_lockers_'+ country + '" class="attention" style="padding: 5px;">page: ' + page + '</span>');
+      }
+
+      $.ajax({
+          url: 'index.php?route=extension/shipping/tk_sameday/lockers&user_token={{ user_token }}',
+          type: 'POST',
+          data: 'country=' + encodeURIComponent(country) + '&page=' + encodeURIComponent(page),
+          dataType: 'json',
+          success: function (data) {
+              if (data) {
+                  $('#loading').remove();
+
+                  if (data.success) {
+                      window.location = window.location;
+                  } else if (data.setting) {
+                      $('#loading_lockers_' + country).remove();
+                      $('#button_lockers_' + country).after('<span id="loading_lockers_'+ country + '" class="attention" style="padding: 5px;">page:' + data.setting.page + ' from:' + data.setting.pages + '</span>');
+                      
+                      samedayLocers(country, data.setting.page)
+                  } else {
+                      $('#loading_lockers_' + country).remove();
+                      $('#button_lockers_' + country).attr('disabled', false);
+                      $('#button_lockers_error_' + country).html(data.message).addClass('text-danger');
+                  }
+              }
+          },
+          error: function (request) {
+              $('#loading_lockers_' + country).remove();
+
+              $('#button_lockers_error_' + country).html('Error').addClass("text-danger");
+          }
+      });
+  }
+
+  function samedayPickup() {
+      $('#pickup_loading').remove();
+      $('#button_pickup_error').html('').removeClass("text-danger");
+      $('#button_pickup').after('<span id="pickup_loading" class="attention" style="padding: 5px;">loading...</span>');
+
+      $.ajax({
+          url: 'index.php?route=extension/shipping/tk_sameday/pickup&user_token={{ user_token }}',
+          type: 'POST',
+          data: '',
+          dataType: 'json',
+          success: function (data) {
+              if (data) {
+                  $('#pickup_loading').remove();
+
+                  if (data.success) {
+                      window.location = window.location;
+                  } else {
+                      $('#button_pickup_error').html(data.message).addClass('text-danger');
+                  }
+              }
+          },
+          error: function (request) {
+              $('#pickup_loading').remove();
+
+              $('#button_pickup_error').html('Error').addClass("text-danger");
+          }
+      });
+  }
+
+  function samedayButtonLogin() {
+     
+      $('#login_error').html('').removeClass("text-danger");
+      $('#login_button').after('<span id="loading" class="attention" style="padding: 5px;">loading...</span>');
+
+      $.ajax({
+          url: 'index.php?route=extension/shipping/tk_sameday/login&user_token={{ user_token }}',
+          type: 'POST',
+          data: 'username=' + encodeURIComponent($('#shipping_tk_sameday_username').val()) + '&password=' + encodeURIComponent($('#shipping_tk_sameday_password').val()) + '&test=' + encodeURIComponent($('#shipping_tk_sameday_test').val()),
+          dataType: 'json',
+          success: function (data) {
+              if (data) {
+                  $('#loading').remove();
+
+                  if (data.message) {
+                      $('#login_error').html(data.message).addClass('text-danger');
+                  } else if (data.success) {
+                      window.location = window.location;
+                  } else {
+                      $('#login_error').html('Error - 1!').addClass('text-danger');
+                  }
+              }
+          },
+          error: function (request) {
+		          $('#loading').remove();
+
+              $('#login_error').html('Login Error').addClass("text-danger");
+          }
+      });
+  }
+
+  function samedayButtonLogout() {
+      if (confirm('{{ text_warning_logout }}')) {
+          $.get('index.php?route=extension/shipping/tk_sameday/logout&user_token={{ user_token }}').done(function () {
+              window.location = window.location;
+          });
+      }
+  }
+
+</script>
+{{ footer }}

@@ -1,0 +1,98 @@
+<div id="tk_adress">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span> 
+			<span class="tk_panel_text"> {{ text_address }}</span> 
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>				
+	
+		<div class="tk_panel_body">
+			<div id="tk_adresses">
+			
+				<input type="hidden" id="shipping_to" name="shipping_to" value="address" />
+				<input type="hidden" id="shipping_type" name="shipping_type" value="root" />
+				<input type="hidden" id="address" name="address" value="" />
+
+				{% if (addresses) %} 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="base_address_type" value="existing" checked="checked" onclick="jQuery('#address_new').hide();jQuery('#tk_address_existing').show();" {% if (base_address_type is defined and base_address_type == 'existing') %}checked=""{% endif %} />
+						{{ text_address_existing }} 
+					</label>
+				</div>
+				<div id="tk_address_existing">
+					<div class="tk_12_column tk_center_column">
+						<select name="payment_address_id" class="form-control">
+							{% for address in addresses %} 
+								
+							<option value="{{ address['address_id'] }}" {% if (payment_address_id is defined and address['address_id'] == payment_address_id) %}selected="selected"{% endif %}>{{ address['zone'] }}, {{ address['city'] }}, {{ address['address_1'] }}</option>
+							{% endfor %} 
+						</select>
+					</div>	
+				</div>	 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="base_address_type" value="new" {% if (base_address_type is defined and base_address_type == 'new') %}checked=""{% endif %} onclick="jQuery('#address_new').show();jQuery('#tk_address_existing').hide();"/>
+						{{ text_address_new }} 
+					</label>
+				</div>
+				{% endif %} 
+						
+				<div id="address_new" {% if (not addresses or (base_address_type is defined and base_address_type == 'new')) %} style="display:block"{% else %}style="display:none"{% endif %}>
+	
+					<input type="hidden" name="default" value="1" />
+					
+					{% if module_tk_checkout_zone == 0 %} 
+					<input type="hidden" name="zone_id" value="{{ zone_id }}" />
+					{% elseif module_tk_checkout_zone == 2 %} 
+					<div class="tk_12_column tk_center_column tk_address_zone_id tk_required_box" id="tk_address_zone_id">
+						<select name="zone_id" id="input-payment-zone" class="form-control">
+							<option value="0" selected="selected">{{entry_zone }}</option>
+							{% for zona in zone %} 
+							<option value="{{ zona['zone_id'] }}" {% if (zone_id == zona['zone_id']) %} selected=""{% endif %}>{{ zona['name'] }}</option>
+							{% endfor %} 
+						</select>
+					</div>
+					{% endif %} 
+					<div class="tk_clear"></div>
+						 
+					<div class="tk_8_column tk_center_column tk_address_city tk_required_box" id="tk_address_city">
+						<input type="text" name="city" value="{% if (city is defined) %}{{ city }}{% endif %}" placeholder="{{entry_city }}" id="city" class="form-control" />
+						<span class="tk_floating_label">{{entry_city }}</span>
+					</div>
+					
+					<div class="tk_4_column tk_center_column tk_address_postcode {% if (postcode_required is defined and postcode_required > 0) %}tk_required_box{% endif %}" id="tk_address_postcode">
+						<input type="text" name="postcode" value="{% if (postcode is defined) %}{{ postcode }}{% endif %}" placeholder="{{entry_postcode }}" id="postcode" class="form-control" />
+						<span class="tk_floating_label">{{entry_postcode }}</span>
+					</div>
+					
+					<div class="tk_clear"></div>
+					<div class="tk_12_column tk_center_column tk_address_address_1" id="tk_address_address_1">
+						<input type="text" name="address_1" value="{% if (address_1 is defined) %}{{ address_1 }}{% endif %}" placeholder="{{entry_address_1 }}" id="input-payment-address-1" class="form-control" />
+						<span class="tk_floating_label">{{entry_address_1 }}</span>
+					</div>
+					
+				</div>
+
+				<div class="clearfix"></div>
+				{% if (error_address) %} 
+				<span class="text-danger">{{ error_address }}</span>
+				{% endif %} 
+
+			</div>	
+			<div class="clearfix"></div>
+	
+		</div> 
+	</div>
+</div>
+
+<script>
+	
+	$('#tk_adress input').change(function() { saveData(); } );
+	$('#tk_adress select').change(function() { saveData(); } );
+	$('#tk_adress textarea').change(function() { saveData(); } );
+	
+$(document).ready(function() { 
+		getPaymentMethod();
+	});
+</script>

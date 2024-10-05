@@ -1,0 +1,513 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+		<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+			</div>
+			<div class="panel-body">
+        
+        
+				<div class="panel-body">
+					{% if loading %}
+					
+					{{ column_loading }}: <a href="{{ loading_pdf }}">{{ loading }}</a><br />
+					{{ text_created_on }}: {{ generate_date }}
+					{% else %}
+				
+					<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-transpres" class="form-horizontal">
+					
+						<div class="form-group">
+							<div class="col-sm-3">
+								<h4><b>Данни за  изпращача:</b></h4>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_sender_type">Откъде се изпращат пратките</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_sender_type" name="loading_tk_transpress_sender_type">
+									<option value="shop" {% if loading_tk_transpress_sender_type == 'shop' %}selected="selected"{% endif %}>От мой склад/магазин</option>
+									<option value="office" {% if loading_tk_transpress_sender_type == 'office' %}selected="selected"{% endif %}>От офис на Transpress</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group" style="display: none;">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_sender_office">Изберете офис</label>
+							<div class="col-sm-9">
+								<select class="form-control" name="loading_tk_transpress_sender_office">
+									{% for office in offices %}
+									<option value="{{ office.value }}" {% if loading_tk_transpress_sender_office == office.value %}selected{% endif %}>{{ office.name}}</option>
+									{% endfor %}
+								</select>
+								
+							</div>
+						</div>
+						
+						<div class="form-group" style="display: block;">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_shop_address_default">Адрес</label>
+							<div class="col-sm-9">
+								{% if loading_tk_transpress_shop_address %}
+								<select name="loading_tk_transpress_shop_address_default" id="loading_tk_transpress_shop_address_default" class="form-control">
+									{% for key,address in loading_tk_transpress_shop_address %}
+									<option value="{{ key }}" {% if loading_tk_transpress_shop_address_default == key %}selected="selected"{% endif %}>{{ address.shop_name }}</option>
+									{% endfor %}
+								</select>
+								{% endif %}
+							</div>
+						</div>   
+						
+						<div class="form-group">
+							<div class="col-sm-3">
+								<h4><b>Данни за получателя:</b></h4>
+							</div>
+						</div>   
+						<input type="hidden" name="loading_tk_transpress_receiver_type" value="address">
+						 
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_receiver_country">Държава</label>
+							<div class="col-sm-9">        
+							
+								<select class="form-control" name="loading_tk_transpress_receiver_country">
+									{% for country in countries %}
+									<option value="{{ country.iso_code_2 }}" {% if loading_tk_transpress_receiver_country == country.iso_code_2 %}selected{% endif %}>{{ country.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_receiver_settlement">Населено място</label>
+							<div class="col-sm-9">        
+								<input type="text" autocomplete="off" name="loading_tk_transpress_receiver_settlement" value="{{ loading_tk_transpress_receiver_settlement }}" placeholder="" id="loading_tk_transpress_receiver_settlement" class="form-control">
+								
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_receiver_postcode">Пощенски код</label>
+							<div class="col-sm-9">        
+								<input type="text" autocomplete="off" name="loading_tk_transpress_receiver_postcode" value="{{ loading_tk_transpress_receiver_postcode }}" placeholder="" id="loading_tk_transpress_receiver_postcode" class="form-control">
+								
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_receiver_address">Адрес</label>
+							<div class="col-sm-9">        
+								<input type="text" autocomplete="off" name="loading_tk_transpress_receiver_address" value="{{ loading_tk_transpress_receiver_address }}" placeholder="" id="loading_tk_transpress_receiver_address" class="form-control">
+								
+							</div>
+						</div>
+					
+						<div class="form-group">
+							<div class="col-sm-3">
+								<h4><b>Разрешаване на:</b></h4>
+							</div>
+						</div>    
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_cd">Наложен платеж</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_cd" name="loading_tk_transpress_cd">
+									{% if loading_tk_transpress_cd %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group" style="display: block;">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_cd_amount">Сума на наложен платеж</label>
+							<div class="col-sm-9">        
+								<input type="text" autocomplete="off" name="loading_tk_transpress_cd_amount" value="{{ loading_tk_transpress_cd_amount }}" placeholder="" id="loading_tk_transpress_cd_amount" class="form-control">
+								
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_weight">Тегло</label>
+							<div class="col-sm-9">        
+								<input type="text" autocomplete="off" name="loading_tk_transpress_weight" value="{{ loading_tk_transpress_weight }}" placeholder="" id="loading_tk_transpress_weight" class="form-control">
+								
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_postal_money_transfer">Пощенски паричен превод</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_postal_money_transfer" name="loading_tk_transpress_postal_money_transfer">
+									{% if loading_tk_transpress_postal_money_transfer %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_pd">Обратна разписка</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_pd" name="loading_tk_transpress_pd">
+									{% if loading_tk_transpress_pd %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_rr">Обратен (клиентски) документ</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_rr" name="loading_tk_transpress_rr">
+									{% if loading_tk_transpress_rr %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_pr">Връщане на опаковката</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_pr" name="loading_tk_transpress_pr">
+									{% if loading_tk_transpress_pr %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_allowed_services">Разрешени сървизи</label>
+							<div class="col-sm-9">        
+								<select name="loading_tk_transpress_allowed_services" id="loading_tk_transpress_allowed_services" class="form-control">
+									{% for service in services %}
+									<option value="{{ service.value }}" {% if service.value == loading_tk_transpress_allowed_services %} selected="selected"{% endif %}>{{ service.name }}</option> 
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						
+						  
+						<div class="form-group" style="display: none;">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_service_date">Дата на доставка</label>
+							<div class="col-sm-9">
+								<input type="text" autocomplete="off" name="loading_tk_transpress_service_date" value="{{ loading_tk_transpress_service_date }}" placeholder="" id="loading_tk_transpress_service_date" class="datepicker form-control">
+								
+							</div>
+						</div>   
+						
+						
+						<div class="form-group">
+							<div class="col-sm-3">
+								<h4><b>Цена за доставка:</b></h4>
+							</div>
+						</div> 
+						
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_shipping_payer">Платец на куриерската услуга</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_shipping_payer" name="loading_tk_transpress_shipping_payer">
+									{% if loading_tk_transpress_shipping_payer %}
+									<option value="0">Подател</option>
+									<option value="1" selected="selected">Получател</option>
+									{% else %}
+									<option value="0" selected="selected">Подател</option>
+									<option value="1">Получател</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>   
+						
+						
+						<div class="form-group" style="display: none;">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_fixed_price_amount">Сума</label>
+							<div class="col-sm-9">
+								<input class="form-control" type="text" id="loading_tk_transpress_fixed_price_amount" name="loading_tk_transpress_fixed_price_amount" value="{{ loading_tk_transpress_fixed_price_amount }}" size="1" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-sm-12">&nbsp;</div>
+						</div>    
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_review_before_payment">Възможност за преглед преди плащане</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_review_before_payment" name="loading_tk_transpress_review_before_payment">
+									{% if loading_tk_transpress_review_before_payment %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_test_before_payment">Възможност за тест преди плащане</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_test_before_payment" name="loading_tk_transpress_test_before_payment">
+									{% if loading_tk_transpress_test_before_payment %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-sm-12">&nbsp;</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_package">Опаковка</label>
+							<div class="col-sm-9">        
+								<select name="loading_tk_transpress_package" id="loading_tk_transpress_package" class="form-control">
+									{% for package in packages %}
+									<option value="{{ package.value }}" {% if package.value == loading_tk_transpress_package %} selected="selected"{% endif %}>{{ package.name }}</option> 
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<div class="col-sm-12">&nbsp;</div>
+						</div>    
+						
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_fragile">Чупливо</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_fragile" name="loading_tk_transpress_fragile">
+									{% if loading_tk_transpress_fragile %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_insurance">Застраховка</label>
+							<div class="col-sm-9">
+								<select class="form-control" id="loading_tk_transpress_insurance" name="loading_tk_transpress_insurance">
+									{% if loading_tk_transpress_insurance %}
+									<option value="0">Не</option>
+									<option value="1" selected="selected">Да</option>
+									{% else %}
+									<option value="0" selected="selected">Не</option>
+									<option value="1">Да</option>
+									{% endif %}
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group" style="display: none;">
+							<label class="col-sm-3 control-label" for="loading_tk_transpress_insurance_amount">Сума на застраховката</label>
+							<div class="col-sm-9">
+								<input type="text" autocomplete="off" name="loading_tk_transpress_insurance_amount" value="{{ loading_tk_transpress_insurance_amount }}" placeholder="" id="loading_tk_transpress_insurance_amount" class="form-control"></div>
+						</div>    
+			
+						<div class="form-group">
+							<div class="col-sm-3">
+							</div>
+							<div class="col-sm-9">
+								<input type="submit" name="generate" class="btn btn-success" value="Създай товарителница">
+							</div>
+						</div> 
+						
+						
+					</form>
+				
+					{% endif %}
+				
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+			$('.datepicker').datetimepicker({
+					'format': 'Y-m-d H:i',
+					'closeOnDateSelect': true
+				});
+									
+			function check_depencency_loading_tk_transpress_shop_address() {
+				var showField = true;          if ($('[name="loading_tk_transpress_sender_type"]').val() !== 'shop') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_shop_address"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_shop_address"]').closest('div.form-group').hide();
+				}
+			}
+			check_depencency_loading_tk_transpress_shop_address();
+								
+			$('[name="loading_tk_transpress_sender_type"]').change(function() {
+					check_depencency_loading_tk_transpress_shop_address();
+				});      
+								
+			function check_depencency_loading_tk_transpress_sender_office() {
+				var showField = true;          if ($('[name="loading_tk_transpress_sender_type"]').val() !== 'office') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_sender_office"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_sender_office"]').closest('div.form-group').hide();
+				}
+			}
+			check_depencency_loading_tk_transpress_sender_office();
+								
+			$('[name="loading_tk_transpress_sender_type"]').change(function() {
+					check_depencency_loading_tk_transpress_sender_office();
+				});
+									
+			function check_depencency_loading_tk_transpress_fixed_price_urban_amount() {
+				var showField = true;          if ($('[name="loading_tk_transpress_fixed_price_urban"]').val() !== '1') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_fixed_price_urban_amount"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_fixed_price_urban_amount"]').closest('div.form-group').hide();
+				}
+			}
+								
+			check_depencency_loading_tk_transpress_fixed_price_urban_amount();
+								
+			$('[name="loading_tk_transpress_fixed_price_urban"]').change(function() {
+					check_depencency_loading_tk_transpress_fixed_price_urban_amount();
+				});
+									
+			function check_depencency_loading_tk_transpress_fixed_price_interurban_amount() {
+				var showField = true;          if ($('[name="loading_tk_transpress_fixed_price_interurban"]').val() !== '1') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_fixed_price_interurban_amount"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_fixed_price_interurban_amount"]').closest('div.form-group').hide();
+				}
+			}
+								
+			check_depencency_loading_tk_transpress_fixed_price_interurban_amount();
+			$('[name="loading_tk_transpress_fixed_price_interurban"]').change(function() {
+					check_depencency_loading_tk_transpress_fixed_price_interurban_amount();
+				});
+									
+			
+			function check_depencency_loading_tk_transpress_fixed_price_amount() {
+				var showField = true;          if ($('[name="loading_tk_transpress_fixed_price"]').val() !== '1') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_fixed_price_amount"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_fixed_price_amount"]').closest('div.form-group').hide();
+				}
+			}
+								
+			check_depencency_loading_tk_transpress_fixed_price_amount();
+								
+			$('[name="loading_tk_transpress_fixed_price"]').change(function() {
+					check_depencency_loading_tk_transpress_fixed_price_amount();
+				});      
+									
+			function check_depencency_loading_tk_transpress_insurance_amount() {
+				var showField = true;          if ($('[name="loading_tk_transpress_insurance"]').val() !== '1') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_insurance_amount"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_insurance_amount"]').closest('div.form-group').hide();
+				}
+			}
+								
+			check_depencency_loading_tk_transpress_insurance_amount();
+								
+			$('[name="loading_tk_transpress_insurance"]').change(function() {
+					check_depencency_loading_tk_transpress_insurance_amount();
+				});
+				
+				
+			function check_depencency_loading_tk_transpress_cd_amount() {
+				var showField = true;          if ($('[name="loading_tk_transpress_cd"]').val() !== '1') {
+					showField = false;
+				}
+				if (showField) {
+					$('[for="loading_tk_transpress_cd_amount"]').closest('div.form-group').show();
+				} else {
+					$('[for="loading_tk_transpress_cd_amount"]').closest('div.form-group').hide();
+				}
+			}
+								
+			check_depencency_loading_tk_transpress_cd_amount();
+								
+			$('[name="loading_tk_transpress_cd"]').change(function() {
+					check_depencency_loading_tk_transpress_cd_amount();
+				});
+		});
+</script>
+
+{{ footer }}

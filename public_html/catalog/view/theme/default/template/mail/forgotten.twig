@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>{{ title }}</title>
+	</head>
+	<body style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #000000;">
+		<div style="width: 100%; text-align: center; padding-top: 40px; padding-bottom: 40px ">
+    		<a href="{{ store_url }}" title="{{ store_name }}">
+        		<img src="{{ logo }}" alt="{{ store_name }}" style="margin-bottom: 20px; border: none; width: 300px" />
+    		</a>
+     		<p 
+     		    style="text-align: center;font-size: 18px;line-height: 22px;font-family: 'Nimbus-Roman','Times New Roman',sans-serif; color:#000">
+                {{ text_greeting }}
+    		</p>
+    		<p 
+                style="text-align: center;font-size: 18px;line-height: 22px;font-family: 'Nimbus-Roman', 'Times New Roman',sans-serif; color:#000; margin:0 auto;">
+                {{ text_ip }}
+    		</p>
+    		<p 
+                style="text-align: center;font-size: 18px;line-height: 22px;font-family: 'Nimbus-Roman', 'Times New Roman',sans-serif; color:#000; margin:0 auto;">
+                {{ text_change }}
+    		</p>
+    		<p style="text-align: center;">
+    			<a href="{{ reset }}" style="background-color: #E30025;border: 1px solid #E30025;border-radius: 3px; color: #ffffff; display: inline-block;padding-bottom: 2px; font-weight: bold;font-family: 'Farfetch-Basis', 'Helvetica Neue', sans-serif; font-size: 16px;line-height: 40px; text-align: center; text-decoration: none; width: 600px; "> 
+    				{{ reset_password_text }}
+    			</a> 
+    		</p>
+    		<p 
+                style="text-align: center;font-size: 16px; line-height: 22px;font-family: 'Nimbus-Roman', 'Times New Roman',sans-serif; color:#000; margin:20px auto;">
+                {{ text_ignore }}
+    		</p>
+    		
+    
+            <p 
+                style="font-size:16px; text-align:center; padding:7px; color:#000">
+                {{ text_do_not_answer }}
+                <a 	
+                	href="{{ store_contact_page }}" 
+                	title="{{ store_name }}"
+                	style=" color: #000; text-transform:uppercase; display: inline-block; margin-top: 10px ">
+                	{{ text_contact_us }}
+                </a>
+            </p>
+       
+    </div>
+</body>
+</html>

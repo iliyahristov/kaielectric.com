@@ -1,0 +1,29 @@
+{% if (payment_error_warning) %}
+	<div class="tk_alert"> {{ payment_error_warning }}</div>
+	<script>
+      $(document).ready(function () {
+          $('#tk_button_confirm').prop('disabled', false);
+      });
+	</script>
+{% endif %}
+{% if (payment_methods) %}
+	<div class="tk_payment_methods">
+		{% set counter = 0 %}
+		{% for payment_method in payment_methods %}
+			<input type="hidden" name="payment_method_popup_{{ payment_method['code'] }}" value="{{ payment_method['popup_payment'] }}"/>
+			<div class="tk_payment_method" id="payment_code_{{ payment_method['code'] }}">
+				<label for="payment_check_{{ payment_method['code'] }}">
+					<input type="radio" name="payment_method" value="{{ payment_method['code'] }}" title="{{ payment_method['title'] }}" id="payment_check_{{ payment_method['code'] }}" {% if (payment_method_code == payment_method['code']) %}checked="checked" {% elseif (counter == 0) %}checked="checked"{% endif %} />
+					<span class="payment_check_bgr">{{ payment_method['title'] }}</span>
+				</label>
+			</div>
+			{% set counter = counter + 1 %}
+		{% endfor %}
+	</div>
+{% endif %}
+<script>
+    $(document).ready(function () {
+        saveData();
+        getPaymentDisplay();
+    });
+</script>

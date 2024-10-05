@@ -1,0 +1,22 @@
+{% for total in totals %} 
+<div class="tk_totals_price c-{{ total['code'] }}">
+	<div class="tk_totals_left"><strong>{{ total['title'] }}:</strong></div>
+	<div class="tk_totals_right" >{{ total['text'] }}</div>
+	<div class="tk_clear"></div>
+</div>							
+{% endfor %} 
+<script type="text/javascript">
+	$(document).ready(function() { 
+	
+			{% if (redirect) %} 
+			location = '{{ redirect }}';
+			{% endif %}
+				
+			minCart();
+			getCartWeight();
+			getTextFreeShipping(); 
+			
+			getSave();		
+		
+		});
+</script>

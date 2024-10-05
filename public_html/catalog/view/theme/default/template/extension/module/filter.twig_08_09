@@ -1,0 +1,139 @@
+<div class="panel panel-default filter-module">
+  <div class="list-group"> {% for filter_group in filter_groups %} <a class="list-group-item"><span>{{ filter_group.name }}</span></a>
+    <div class="list-group-item kai-hidden-filter-category-item">
+      <div id="filter-group{{ filter_group.filter_group_id }}">{% for filter in filter_group.filter %}
+        <div class="checkbox">
+          <label>{% if filter.filter_id in filter_category %}
+            <input type="checkbox" name="filter[]" value="{{ filter.filter_id }}" checked="checked" />
+            {{ filter.name }}
+            {% else %}
+            <input type="checkbox" name="filter[]" value="{{ filter.filter_id }}" />
+            {{ filter.name }}
+            {% endif %}</label>
+        </div>
+        {% endfor %}</div>
+    </div>
+    {% endfor %}</div>
+  
+</div>
+<script type="text/javascript">
+function appendToDiv(div, data, page ) { 
+
+      let html = '';
+      for( let ind in data ){
+        let product = data[ind];
+        
+        html += '<div class="product-layout product-grid product-grid-3 col-lg-4 col-md-4 col-sm-6 col-xs-12" data-page="'+ page +'">';
+      html += '<div class="product-item-container">';   
+    html += '<div class="left-block left-b">';
+      html += '<div class="product-image-container">';
+      html += '<a href="' + product.href + '" title="' + product.name + '">';
+      html += '<img  data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' + product.thumb + '"  title="' + product.name + '" class="lazyload img-responsive" />';
+      html += '</a>';
+      html += '</div>';
+      html += '</div>';       
+      html += '<div class="right-block right-b">';
+      html += '<h4><a href="' + product.href + '" target="_blank">' + product.name + '</a></h4>';
+      if ( product.price ){ 
+      html += '<div class="price">';
+        if ( !product.special ) {
+          html += '<span class="price-new">' + product.price + '</span>';
+        }else {   
+          html += '<span class="price-new">' + product.special + '</span> <span class="price-old">' + product.price + '</span>';
+        } 
+      html += '</div>';
+      }         
+      html += '<div class="description">';
+      html += '<p>' + product.description + '</p>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      }
+        
+       div.append( html )
+    }
+
+
+$('.filter-module input[type=checkbox]').on('change', function(e) {
+    console.log(1)
+//   e.preventDefault();
+
+	filter = [];
+
+	$('input[name^=\'filter\']:checked').each(function(element) {
+		filter.push(this.value);
+	});
+  
+  $.ajax({
+      url: 'index.php?route=product/category/load_products',
+      type: 'get',
+      data: 'path={{ path }}&page=1&limit=12&filter=' + filter.join(','),
+      dataType: 'json',
+          success:function( response ){ 
+            let html = '', data = response.products, page = 1 ;
+      for( let ind in data ){
+        let product = data[ind];
+        
+        html += '<div class="product-layout product-grid product-grid-3 col-lg-4 col-md-4 col-sm-6 col-xs-12" data-page="'+ page +'">';
+      html += '<div class="product-item-container">';   
+        html += '<div class="left-block left-b">';
+      html += '<div class="product-image-container">';
+      html += '<a href="' + product.href + '" title="' + product.name + '">';
+      html += '<img  data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="' + product.thumb + '"  title="' + product.name + '" class="lazyload img-responsive" />';
+      html += '</a>';
+      html += '</div>';
+      html += '</div>';       
+      html += '<div class="right-block right-b">';
+      html += '<h4><a href="' + product.href + '" target="_blank">' + product.name + '</a></h4>';
+      if ( product.price ){ 
+      html += '<div class="price">';
+        if ( !product.special ) {
+          html += '<span class="price-new">' + product.price + '</span>';
+        }else {   
+          html += '<span class="price-new">' + product.special + '</span> <span class="price-old">' + product.price + '</span>';
+        } 
+      html += '</div>';
+      }         
+      html += '<div class="description">';
+      html += '<p>' + product.description + '</p>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+      }
+        
+      $('.products-list').html( html )
+          }
+        });
+});
+
+    $(".filter-module a.list-group-item").on('click', function(e){
+       
+       let filterItems = $(this).next();
+        if( filterItems.hasClass('kai-hidden-filter-category-item') ){
+            filterItems.removeClass('kai-hidden-filter-category-item').css({
+                borderStyle:'solid',
+                borderWidth: '1px',
+                borderColor: '#ccc',
+                borderLeft: 'none',
+                borderRight: 'none',
+                borderBottom: 'none'
+            })
+           
+            $(this).find('span').css({
+                borderStyle:'solid',
+                borderWidth: '3px',
+                borderColor: ' #E30025',
+                borderLeft: 'none',
+                borderTop: 'none',
+                borderRight: 'none'
+            })
+        } else {
+            filterItems.addClass('kai-hidden-filter-category-item').css('border-top', 'none')
+            $(this).find('span').css('border-bottom', 'none')
+        }
+    })
+
+
+</script> 
