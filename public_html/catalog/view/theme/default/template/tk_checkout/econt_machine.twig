@@ -1,0 +1,386 @@
+<div id="tk_econt_machine">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span> 
+			<span class="tk_panel_text"> {{ text_econt_machine_title }}</span> 
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+								
+		
+		</div>				
+	
+		<div class="tk_panel_body">
+
+			<div id="tk_econt_machines">
+
+				<input type="hidden" id="shipping_to" name="shipping_to" value="machine" />
+				<input type="hidden" id="shipping_type" name="shipping_type" value="econt" />
+				
+				{% if module_tk_checkout_zone is not defined or module_tk_checkout_zone == 0 %} 
+				<input type="hidden" id="zone_id" name="zone_id" value="{{ zone_id }}" />
+				{% endif %} 
+	
+			
+				{% if econt_machines_customer %}
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="econt_machine_type" value="existing" checked="checked" {% if (econt_machine_type is defined and econt_machine_type == 'existing') %}checked=""{% endif %} onclick="jQuery('#econt_machine_new').hide();jQuery('#tk_econt_machine_existing').show();" />
+						
+						{{ text_address_existing }}
+					</label>
+				</div>
+				<div id="tk_econt_machine_existing">
+					<div class="tk_12_column tk_center_column">
+						<select name="econt_machine_customer_id">
+				
+							{% for econt_machine_customer in econt_machines_customer %} 
+								
+							<option value="{{ econt_machine_customer['econt_customer_id'] }}" {% if (econt_machine_customer_id is defined and econt_machine_customer['econt_customer_id'] == econt_machine_customer_id) %}selected="selected"{% endif %}>{{ econt_machine_customer['office_name'] }}</option>
+								
+							{% endfor %} 
+						</select>
+						
+					</div>
+				</div>	 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						
+						<input type="radio" name="econt_machine_type" value="new" {% if (econt_machine_type is defined and econt_machine_type == 'new') %}checked=""{% endif %} onclick="jQuery('#econt_machine_new').show();jQuery('#tk_econt_machine_existing').hide();"/>
+						{{ text_address_new }}
+					</label>
+				</div>
+				
+				 {% else %}
+				<input type="hidden" name="econt_machine_type" value="new">
+				{% endif %} 
+
+			
+				<div id="econt_machine_new" {% if (not econt_machines_customer or (econt_machine_type is defined and econt_machine_type == 'new')) %} style="display:block"{% else %}style="display:none"{% endif %}>
+				
+					<div class="tk_6_column tk_center_column tk_econt_machine_city_select tk_required_box {% if econt_machine_city %} tk_redy_box{% endif %}" id="tk_econt_machine_city_select">
+				
+					
+						<input type="text" id="econt_machine_city_select" readonly="true" name="econt_machine_city_select" value="{{ econt_machine_city }}" placeholder="{{ text_econt_machine_city }}" />
+						<span class="tk_floating_label">{{ text_econt_machine_city|replace({ ":": "" }) }}</span>
+						
+			
+					</div>
+
+				
+					<div class="tk_6_column tk_center_column tk_econt_office_select tk_required_box {% if (((econt_machines|length) < 1 or econt_machine_code) and econt_machine_city_id) %} tk_redy_box{% endif %}" id="tk_econt_machine_id">
+		
+						<input type="text" id="econt_machine_select" readonly="true" name="econt_machine_select" value="{% if (econt_machine_code) %}{{ econt_machine_code ~ ' ' ~ econt_machine_name }}{% endif %}" placeholder="{{ text_econt_machine_title }}" {% if (not econt_machine_city_id) %}disabled=""{% endif %} />
+						<span class="tk_floating_label">{{ text_econt_machine_title|replace({ ":": "" }) }}</span>
+						
+					
+						{% if error_machine and error_machine %}
+						<span class="tk_text_error">{{ error_machine }}</span>
+						{% endif %}
+				
+					</div>
+					<div class="tk_clear"></div>
+					<div class="tk_12_column tk_center_column ">
+						<input type="hidden" id="econt_machine_code" name="econt_machine_code" value="{{ econt_machine_code }}" />
+						<input type="hidden" id="econt_machine_name" name="econt_machine_name" value="{{ econt_machine_name }}" />
+						<input type="hidden" id="econt_machine_address" name="econt_machine_address" value="{{ econt_machine_address }}" />
+						<input type="hidden" id="econt_machine_city" name="econt_machine_city" value="{{ econt_machine_city }}">
+						<input type="hidden" id="econt_machine_postcode" name="econt_machine_postcode" value="{{ econt_machine_postcode }}" />
+						<input type="hidden" id="econt_machine_city_id" name="econt_machine_city_id" value="{{ econt_machine_city_id }}">
+						<input type="hidden" id="econt_machine_id" name="econt_machine_id" value="{{ econt_machine_id }}">
+					</div>
+				</div>
+				
+				<div class="tk_clear"></div>		
+			</div>
+				
+			{% if (econt_sms_enabled) %} 
+			<div class="tk_12_column tk_center_column">
+				<input type="checkbox" name="econt_sms" id="econt_sms" value="1" {% if (econt_sms and econt_sms == 2) %}checked=""{% endif %}>
+				<label for="econt_sms"> {{ text_sms }}</label>
+			</div>
+			{% endif %}	
+		</div>	
+	</div>	
+</div>
+
+<div class="econt_machine_city_container radio_container mfp-hide" id="econt_machine_city_locator">
+	<div class="radio_search">
+		<input id="econt_machine_city_search" name="econt_machine_city_search" type="text" placeholder="Търсене.." class="radio_box_search">
+	</div>
+	<div class="radio_box">
+		{% for econt_city in econt_cities %}
+		<div class="radio_elements">
+			<label>
+			
+				<input type="radio" name="tk_econt_machine_city_id" value="{{ econt_city['city_id'] }}" {% if (econt_machine_city_id is defined and econt_city['city_id'] == econt_machine_city_id) %}checked=""{% endif %} data-name="{{ econt_city['name'] }}">{{ econt_city['name'] }} 
+			</label>
+		</div>
+		{% endfor %} 
+	</div>
+</div>
+
+<div class="econt_machine_container radio_container mfp-hide" id="econt_machine_id_locator">
+	<div class="radio_search">
+		<input id="econt_machine_search" name="econt_machine_search" type="text" placeholder="Търсене.." class="radio_box_search">
+	</div>
+	<div class="radio_box">
+		{% for machine in econt_machines %}
+		<div class="radio_elements">
+			<label>
+
+				<input type="radio" name="tk_econt_machine_id" value="{{ machine['office_id'] }}" {% if (econt_machine_id is defined and machine['office_id'] == econt_machine_id) %}checked=""{% endif %} data-name="{{ machine['office_code'] }} {{ machine['name'] }}">
+				<span>{{ machine['office_code'] }}</span> <strong>{{ machine['name'] }}</strong> <br> <i>{{ machine['address'] }}</i>
+			</label>
+		</div>
+		{% endfor %} 
+	</div>
+</div>
+
+<script>
+
+	$(document).ready(function() { 
+		getPaymentMethod();
+	});
+	
+	$(document).on('click', '#econt_sms', function(e) { 
+		e.stopImmediatePropagation();
+		$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+		$('#tk_checkout').css('opacity','0.6');
+		$('#tk_checkout').css('pointer-events','none');
+		$('#tk_button_confirm').prop('disabled', true);	
+			
+		getShippingMethodAddress();
+			
+	});
+		
+	//попъп за градове
+	$(document).on('click', '#econt_machine_city_select', function(e) { 
+		e.stopImmediatePropagation();
+			$.magnificPopup.open( { 
+					type: 'inline',
+					items: { src: '#econt_machine_city_locator' } 
+				 } );
+			setTimeout(function () { 
+					$('#econt_machine_city_search').focus();
+				 } , 200);
+		 } );
+	 
+	//въвеждане на град ръчно
+	$("#econt_machine_city_search").on("keyup", function(e) { 
+			e.stopImmediatePropagation();
+			var value = $(this).val().toLowerCase();
+			var bg_value = transliterate(value);
+			var en_value = transliterateEN(value);
+			$("#econt_machine_city_locator .radio_box .radio_elements").filter(function() { 
+					$(this).toggle(($(this).text().toLowerCase().indexOf(value) > -1 || $(this).text().toLowerCase().indexOf(bg_value) > -1 || $(this).text().toLowerCase().indexOf(en_value) > -1));
+				 } );
+		 } );
+
+	//добавяне на селектирания град и извеждаме офисите спрямо него
+	$(document).delegate('#econt_machine_city_locator .radio_box input[type=\'radio\']', 'click', function(e) { 
+			e.stopImmediatePropagation();
+			var econt_machine_city_id = $(this).val();
+			var econt_machine_city = $(this).data('name');
+			$('#econt_machine_city_id').val(econt_machine_city_id);
+			$('#econt_machine_city').val(econt_machine_city);
+			$('#econt_machine_city_select').val(econt_machine_city);
+		
+			$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+			$('#tk_checkout').css('opacity','0.6');
+			$('#tk_checkout').css('pointer-events','none');
+			$('#tk_button_confirm').prop('disabled', true);	
+			getOfficesByCityId();
+			$.magnificPopup.close()
+
+		 } );
+
+	//попъп за офиси
+	$(document).on('click', '#econt_machine_select', function(e) { 
+			e.stopImmediatePropagation();
+			$.magnificPopup.open( { 
+					type: 'inline',
+					items: { src: '#econt_machine_id_locator' } 
+				 } );
+			setTimeout(function () { 
+					$('#econt_machine_search').focus();
+				 } , 500);
+		 } );
+	 
+	//въвеждане на офис ръчно
+	$("#econt_machine_search").on("keyup", function(e) { 
+			e.stopImmediatePropagation();
+			var value = $(this).val().toLowerCase();
+			var bg_value = transliterate(value);
+			var en_value = transliterateEN(value);
+			$("#econt_machine_id_locator .radio_box .radio_elements").filter(function() { 
+					$(this).toggle(($(this).text().toLowerCase().indexOf(value) > -1 || $(this).text().toLowerCase().indexOf(bg_value) > -1 || $(this).text().toLowerCase().indexOf(en_value) > -1));
+				 } );
+		 } );
+
+	//добавяне на селектирания офис и извеждаме данните за него
+	$(document).delegate('#econt_machine_id_locator .radio_box input[type=\'radio\']', 'click', function(e) { 
+			e.stopImmediatePropagation();
+			var econt_machine_id = $(this).val();
+			var econt_machine_name = $(this).data('name');
+			$('#econt_machine_id').val(econt_machine_id);
+			$('#econt_machine_name').val(econt_machine_name);
+			$('#econt_machine_select').val(econt_machine_name);
+			getOffice();
+			saveData();
+			$.magnificPopup.close()
+		 } );
+
+
+	
+	//извежда офисите спрямо града и извиква призчислени методи за доставка => извежда преизчислени тотали в количката
+	//извиква данните за офиса ако е само 1
+	function getOfficesByCityId() { 
+		$('.tk_econt_machine_select').removeClass('tk_redy_box');
+		
+		$('#econt_machine_id').val('');
+		$('#econt_machine_code').val('');
+		$('#econt_machine_name').val('');
+		$('#econt_machine_select').val('');
+		$('#econt_machine_address').val('');
+		$('#econt_machine_city').val('');
+		$('#econt_machine_city_select').val('');
+		$('#econt_machine_postcode').val('');
+
+		machine_city_id = $('#econt_machine_city_id').val();
+
+		$.ajax( { 
+				url: 'index.php?route=extension/shipping/tk_econt/getOfficesByCityId&is_machine=1',
+				type: 'POST',
+				data: 'city_id=' + encodeURIComponent(machine_city_id),
+				dataType: 'json',
+				success: function(data) { 
+					if (data) { 
+
+						$('#econt_machine_city').val(data.office_city);
+						$('#econt_machine_city_select').val(data.office_city);
+						$('#econt_machine_select').prop("disabled", false);
+						
+						//ако има повече от 1 офис изкаравме селектор, ако не слектираме автоматично
+						if(data.offices_count > 1) { 
+							html_popup = '';
+		
+								{% if (econt_machine_id) %} 
+									var machine_id = {{ econt_machine_id }};
+								{% else %} 
+									var machine_id = 0;
+								{% endif %} 
+							
+							for (i = 0; i < data.offices.length; i++) { 
+								if(machine_id == data.offices[i]['office_id']) { 
+									var machine_checked = 'checked=""';
+								 } else { 
+									var machine_checked = '';
+								 } 
+									 
+								html_popup += '<div class="radio_elements"><label><input type="radio" name="tk_econt_machine_id" value="' + data.offices[i]['office_id'] + '" ' + machine_checked + ' data-name="' + data.offices[i]['office_code'] + ' ' + data.offices[i]['name'] + '" ><span>' + data.offices[i]['office_code'] + '</span> <strong>' + data.offices[i]['name'] + '</strong><br> <i>' + data.offices[i]['address'] + '</i></label></div>';
+								
+							 } 
+						
+							$('.tk_econt_machine_city_id').addClass('tk_redy_box');
+							$('#econt_machine_id_locator .radio_box').html(html_popup);
+							$('#econt_machine_select').val('{{ text_econt_machine_title }}');
+
+						 } else { 
+							html_popup = '';
+								
+							for (i = 0; i < 1; i++) { 
+								html_popup += '<div class="radio_elements"><label><input type="radio" name="tk_econt_machine_id" value="' + data.offices[i]['office_id'] + '" checked="" data-name="' + data.offices[i]['office_code'] + ' ' + data.offices[i]['name'] + '"><span>' + data.offices[i]['office_code'] + '</span> <strong>' + data.offices[i]['name'] + '</strong><br> <i>' + data.offices[i]['address'] + '</i></label></div>';
+									
+								econt_machine_id = data.offices[i]['office_id'];
+								econt_machine_name = data.offices[i]['office_code'] + ' ' + data.offices[i]['name'];
+							 } 
+							 
+							$('.tk_econt_machine_select').addClass('tk_redy_box');
+							$('.tk_econt_machine_city_select').addClass('tk_redy_box');
+								
+							$('#econt_machine_id_locator .radio_box').html(html_popup);
+							$('#econt_machine_id').val(econt_machine_id);
+							$('#econt_machine_name').val(econt_machine_name);
+							$('#econt_machine_select').val(econt_machine_name);
+
+							getOffice();
+						 } 	
+					 } 
+					 
+					 getShippingMethodAddress();
+				 } 
+			 } );
+	 } 
+	
+	//извиква данните за офиса
+	function getOffice() { 
+		$('#econt_machine_code').val('');
+		machine_id = $('#econt_machine_id').val();
+		$.ajax( { 
+				url: 'index.php?route=extension/shipping/tk_econt/getOffice',
+				type: 'POST',
+				data: 'office_id=' + encodeURIComponent(machine_id),
+				dataType: 'json',
+				success: function(data) { 
+		
+					if (data && data.office_code) { 
+						$('#econt_machine_code').val(data.office_code);
+						$('#econt_machine_name').val(data.name);
+						$('#econt_machine_select').val(data.office_code + ' ' + data.name);
+						$('#econt_machine_address').val(data.address);
+						$('#econt_machine_city').val(data.office_city);
+						$('#econt_machine_city_select').val(data.office_city);
+						$('#econt_machine_postcode').val(data.post_code);
+						$('.tk_econt_machine_select').addClass('tk_redy_box');
+					 } 
+				 } 
+			 } );
+	 } 
+	
+	//извиква данните за офиса спярмо кода му, позлв се за селектора от картата
+	function getOfficeByOfficeCode(machine_code) { 
+		if (parseInt(machine_code)) { 
+			$.ajax( { 
+					url: 'index.php?route=extension/shipping/tk_econt/getOfficeByOfficeCode',
+					type: 'POST',
+					data: 'office_code=' + parseInt(machine_code),
+					dataType: 'json',
+					success: function(data) { 
+						if (!data.error) { 
+							$('#econt_machine_city_id').val(data.city_id);
+
+							$('#econt_machine_id').val(data.office_id);
+							$('#econt_machine_code').val(machine_code);
+							$('#econt_machine_name').val(data.name);
+							$('#econt_machine_select').val(data.office_code + ' ' + data.name);
+							$('#econt_machine_address').val(data.address);
+							$('#econt_machine_city').val(data.office_city);
+							$('#econt_machine_city_select').val(data.office_city);
+							$('#econt_machine_postcode').val(data.post_code);
+							$('.tk_econt_machine_select').addClass('tk_redy_box');
+						 } 
+					 } 
+				 } );
+		 } 
+	 } 
+	
+	//транслитерация за търсачката
+	function transliterate(word) { 
+		return word.split('').map(function (char) { 
+				return Lat2Cyr[char] || char; 
+			 } ).join("");
+	 } 
+
+	Lat2Cyr= { "a":"а","b":"б","c":"ц","d":"д","e":"е","f":"ф","g":"г","h":"х","i":"и","j":"ј","k":"к","l":"л","m":"м","n":"н","o":"о","p":"п","q":"","r":"р","s":"с","t":"т","u":"у","v":"в","w":"","x":"","y":"","z":"з","A":"А","B":"Б","C":"Ц","D":"Д","E":"Е","F":"Ф","G":"Г","H":"Х","I":"И","J":"Ј","K":"К","L":"Л","M":"М","N":"Н","O":"О","P":"П","Q":"","R":"Р","S":"С","T":"Т","U":"У","V":"В","W":"","X":"","Y":"","Z":"З","č":"ч","ć":"ћ","đ":"ђ","ž":"ж","š":"ш","Č":"Ч","Ć":"Ћ","Đ":"Ђ","Ž":"Ж","Š":"Ш" } ;
+	
+	//транслитерация за търсачката
+	function transliterateEN(word) { 
+		return word.split('').map(function (char) { 
+				return getKeyByValue(Lat2Cyr,char) || char; 
+			 } ).join("");
+	 } 
+	 
+	function getKeyByValue(object, value) {
+	  	return Object.keys(object).find(key => object[key] === value);
+	}
+
+</script>

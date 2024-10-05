@@ -1,0 +1,1137 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				<button type="submit" form="form-checkout" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+			<h1>{{ heading_title_main }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		<span id="data_error"></span>
+		{% if error_warning %}
+		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		{% if success %}
+		<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+			</div>
+			<div class="panel-body">
+				<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-checkout" class="form-horizontal">
+          
+          
+					{% if module_tk_checkout_token %}
+					
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab-general" data-toggle="tab">{{ tab_general_s }}</a></li>
+						<li><a href="#tab-fields" data-toggle="tab">{{  tab_fields }}</a></li>
+						<li><a href="#tab-design" data-toggle="tab">{{ tab_design }}</a></li>
+						<li><a href="#tab-mails" data-toggle="tab">{{ tab_mails }}</a></li>
+						<li><a href="#tab-facebook" data-toggle="tab">{{ tab_facebook }}</a></li>
+						<li><a href="#tab-lang" data-toggle="tab">{{ tab_lang }}</a></li>
+					</ul>
+					
+					<div class="tab-content">
+			          
+						<div class="tab-pane active" id="tab-general">
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-status">{{ entry_status }}</label>
+								<div class="col-sm-9">
+									<select name="module_tk_checkout_status" id="input-status" class="form-control">
+										{% if module_tk_checkout_status %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-skip-cart">{{ entry_skip_cart }}</label>
+								<div class="col-sm-9">
+									<select name="module_tk_checkout_skip_cart" id="input-skip-cart" class="form-control">
+										{% if  module_tk_checkout_skip_cart %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-skip-cart">Автоматично попълване на полета от браузър (autocomplete)</label>
+								<div class="col-sm-9">
+									<select name="module_tk_checkout_autocomplete" id="input-skip-cart" class="form-control">
+										{% if  module_tk_checkout_autocomplete %}
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %}
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_token">{{ entry_min }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_min" value="{{ module_tk_checkout_min }}" placeholder="{{ entry_min }}" id="input-module_tk_checkout_min" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">{{ entry_min_text }}</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+									<div class="input-group" style="margin-bottom: 5px">
+										<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+										<input type="text" name="module_tk_checkout_text[{{ language.language_id }}][min]" value="{{ module_tk_checkout_text[language.language_id].min ? module_tk_checkout_text[language.language_id].min }}" placeholder="{{ entry_min_text }}" class="form-control" />
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_token">{{ entry_max }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_max" value="{{ module_tk_checkout_max }}" placeholder="{{ entry_max }}" id="input-module_tk_checkout_max" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">{{ entry_max_text }}</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="module_tk_checkout_text[{{ language.language_id }}][max]" value="{{ module_tk_checkout_text[language.language_id].max ? module_tk_checkout_text[language.language_id].max }}" placeholder="{{ entry_max_text }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><span data-toggle="tooltip" title="Избери суми които да се използват за пресмятане на субтотал на поръчката - участва в пресмятането на минимална и максимална сума.">Избери суми /прескочи ако не си наясно/</span></label>
+								<div class="col-sm-9">
+									<div class="well well-sm" style="height: 180px; overflow: auto;" id="totals">
+										{% for total in oc_totals %}
+											<div class="checkbox col-sm-4"><label><input type="checkbox" name="module_tk_checkout_totals[]" value="{{ total.code }}" {% if total.code in module_tk_checkout_totals %}checked="checked"{% endif %} />{{ total.name }}</label></div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-debug">Разреши дебъг опция</label>
+								<div class="col-sm-9">
+									<select name="module_tk_checkout_debug" id="input-debug" class="form-control">
+										{% if module_tk_checkout_debug %}
+											<option value="1" selected="selected">{{ text_enabled }}</option>
+											<option value="0">{{ text_disabled }}</option>
+										{% else %}
+											<option value="1">{{ text_enabled }}</option>
+											<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %}
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_token">API TOKEN</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_token" value="{{ module_tk_checkout_token }}" placeholder="API TOKEN" id="input-module_tk_checkout_token" class="form-control" />
+									<input type="hidden" name="module_tk_checkout_api_url" value="{{ module_tk_checkout_api_url }}" />
+								</div>
+							</div>
+					
+						</div>
+          				
+						<div class="tab-pane" id="tab-fields">
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-country">{{ entry_country }}</label>
+								<div class="col-sm-9">
+									<div class="content-countries block-countries scroll-wrapper">
+										<div class="well scroll">
+											<div class="scroll-inner">
+												{% for country in countries %}
+												<div class="checkbox col-sm-3">
+													<label><input type="checkbox" name="module_tk_checkout_country[]" value="{{ country.country_id }}" {% if country.country_id in module_tk_checkout_country %}checked="checked"{% endif %} /> {{ country.name }}</label>
+												</div>
+												{% endfor %}
+												<div class="clearfix"></div>
+											</div>
+										</div>
+										<div class="scroll-footer">
+											<a class="expand-switcher"><i class="fa fa-angle-double-down"></i></a>
+											<a class="select-all">{{ text_select_all }}</a>
+											<a class="select-none">{{ text_select_none }}</a>
+										</div>
+									</div>	
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >{{ entry_customer_group }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_customer_group" value="0" {% if module_tk_checkout_customer_group == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_disabled }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_customer_group" value="1" {% if module_tk_checkout_customer_group == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled_personal }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_customer_group" value="2" {% if module_tk_checkout_customer_group == '2' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled_register }}</span>
+									</label>
+								
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >{{ entry_zone }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_zone" value="0" {% if module_tk_checkout_zone == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_disabled }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_zone" value="1" {% if module_tk_checkout_zone == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled_personal }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_zone" value="2" {% if module_tk_checkout_zone == '2' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled_address }}</span>
+									</label>
+									
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_required_phone">{{ entry_required_phone }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_phone" value="0" {% if module_tk_checkout_required_phone == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_required }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_phone" value="1" {% if module_tk_checkout_required_phone == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_not_required }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_phone" value="2" {% if module_tk_checkout_required_phone == '2' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_not_strong_required }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_phone" value="3" {% if module_tk_checkout_required_phone == '3' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_hidden }}</span>
+									</label>
+									
+								</div>
+							</div>
+												
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >{{ entry_required_email }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_email" value="0" {% if module_tk_checkout_required_email == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_required }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_email" value="2" {% if module_tk_checkout_required_email == '2' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_not_required }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_email" value="1" {% if module_tk_checkout_required_email == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_not_required_with_check }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_required_email" value="3" {% if module_tk_checkout_required_email == '3' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_hidden }}</span>
+									</label>
+								</div>
+							</div>
+							
+							<div class="form-group block-module_tk_checkout_customer_mail" {% if module_tk_checkout_required_email > 0 %}style="display: block"{% else %}style="display: none"{% endif %}>
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_customer_mail">{{ text_new_email }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_customer_mail" value="{{ module_tk_checkout_customer_mail }}" placeholder="{{ entry_email }}" id="input-module_tk_checkout_customer_mail" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >{{ entry_register }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_register" value="0" {% if module_tk_checkout_register == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled_final }}</span>
+									</label>
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_register" value="2" {% if module_tk_checkout_register == '2' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled_personal }}</span>
+									</label>
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_register" value="3" {% if module_tk_checkout_register == '3' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_random_password }}</span>
+									</label>
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_register" value="1" {% if module_tk_checkout_register == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_disabled }}</span>
+									</label>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_agree }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_agree" value="0" {% if module_tk_checkout_agree == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_disabled }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_agree" value="1" {% if module_tk_checkout_agree == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled }}</span>
+									</label>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_agree_2 }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_agree_2" value="0" {% if module_tk_checkout_agree_2 == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_disabled }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_agree_2" value="1" {% if module_tk_checkout_agree_2 == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled }}</span>
+									</label>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_payment }}</label>
+								<div class="col-sm-9">
+							
+									<div class="well well-sm" style="height: 100px; overflow: auto;">
+										{% for payment in payments %}
+										<div class="checkbox col-sm-3">
+											<label>
+												{% if payment.code in module_tk_checkout_popup_payments %}
+												<input type="checkbox" name="module_tk_checkout_popup_payments[]" value="{{ payment.code }}" checked="checked" />
+												{{ payment.name }}
+												{% else %}
+												<input type="checkbox" name="module_tk_checkout_popup_payments[]" value="{{ payment.code }}" />
+												{{ payment.name }}
+												{% endif %}
+											</label>
+										</div>
+										{% endfor %}
+									</div>
+									<div class="alert alert-warning">{{ help_payment }}</div>
+								</div>
+							</div>
+							
+							{% if custom_fields %}
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="module_tk_checkout_invoice">{{ text_invoice }}</label>
+								<div class="col-sm-9">
+									<select name="module_tk_checkout_invoice" id="module_tk_checkout_invoice" class="form-control">
+										<option value="9999">{{ text_no_invoice}}</option>
+										{% for custom_field in custom_fields %}
+										{% if custom_field.custom_field_id == module_tk_checkout_invoice %}
+										<option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+										{% else %}
+										<option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							{% else %}
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="module_tk_checkout_invoice">{{ text_invoice_add }}</label>
+								<div class="col-sm-9">
+									<div>
+										<a class="btn btn-primary" id="button_invoice_add" onclick="invoiceAdd();">{{ button_invoice_add }}</a>
+									</div>
+									<br>
+									<div class="alert alert-warning">{{ help_invoice_add }}</div>
+								</div>
+								
+							</div>
+							{% endif %}
+					
+						</div>
+					
+						<div class="tab-pane" id="tab-design">
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-theme">{{ entry_theme }}</label>
+								<div class="col-sm-9">
+									<select name="module_tk_checkout_theme" id="input-theme" class="form-control">
+										<option value="0" {% if  0 == module_tk_checkout_theme %}selected="selected"{% endif %}>{{ entry_default }}</option>
+										<option value="1" {% if  1 == module_tk_checkout_theme %}selected="selected"{% endif %}>Journal 2</option>
+										<option value="3" {% if  3 == module_tk_checkout_theme %}selected="selected"{% endif %}>Journal 2 (old)</option>
+										<option value="2" {% if  2 == module_tk_checkout_theme %}selected="selected"{% endif %}>Journal 3</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >{{ entry_column }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_column" value="1" {% if module_tk_checkout_column == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_1_column }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_column" value="2" {% if module_tk_checkout_column == '2' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_2_column }}</span>
+									</label>
+									
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" >{{ entry_title }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_title" value="0" {% if module_tk_checkout_title == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_title_in }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_title" value="1" {% if module_tk_checkout_title == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_title_out }}</span>
+									</label>
+									
+								</div>
+							</div>
+          
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_color }}</label>
+								<div class="col-sm-9">
+									<div id="color-default" class="input-group colorpicker-component">
+										<span class="input-group-addon"><i></i></span>
+										<input type="text" name="module_tk_checkout_color" value="{{ module_tk_checkout_color }}" placeholder="#229ac8" class="form-control" />
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_color_button }}</label>
+								<div class="col-sm-9">
+									<div id="color-button" class="input-group colorpicker-component">
+										<span class="input-group-addon"><i></i></span>
+										<input type="text" name="module_tk_checkout_color_button" value="{{ module_tk_checkout_color_button }}" placeholder="#22711f" class="form-control" />
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_color_button_hover }}</label>
+								<div class="col-sm-9">
+									<div id="color-button_hover" class="input-group colorpicker-component">
+										<span class="input-group-addon"><i></i></span>
+										<input type="text" name="module_tk_checkout_color_button_hover" value="{{ module_tk_checkout_color_button_hover }}" placeholder="#1c6319" class="form-control" />
+										
+									</div>
+								</div>
+							</div>
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-size">{{ entry_size }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_size" value="{{ module_tk_checkout_size }}" placeholder="1140" id="input-size" class="form-control" />
+								</div>
+							</div>
+							
+							
+							{% if payments %}
+							<hr>
+							<div class="col-sm-3"></div>
+							<div class="col-sm-9">
+								<h3>{{ entry_payment_image}}</h3>
+							</div>
+							<div class="clearfix"></div>
+							<hr>
+					
+							{% for payment in payments %}
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ payment.name }}</label>
+								<div class="col-sm-9">
+									<a href="" id="thumb-image{{ payment.code }}" data-toggle="image" class="img-thumbnail">
+										<img src="{{ module_tk_checkout_payment_image[payment.code]['thumb'] }}" alt="" title="" data-placeholder="{{ placeholder }}" />
+									</a>
+									<input type="hidden" name="module_tk_checkout_payment_image[{{ payment.code }}]" value="{{ module_tk_checkout_payment_image[payment.code]['image'] }}" id="input-image{{ payment.code }}" />
+								</div>
+							</div>
+							{% endfor %}
+							{% endif %}
+							
+							{% if shippings %}
+							<hr>
+							<div class="col-sm-3"></div>
+							<div class="col-sm-9">
+								<h3>{{ entry_shipping_image}}</h3>
+							</div>
+							<div class="clearfix"></div>
+							<hr>
+					
+							{% for shipping in shippings %}
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ shipping.name }}</label>
+								<div class="col-sm-9">
+									<a href="" id="thumb-image{{ shipping.code }}" data-toggle="image" class="img-thumbnail">
+										<img src="{{ module_tk_checkout_shipping_image[shipping.code]['thumb'] }}" alt="" title="" data-placeholder="{{ placeholder }}" />
+									</a>
+									<input type="hidden" name="module_tk_checkout_shipping_image[{{ shipping.code }}]" value="{{ module_tk_checkout_shipping_image[shipping.code]['image'] }}" id="input-image{{ shipping.code }}" />
+								</div>
+							</div>
+							{% endfor %}
+							{% endif %}
+							
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_css">CUSTOM CSS</label>
+								<div class="col-sm-9">
+									<textarea class="form-control" rows="6" name="module_tk_checkout_css"   >{{ module_tk_checkout_css }}</textarea>
+							
+								</div>
+							</div>
+					
+						</div>
+						
+						<div class="tab-pane" id="tab-mails">
+							
+							<div class="form-group">
+								<div class="col-sm-3 text-right"><p><b>{{ text_mail_status }}:</b></p></div>
+								<div class="col-sm-9">
+									<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}catalog/controller/tk_checkout/cron_abandoned_cart.php {{ web_url }} > /dev/null 2>&1</p>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ entry_mail_status }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_mail[status]" value="0" {% if module_tk_checkout_mail['status'] == '0' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_disabled }}</span>
+									</label>
+									
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_mail[status]" value="1" {% if module_tk_checkout_mail['status'] == '1' %}checked="checked"{% endif %} />
+										<span class="btn btn-default">{{ text_enabled }}</span>
+									</label>
+								</div>
+							</div>
+							
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">{{ text_mail_width }} </label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_mail[width]" value="{{ module_tk_checkout_mail['width'] }}" class="form-control"/>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ text_mail_products }}</label>
+								<div class="col-sm-9">
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_mail[products][status]" value="0" {% if module_tk_checkout_mail['products']['status'] == 0 %}checked="checked"{% endif %}/>
+										<span class="btn btn-danger">{{ text_disabled }}</span>
+									</label>
+									<label class="button-label">
+										<input type="radio" name="module_tk_checkout_mail[products][status]" value="1" {% if module_tk_checkout_mail['products']['status'] == 1 %}checked="checked"{% endif %}/>
+										<span class="btn btn-default">{{ text_enabled }}</span>
+									</label>
+								</div>
+							</div>
+							
+							<div class="module_tk_checkout_mail_products" {% if module_tk_checkout_mail['products']['status'] == 1 %}style="display:block" {% else %}style="display:none"{% endif %}>
+								
+								<hr style="clear:both">
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label">{{ text_mail_products_image }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][image]" value="0" {% if module_tk_checkout_mail['products']['image'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][image]" value="1" {% if module_tk_checkout_mail['products']['image'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_name }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][name]" value="0" {% if module_tk_checkout_mail['products']['name'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][name]" value="1" {% if module_tk_checkout_mail['products']['name'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<hr style="clear:both">
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_tax }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][tax]" value="0" {% if module_tk_checkout_mail['products']['tax'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][tax]" value="1" {% if module_tk_checkout_mail['products']['tax'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_model }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][model]" value="0" {% if module_tk_checkout_mail['products']['model'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][model]" value="1" {% if module_tk_checkout_mail['products']['model'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<hr style="clear:both">
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_sku }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][sku]" value="0" {% if module_tk_checkout_mail['products']['sku'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][sku]" value="1" {% if module_tk_checkout_mail['products']['sku'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_quantity }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][quantity]" value="0" {% if module_tk_checkout_mail['products']['quantity'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][quantity]" value="1" {% if module_tk_checkout_mail['products']['quantity'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<hr style="clear:both">
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_price }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][price]" value="0" {% if module_tk_checkout_mail['products']['price'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][price]" value="1" {% if module_tk_checkout_mail['products']['price'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+									
+									<label class="col-sm-3 control-label">{{ text_mail_products_total }}</label>
+									<div class="col-sm-3">
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][total]" value="0" {% if module_tk_checkout_mail['products']['total'] == 0 %}checked="checked"{% endif %}/>
+											<span class="btn btn-danger">{{ text_no }}</span> </label>
+										<label class="button-label">
+											<input type="radio" name="module_tk_checkout_mail[products][total]" value="1" {% if module_tk_checkout_mail['products']['total'] == 1 %}checked="checked"{% endif %}/>
+											<span class="btn btn-default">{{ text_yes }}</span> </label>
+									</div>
+								</div>
+								
+							
+							</div>
+							
+							<hr>
+							
+							<ul class="nav nav-tabs">
+								{% for language in languages %}
+									<li class="{% if loop.first %} active{% endif %}">
+										<a href="#tab-mail-language-{{ language.language_id }}" data-toggle="tab">
+											<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/> {{ language.name }}{% if language.default == 1 %}
+												<small>({{ text_default }})</small>{% endif %}
+										</a>
+									</li>
+								{% endfor %}
+							</ul>
+							<div class="tab-content">
+								{% for language in languages %}
+									<div id="tab-mail-language-{{ language.language_id }}" class="tab-pane {% if loop.first %} active{% endif %}">
+										
+										<div class="form-group row">
+											<label class="col-sm-3 control-label">Относно:</label>
+											<div class="col-sm-9">
+												<input type="text" name="module_tk_checkout_mail[title][{{ language.language_id }}]" value="{{ module_tk_checkout_mail['title'][language.language_id] }}" class="form-control"/>
+											</div>
+										</div>
+										
+										<div class="col-sm-12">
+											<div class="form-group">
+												<h4>{{ text_mail_header }}</h4>
+												<textarea class="form-control" data-toggle="summernote" data-lang="{{ language.code }}" name="module_tk_checkout_mail[header][{{ language.language_id }}]" id="mail-header-{{ language.language_id }}">{{ module_tk_checkout_mail['header'][language.language_id] }}</textarea>
+											</div>
+											<div class="form-group">
+												<h4>{{ text_mail_footer }}</h4>
+												<textarea class="form-control" data-toggle="summernote" data-lang="{{ language.code }}" name="module_tk_checkout_mail[footer][{{ language.language_id }}]" id="mail-footer-{{ language.language_id }}">{{ module_tk_checkout_mail['footer'][language.language_id] }}</textarea>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+							
+							
+							<hr>
+							
+							
+							<label class="col-sm-3 control-label">{{ text_mail_codes }}</label>
+							<div class="col-sm-9">
+								<div class="form-group row">
+									<div class="col-sm-2">
+										{add_to_cart_link}
+									</div>
+									<div class="col-sm-2">
+										{date_added}
+									</div>
+									<div class="col-sm-2">
+										{logo}
+									</div>
+									<div class="col-sm-2">
+										{store_name}
+									</div>
+									<div class="col-sm-2">
+										{store_url}
+									</div>
+									<div class="col-sm-2">
+										{shipping_method}
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-sm-2">
+										{firstname}
+									</div>
+									<div class="col-sm-2">
+										{lastname}
+									</div>
+									<div class="col-sm-2">
+										{email}
+									</div>
+									<div class="col-sm-2">
+										{telephone}
+									</div>
+								</div>
+								<div class="form-group row">
+									<div class="col-sm-2">
+										{country}
+									</div>
+									<div class="col-sm-2">
+										{zone}
+									</div>
+									<div class="col-sm-2">
+										{city}
+									</div>
+									<div class="col-sm-2">
+										{address}
+									</div>
+								</div>
+							
+							</div>
+							
+							<hr>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">{{ text_mail_codes_header }}</label>
+								<div class="col-sm-9">
+<textarea class="form-control" onclick="this.setSelectionRange(0, this.value.length)" readonly="readonly" style="min-height: 500px">
+<p style="text-align: center;"><img src="https://oc3032.tankoo.eu/image/catalog/opencart-logo.png" style="width: 300px;"></p>
+<div style="text-align:center;padding: 30px;background: #f1f1f1; margin-bottom: 30px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;font-size: 12px;">
+	<h1 style="font-size: 20px;">Пропуснахте да завършите количката си!</h1>
+	<p>Благодарим Ви, че избрахте&nbsp;онлайн магазин: {store_name}</p>
+	<p><a href="{add_to_cart_link}" target="_blank" style="font-size:16px; color: #ffffff;background-color: #22711f;display: inline-block;text-align: center;padding: 7px 12px;border-radius: 3px;">ЗАВЪРШИ СЕГА</a></p>
+</div>
+<table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" style="text-align:left;margin-bottom: 30px;width: 100%;">
+	<tbody>
+		<tr>
+			<td style=" width: 40%;" valign="top">
+				<h2 style="text-align: left; font-size: 16px;">Детайли</h2>
+				<p>Дата на добавяне: <b>{date_added}</b></p>
+				<p>Име: <b>{firstname} {lastname}</b></p>
+				<p>Телефон: <b>{telephone}</b></p>
+				<p>Е-мейл: <b>{email}</b></p>
+			</td>
+			<td style=" width: 60%;" valign="top">
+				<h2 style="font-size: 16px;">Адрес за доставка</h2>
+				<p>Метод на доставка: <b>{shipping_method}</b></p>
+				<p>Държава: <b>{country}</b></p>
+				<p>Адрес: <b>{address}</b></p>
+			</td>
+		</tr>
+  </tbody>
+</table>
+</textarea>
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">{{ text_mail_codes_footer }}</label>
+								<div class="col-sm-9">
+<textarea class="form-control" onclick="this.setSelectionRange(0, this.value.length)" readonly="readonly" style="min-height: 150px">
+<div style="text-align:center;padding: 30px;background: #f1f1f1; margin-bottom: 30px;font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;font-size: 12px;">
+	<h2 style="font-size: 18px;">Онлайн магазин:&nbsp;<a href="{store_url}" target="_blank">{store_name}</a></h2>
+    <p><b>Ще се радваме да ни посетите отново!</b></p>
+</div>
+</textarea>
+								</div>
+							
+							</div>
+						</div>
+						
+						<div class="tab-pane" id="tab-facebook">
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_fbq_app_id">FACEBOOK APP ID</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_fbq_app_id" value="{{ module_tk_checkout_fbq_app_id }}" placeholder="Facebook app id" id="input-module_tk_checkout_fbq_app_id" class="form-control" />
+								</div>
+							</div>
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-module_tk_checkout_fbq_app_secret">FACEBOOK APP SECRET</label>
+								<div class="col-sm-9">
+									<input type="text" name="module_tk_checkout_fbq_app_secret" value="{{ module_tk_checkout_fbq_app_secret }}" placeholder="Facebook app secret" id="input-module_tk_checkout_fbq_app_secret" class="form-control" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="tab-pane" id="tab-lang">
+						
+							<ul class="nav nav-tabs">
+								{% for language in languages %}
+									<li class="{{ loop.first ? ' active' }}">
+										<a href="#tab-language-{{ language.language_id }}" data-toggle="tab">
+											<img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}"/> {{ language.name }}
+										</a>
+									</li>
+								{% endfor %}
+							</ul>
+							<div class="tab-content tab-content2">
+								{% for language in languages %}
+									<div id="tab-language-{{ language.language_id }}" class="tab-pane {% if loop.first %} active{% endif %}">
+								
+										{% for key,text_lang in text_lang_array %}
+											<div class="form-group row">
+												<label class="col-sm-3 control-label">{{ text_lang }}</label>
+												<div class="col-sm-9">
+														<div class="input-group" style="margin-bottom: 5px">
+															<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+															{% if key == 'text_agree_link' or key == 'text_agree_2_link' %}
+																<select name="module_tk_checkout_text[{{ language.language_id }}][{{ key }}]" id="input-account" class="form-control">
+																	<option value="0">{{ text_none }}</option>
+																	{% for information in informations %}
+																		{% if information.information_id == module_tk_checkout_text[language.language_id][key] ? module_tk_checkout_text[language.language_id][key] %}
+																			<option value="{{ information.information_id }}" selected="selected">{{ information.title }}</option>
+																		{% else %}
+																			<option value="{{ information.information_id }}">{{ information.title }}</option>
+																		{% endif %}
+																	{% endfor %}
+																</select>
+															{% else %}
+																<input type="text" name="module_tk_checkout_text[{{ language.language_id }}][{{ key }}]" value="{{ module_tk_checkout_text[language.language_id][key] ? module_tk_checkout_text[language.language_id][key] }}" class="form-control" />
+															{% endif %}
+														</div>
+												</div>
+											</div>
+										{% endfor %}
+										
+										<div class="form-group row">
+											<label class="col-sm-3 control-label">{{ text_lang_top }}</label>
+											<div class="col-sm-9">
+												<textarea class="form-control" data-toggle="summernote" data-lang="{{ language.code }}" name="module_tk_checkout_text[{{ language.language_id }}][text_top]" >
+												{{ module_tk_checkout_text[language.language_id].text_top ? module_tk_checkout_text[language.language_id].text_top }}
+												</textarea>
+											</div>
+										</div>
+										
+										<div class="form-group row">
+											<label class="col-sm-3 control-label">{{ text_lang_bottom }}</label>
+											<div class="col-sm-9">
+												<textarea class="form-control" data-toggle="summernote" data-lang="{{ language.code }}" name="module_tk_checkout_text[{{ language.language_id }}][text_bottom]" >
+												{{ module_tk_checkout_text[language.language_id].text_bottom ? module_tk_checkout_text[language.language_id].text_bottom }}
+												</textarea>
+											</div>
+										</div>
+										
+										<div class="form-group row">
+											<label class="col-sm-3 control-label">{{ text_lang_under_button }}</label>
+											<div class="col-sm-9">
+												<textarea class="form-control" data-toggle="summernote" data-lang="{{ language.code }}" name="module_tk_checkout_text[{{ language.language_id }}][text_under_button]" >
+												{{ module_tk_checkout_text[language.language_id].text_under_button ? module_tk_checkout_text[language.language_id].text_under_button }}
+												</textarea>
+											</div>
+										</div>
+									
+									</div>
+								{% endfor %}
+							</div>
+							
+							
+						</div>
+						
+					</div>
+					
+			
+					{% else %}
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="input-module_tk_checkout_token">API TOKEN</label>
+						<div class="col-sm-9">
+							<input type="text" name="module_tk_checkout_token" value="{{ module_tk_checkout_token }}" placeholder="API TOKEN" id="input-module_tk_checkout_token" class="form-control" />
+						</div>
+					</div>
+					<input type="hidden" name="module_tk_checkout_token_add" value="1" />
+					<input type="hidden" name="module_tk_checkout_api_url" value="{{ module_tk_checkout_api_url }}" />
+					
+					<input type="hidden" name="module_tk_checkout_status" value="0" />
+					<input type="hidden" name="module_tk_checkout_skip_cart" value="0" />
+					<input type="hidden" name="module_tk_checkout_country[]" value="33" />
+					<input type="hidden" name="module_tk_checkout_zone" value="0" />
+					<input type="hidden" name="module_tk_checkout_required_phone" value="0" />
+					<input type="hidden" name="module_tk_checkout_required_email" value="0" />
+					<input type="hidden" name="module_tk_checkout_customer_mail" value="{{ config_email }}" />
+					<input type="hidden" name="module_tk_checkout_register" value="0" />
+					<input type="hidden" name="module_tk_checkout_popup_payments[]" value="" />
+					<input type="hidden" name="module_tk_checkout_invoice" value="9999" />
+					<input type="hidden" name="module_tk_checkout_theme" value="0" />
+					<input type="hidden" name="module_tk_checkout_column" value="2" />
+					<input type="hidden" name="module_tk_checkout_title" value="0" />
+					<input type="hidden" name="module_tk_checkout_color" value="#229ac8" />
+					<input type="hidden" name="module_tk_checkout_color_button" value="#22711f" />
+					<input type="hidden" name="module_tk_checkout_color_button_hover" value="#1c6319" />
+					<input type="hidden" name="module_tk_checkout_status" value="0" />
+					<input type="hidden" name="module_tk_checkout_size" value="1140" />
+					<input type="hidden" name="module_tk_checkout_css" value="" />
+					<input type="hidden" name="module_tk_checkout_fbq_app_id" value="" />
+					<input type="hidden" name="module_tk_checkout_fbq_app_secret" value="" />
+						<input type="hidden" name="module_tk_checkout_agree" value="1" />
+						<input type="hidden" name="module_tk_checkout_agree_2" value="0" />
+						<input type="hidden" name="module_tk_checkout_autocomplete" value="1" />
+						<input type="hidden" name="module_tk_checkout_mail[status]" value="1" />
+						<input type="hidden" name="module_tk_checkout_mail[width]" value="800px">
+						<input type="hidden" name="module_tk_checkout_mail[products][status]" value="1">
+						<input type="hidden" name="module_tk_checkout_mail[products][image]" value="1">
+						<input type="hidden" name="module_tk_checkout_mail[products][price]" value="1">
+						<input type="hidden" name="module_tk_checkout_mail[products][name]" value="1">
+						<input type="hidden" name="module_tk_checkout_mail[products][quantity]" value="1">
+						<input type="hidden" name="module_tk_checkout_mail[products][total]" value="1">
+						
+					{% for language in languages %}
+						
+						<input type="hidden" name="module_tk_checkout_text[{{ language.language_id }}][text_agree_link_text]" value="Общи условия" />
+						
+						<input type="hidden" name="module_tk_checkout_mail[header][{{ language.language_id }}]" value='<p style="text-align: center;"><img src="https://oc3032.tankoo.eu/image/catalog/opencart-logo.png" style="width: 300px;"></p><div style="text-align:center;padding: 30px;background: #f1f1f1; margin-bottom: 30px;font-family: Source Sans Pro, Helvetica, Arial, sans-serif;font-size: 12px;"><h1 style="font-size: 20px;">Пропуснахте да завършите количката си!</h1><p>Благодарим Ви, че избрахте&nbsp;онлайн магазин: {store_name}</p><p><a href="{add_to_cart_link}" target="_blank" style="font-size:16px; color: #ffffff;background-color: #22711f;display: inline-block;text-align: center;padding: 7px 12px;border-radius: 3px;">ЗАВЪРШИ СЕГА</a></p></div><table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" style="text-align:left;margin-bottom: 30px;width: 100%;"><tbody><tr><td style=" width: 40%;" valign="top"><h2 style="text-align: left; font-size: 16px;">Детайли</h2><p>Дата на добавяне: <b>{date_added}</b></p><p>Име: <b>{firstname} {lastname}</b></p><p>Телефон: <b>{telephone}</b></p><p>Е-мейл: <b>{email}</b></p></td><td style=" width: 60%;" valign="top"><h2 style="font-size: 16px;">Адрес за дсотавка</h2><p>Метод на доставка: <b>{shipping_method}</b></p><p>Държава: <b>{country}</b></p><p>Адрес: <b>{address}</b></p></td></tr></tbody></table>' />
+						
+						<input type="hidden" name="module_tk_checkout_mail[footer][{{ language.language_id }}]" value='<div style="text-align:center;padding: 30px;background: #f1f1f1; margin-bottom: 30px;font-family: Source Sans Pro, Helvetica, Arial, sans-serif;font-size: 12px;"><h2 style="font-size: 18px;">Онлайн магазин: <a href="{store_url}" target="_blank">{store_name}</a></h2><p><b>Ще се радваме да ни посетите отново!</b></p></div>' />
+					
+						<input type="hidden" name="module_tk_checkout_text[{{ language.language_id }}]" value="" />
+					{% endfor %}
+					
+					{% for payment in payments %}
+					<input type="hidden" name="module_tk_checkout_payment_image[{{ payment.code }}]" value="" />
+					{% endfor %}
+					
+					{% for shipping in shippings %}
+					<input type="hidden" name="module_tk_checkout_shipping_image[{{ shipping.code }}]" value="" />
+					{% endfor %}
+
+
+					{% endif %} 
+						
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style type="text/css">
+	
+	.scroll-wrapper {
+		position: relative;
+	}
+	.scroll {
+		overflow: auto;
+		height: 150px;
+		min-height: 150px;
+		margin: 0;
+		transition: 0.5s all;
+	}
+	.scroll-footer {
+		margin-top: 10px;
+	}
+	.scroll-footer a {
+		border-radius: 3px;
+		line-height: 28px;
+		cursor: pointer;
+		display: inline-block;
+		padding: 0 10px;
+		border: 1px solid #ddd;
+		margin: 0 3px;
+	}
+	.scroll-footer .expand-switcher {
+		width: 30px;
+		height: 30px;
+	}
+	
+	.button-label input {
+		display: none;
+	}
+	.button-label span {
+		color: #666;
+		background-color: #fff;
+		border-color: #ddd;
+	}
+	.button-label input:checked+span {
+		color: #fff;
+		background-color: #3c933c;
+		border-color: #2f722f;
+	}
+	.button-label input:checked+span.btn-danger {
+		color: #fff;
+		background-color: #e3503e;
+		border-color: #dd3520;
+	}
+	
+	.button-label i {
+		font-size: 15px;
+		transition: 0.5s all;
+	}
+	.has-error .scroll-footer {
+		bottom: 30px;
+	}
+	.product-type-block label{
+		font-weight: normal;}
+</style>
+<link href="view/stylesheet/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+<script src="view/javascript/bootstrap-colorpicker.min.js"></script>
+
+<script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+<link href="view/javascript/summernote/summernote.css" rel="stylesheet"/>
+<script type="text/javascript" src="view/javascript/summernote/summernote-image-attributes.js"></script>
+<script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>
+
+<script type="text/javascript">
+
+    $('input[name="module_tk_checkout_mail[products][status]"]').on('change', function () {
+        if ($('input[name="module_tk_checkout_mail[products][status]"]:checked').val() == 1) {
+            $('.module_tk_checkout_mail_products').show();
+        } else {
+            $('.module_tk_checkout_mail_products').hide();
+        }
+    });
+    
+	$('.remove-all').on('click', function() {
+			$('#products').html('');
+		});
+
+	$('.select-all').on('click', function() {
+			$(this).parents('.scroll-wrapper').find('input').prop('checked', true);
+		});
+
+	$('.select-none').on('click', function() {
+			$(this).parents('.scroll-wrapper').find('input').prop('checked', false);
+		});
+
+	$('.expand-switcher').on('click', function() {
+			if ($(this).hasClass('expanded')) {
+				$(this).removeClass('expanded').html('<i class="fa fa-angle-double-down"></i>').parents('.scroll-wrapper').find('.scroll').height(110);
+			} else {
+				$(this).addClass('expanded').html('<i class="fa fa-angle-double-up"></i>').parents('.scroll-wrapper').find('.scroll').height($(this).parents('.scroll-wrapper').find('.scroll-inner').height());
+			}
+		});
+		
+
+		
+	$('[name="module_tk_checkout_required_email"]').on('change', function() {
+			if($(this).val() > 0){ 
+				$('.block-module_tk_checkout_customer_mail').fadeIn();
+			} else {
+				$('.block-module_tk_checkout_customer_mail').fadeOut();
+			}
+			
+		});
+	
+	$(function() {
+			$('#color-default').colorpicker();
+		});
+		
+	$(function() {
+			$('#color-button').colorpicker();
+		});
+
+	$(function() {
+			$('#color-button_hover').colorpicker();
+		});
+    
+	function invoiceAdd() {
+		$('#data_error').html('').removeClass("text-danger");
+		$.ajax({
+				url: 'index.php?route=extension/module/tk_checkout/invoiceAdd&user_token={{ user_token }}',
+				type: 'POST',
+				data: '',
+				dataType: 'json',
+				success: function(data) {
+					if (data) {
+						if (data.success) {
+							window.location = window.location;
+						} else if (data.error) {
+							$('#data_error').html(data.message).addClass('text-danger');
+						} 
+					} 
+				} ,
+				error: function(request) {
+					$('#data_error').html('{{ error_general }}').addClass("text-danger");
+				} ,
+				complete: function() {
+				} 
+			});
+	} 
+</script>
+{{ footer }}

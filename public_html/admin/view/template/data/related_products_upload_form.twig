@@ -1,0 +1,151 @@
+{{ header }}{{ column_left }}
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit" form="form-custom-field" data-toggle="tooltip" title="{{ button_save }}"
+                        class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                </button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default">
+                    <i class="fa fa-reply"></i>
+                </a>
+            </div>
+            <h1>Данни за свързани продукти 2</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        {% if error_warning %}
+            <div class="alert alert-danger alert-dismissible">
+                <i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> Добавете файл и посочете колони за данни</h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-custom-field"
+                      class="form-horizontal">
+                    <fieldset>
+                        <div class="row">
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Посочете продуктът, <b>на когото</b> ще добавяме
+                                    свързани продукти, ще бъде търсен по *</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <select name="data[main]">
+                                            <option value="model">Код на продукт /model/</option>
+                                            <option value="ean">Баркод на продукт /еаn/</option>
+                                        </select>
+                                        {% if error_main %}
+                                            <div class="text-danger">{{ error_main }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--1-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Колона за Баркод 1/Код на продукта</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="data[barcode]" value="{{ barcode }}" placeholder="A"
+                                               class="form-control"/>
+                                        {% if error_barcode %}
+                                            <div class="text-danger">{{ error_barcode }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--2-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Свързаните продукти, ще се търсят по</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <select name="data[related]">
+                                            <option value="model">Код на продукт /model/</option>
+                                            <option value="ean">Баркод на продукт /еаn/</option>
+                                        </select>
+                                        {% if error_related %}
+                                            <div class="text-danger">{{ error_related }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--3-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Колона ОТ свързани продукт</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="data[col_from]" value="{{ col_from }}" placeholder="A"
+                                               class="form-control"/>
+                                        {% if error_col_from %}
+                                            <div class="text-danger">{{ error_col_from }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--4-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Колона ДО свързани продукт</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="data[col_to]" value="{{ col_to }}" placeholder="A"
+                                               class="form-control"/>
+                                        {% if error_col_to %}
+                                            <div class="text-danger">{{ error_col_to }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--5-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Ред ОТ свързани продукт</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="data[row_from]" value="{{ row_from }}" placeholder="A"
+                                               class="form-control"/>
+                                        {% if error_row_from %}
+                                            <div class="text-danger">{{ error_row_from }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--6-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Ред ДО свързани продукт</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="data[row_to]" value="{{ row_to }}" placeholder="A"
+                                               class="form-control"/>
+                                        {% if error_row_to %}
+                                            <div class="text-danger">{{ error_row_to }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--7-->
+                            <div class="form-group required col-sm-4">
+                                <label class="col-sm-4 control-label">Файл с данни</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="file" name="data_file" class="form-control"/>
+                                        {% if error_data_file %}
+                                            <div class="text-danger">{{ error_data_file }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--8-->
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }} 

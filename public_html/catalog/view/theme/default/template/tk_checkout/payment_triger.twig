@@ -1,0 +1,51 @@
+{% if payment_method in popup_payments %}
+
+<div class="payment_container mfp-hide radio_container" id="payment_triger_mfp">
+	<div>
+	{{ payment }}	
+	<div class="tk_clear"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function() { 
+			$('#tk_button_confirm').button('reset');
+			$('.tk_all_spin').html('');
+			$('#tk_checkout').css('opacity','1');
+			$('#tk_checkout').css('pointer-events','auto');
+		});
+		
+	$.magnificPopup.open( { 
+			type: 'inline',
+			items: { src: '#payment_triger_mfp'} 
+		});
+			 
+	$.magnificPopup.instance.close = function () {
+
+		location = '{{ back_url }}';
+	};
+</script>
+
+<style>#payment_hidden #button-confirm{
+		display: block!important;}
+	#button-confirm {
+		display: block!important;}</style>
+
+{% else %} 
+
+<div id="payment_hidden" style="display: none!important">{{ payment }}</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+			if(typeof $('button#button-confirm').attr("id") != 'undefined'){
+				$("#button-confirm").get(0).click();
+			} else if(typeof $('input#button-confirm').attr("id") != 'undefined'){
+				$("#button-confirm").get(0).click();
+			} else if(typeof $('a#button-confirm').attr("id") != 'undefined'){
+				$("#button-confirm").get(0).click();
+			} else {
+				$('#payment_hidden form').submit();
+			}
+		});
+</script>
+{% endif %}

@@ -1,0 +1,627 @@
+<div id="tk_econt_office">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span> 
+			<span class="tk_panel_text"> {{ text_address }}</span> 
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>				
+	
+		<div class="tk_panel_body">
+			
+			<div id="tk_econt_offices">
+
+				<input type="hidden" id="shipping_to" name="shipping_to" value="address" />
+				<input type="hidden" id="shipping_type" name="shipping_type" value="econt" />
+				
+				{% if module_tk_checkout_zone is not defined or module_tk_checkout_zone == 0 %} 
+				<input type="hidden" id="zone_id" name="zone_id" value="{{ zone_id }}" />
+				{% endif %} 
+
+				{% if (econt_addresses_customer) %} 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="econt_address_type" value="existing" checked="checked" {% if (econt_address_type is defined and econt_address_type == 'existing') %}checked=""{% endif %} onclick="jQuery('#econt_address_new').hide();jQuery('#tk_econt_address_existing').show();" />
+						{{ text_address_existing }} 
+					</label>
+				</div>
+				<div id="tk_econt_address_existing">
+					<div class="tk_12_column tk_center_column">
+						<select name="econt_address_customer_id" >
+							{% for econt_address in econt_addresses_customer %} 
+							
+							<option value="{{ econt_address['econt_customer_id'] }}" {% if (econt_address_customer_id is defined and econt_address['econt_customer_id'] == econt_address_customer_id) %}selected="selected"{% endif %}>{{ econt_address['city'] }}, {{ econt_address['street'] }}, {{ econt_address['street_num'] }}</option>
+								
+							{% endfor %} 
+						</select>
+					</div>
+				</div>	 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="econt_address_type" value="new" {% if (econt_address_type is defined and econt_address_type == 'new') %}checked=""{% endif %} onclick="jQuery('#econt_address_new').show();jQuery('#tk_econt_address_existing').hide();" />
+						{{ text_address_new }} 
+					</label>
+				</div>
+					
+				{% else %} 
+				<input type="hidden" name="econt_address_type" value="new">
+				{% endif %} 
+						
+						
+				<div id="econt_address_new" {% if (not econt_addresses_customer or (econt_address_type is defined and econt_address_type == 'new')) %} style="display:block"{% else %}style="display:none"{% endif %}>
+							
+					<input type="hidden" name="default" value="1" />
+					<input type="hidden" id="econt_address_postcode" name="econt_address_postcode" value="{{ econt_address_postcode }}" />
+					<input type="hidden" id="econt_address_city" name="econt_address_city" value="{{ econt_address_city }}" />
+					<input type="hidden" id="econt_address_city_id" name="econt_address_city_id" value="{{ econt_address_city_id }}" />
+					<input type="hidden" id="econt_quarter_id" name="econt_quarter_id" value="{{ econt_quarter_id }}" />
+					<input type="hidden" id="econt_quarter" name="econt_quarter" value="{{ econt_quarter }}" />
+					<input type="hidden" id="econt_street_id" name="econt_street_id" value="{{ econt_street_id }}" />
+					<input type="hidden" id="econt_street" name="econt_street" value="{{ econt_street }}" />
+						 
+					<div class=" {% if econt_street == 'Център' or econt_streets|length < 2 and econt_address_city %}tk_12_column{% else %}tk_6_column{% endif %} tk_center_column tk_econt_address_city_select tk_required_box {% if (econt_address_city_id) %} tk_redy_box{% endif %}" id="tk_econt_address_city_select">
+						<input type="text" id="econt_address_city_select" readonly="true" name="econt_address_city_select" value="{% if (econt_address_postcode) %}{{ econt_address_postcode ~ ' ' ~ econt_address_city }}{% endif %}" placeholder="{{ text_econt_office_city }}" />
+						<span class="tk_floating_label">{{ text_econt_office_city|replace({ ":": "" }) }}</span>
+					</div>
+					
+					<div class="tk_6_column tk_center_column tk_econt_quarter_select {% if (((econt_quarters|length) < 1 or econt_quarter) and econt_address_city) %} tk_redy_box{% endif %}" id="tk_econt_quarter_select" {% if econt_street == 'Център' or econt_streets|length < 2 and econt_address_city %}style="display:none"{% endif %}>	
+						<input type="text" id="econt_quarter_select" readonly="true" name="econt_quarter_select" value="{{ econt_quarter }}" placeholder="{{entry_quarter }}" />
+						
+						<span class="tk_floating_label">{{ entry_quarter|replace({ ":": "" }) }}</span>
+					</div>
+						
+					<div class="tk_clear"></div>
+
+					<div class="tk_6_column tk_center_column tk_econt_street_select {% if (((econt_streets|length) < 1 or econt_street) and econt_address_city) %} tk_redy_box{% endif %}" id="tk_econt_street_select" {% if econt_street == 'Център' or econt_streets|length < 2 and econt_address_city %}style="display:none"{% endif %}>
+						<input type="text" id="econt_street_select" readonly="true" name="econt_street_select" value="{{ econt_street }}" placeholder="{{entry_street }}" />
+						<span class="tk_floating_label">{{ entry_street|replace({ ":": "" }) }}</span>
+					</div>
+							
+					<div class="tk_4_column tk_right_column tk_required_box" id="tk_econt_street_num" {% if econt_street == 'Център' or econt_streets|length < 2 and econt_address_city %}style="display:none"{% endif %}>
+						<input type="text" id="econt_street_num" name="econt_street_num" value="{{ econt_street_num }}" placeholder="{{entry_street_num }}" />
+						<span class="tk_floating_label">{{entry_street_num }}</span>
+					</div>
+					<div class="tk_clear"></div>
+							
+					<div class="tk_12_column tk_center_column " id="tk_econt_other">
+						<input type="text" id="econt_other" name="econt_other" value="{{ econt_other }}" placeholder="{{entry_other }}" />
+						<span class="tk_floating_label">{{entry_other }}</span>
+
+						<div id="tk_econt_no_street" {% if econt_street == 'Център' or econt_streets|length < 2 and econt_address_city %}style="display:block"{% else %}style="display: none"{% endif %}><hr> <span class="tk_text_free_shipping">{{ text_no_street }}</span></div>
+						<div id="tk_econt_help_address" {% if econt_street == 'Център' or econt_streets|length < 2 and econt_address_city %}style="display:none"{% else %}style="display: block"{% endif %}><hr> <span class="tk_text_free_shipping">{{ text_help_address }}</span></div>
+
+					</div>
+	
+				</div>
+
+				<div class="tk_clear"></div>
+				{% if (error_address) %} 
+				<span class="tk_alert">{{ error_address }}</span>
+				{% endif %} 
+	
+			</div>	
+			<div class="tk_clear"></div>
+	
+			
+			{% if (econt_sms_enabled) %} 
+			<div class="tk_12_column tk_center_column">
+				<input type="checkbox" name="econt_sms" id="econt_sms" value="1" {% if (econt_sms and econt_sms == 2) %}checked=""{% endif %}>
+				<label for="econt_sms"> {{ text_sms }}</label>
+			</div>
+			{% endif %}
+		</div> 
+	</div>
+</div>
+
+<div class="econt_city_container radio_container mfp-hide" id="econt_city_locator">
+	<div class="radio_search">
+		<span class="econt_city_spin pull-right magnific_spin"></span>
+		<input id="econt_city_search" name="econt_city_search" type="text" placeholder="Търсене.." class="radio_box_search">
+	</div>
+	<div class="radio_box" id="econt_city_locator_radio_box">
+		<span class="radio_box_top"></span>
+		<div class="radio_box_html"></div>
+		<span class="last_element_city"></span>
+	</div>
+	<input id="econt_city_page" name="econt_city_page" type="hidden" value="1">
+</div>
+
+<div class="econt_quarter_container radio_container mfp-hide" id="econt_quarter_locator">
+	<div class="radio_search">
+		<input id="econt_quarter_search" name="econt_quarter_search" type="text" placeholder="Търсене.." class="radio_box_search">
+	</div>
+	<div class="radio_box">
+		{% for quarter in econt_quarters %} 
+		<div class="radio_elements">
+			<label>
+				<input type="radio" name="tk_econt_quarter_id" value="{{ quarter['quarter_id'] }}" {% if (quarter_id is defined and quarter['quarter_id'] == quarter_id) %}checked=""{% endif %} data-name="{{ quarter['name'] }}">{{ quarter['name'] }} 
+			</label>
+		</div>
+		{% endfor %} 
+	</div>
+</div>
+
+<div class="econt_street_container radio_container mfp-hide" id="econt_street_locator">
+	<div class="radio_search">
+		<span class="econt_street_spin pull-right magnific_spin"></span>
+		<input id="econt_street_search" name="econt_street_search" type="text" placeholder="Търсене.." class=" radio_box_search">
+		
+	</div>
+	<div class="radio_box" id="econt_street_locator_radio_box">
+		<span class="radio_box_top"></span>
+		<div class="radio_box_html"></div>
+		<span class="last_element_street"></span>
+	</div>
+	<input id="econt_street_page" name="econt_street_page" type="hidden" value="1">
+</div>
+
+<script type="text/javascript">
+
+	$(document).ready(function() { 
+			getPaymentMethod();
+		});
+	
+	$(document).on('click', '#econt_sms', function(e) { 
+			e.stopImmediatePropagation();
+			$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+			$('#tk_checkout').css('opacity','0.6');
+			$('#tk_checkout').css('pointer-events','none');
+			$('#tk_button_confirm').prop('disabled', true);	
+			
+			getShippingMethodAddress();
+		});
+	 
+	 
+	$('#econt_street_num').change(function() { saveData(); } );
+	$('#econt_other').change(function() { saveData(); } );
+
+	//попъп за градове
+	$(document).on('click', '#econt_address_city_select', function(e) { 
+			e.stopImmediatePropagation();
+			$.magnificPopup.open( { 
+					type: 'inline',
+					items: { src: '#econt_city_locator'} 
+				});
+			getCitiesHtml();
+			setTimeout(function () { 
+					$('#econt_city_search').focus();
+				} , 200);
+ 
+		});
+
+	//въвеждане на град ръчно
+	$('#econt_city_search').on('input',function(e) { 
+			e.stopImmediatePropagation();
+			$('#econt_city_page').val(1);
+			getCitiesHtml();
+			var container = $('#econt_city_locator_radio_box');
+			var top = $('#econt_city_locator_radio_box .radio_box_top').position().top,currentScroll = container.scrollTop();
+			container.animate( { 
+					scrollTop: currentScroll + top + 50
+				} , 600);
+		});
+
+	//добавяне на нови градове при скрол
+	$(function($) { 
+			$('#econt_city_locator_radio_box').on('scroll', function(e) { 
+					e.stopImmediatePropagation();
+					if($(this).scrollTop() + $(this).innerHeight()+50 >= $(this)[0].scrollHeight) { 
+						var city_page = parseInt($('#econt_city_page').val());
+						$('#econt_city_page').val(city_page+1);
+						getCitiesHtml();
+					} 
+				})
+		});
+
+	//добавяне на слектирания град и извикваме квартали и улици спрямо него
+	$(document).delegate('#econt_city_locator .radio_elements input[type=\'radio\']', 'click', function(e) { 
+			e.stopImmediatePropagation();
+			var econt_address_city_id = $(this).val();
+			var econt_address_city = $(this).data('name');
+			var econt_address_city_select = $(this).data('select');
+			$('#econt_address_city_id').val(econt_address_city_id);
+			$('#econt_address_city').val(econt_address_city);
+			$('#econt_address_city_select').val(econt_address_city_select);
+
+			$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+			$('#tk_checkout').css('opacity','0.6');
+			$('#tk_checkout').css('pointer-events','none');
+			$('#tk_button_confirm').prop('disabled', true);
+			$('.tk_econt_address_city_select').addClass('tk_redy_box');
+			getQuarterStreet();
+			$.magnificPopup.close()
+		});
+
+	//попъп за квартали
+	$(document).on('click', '#econt_quarter_select', function(e) { 
+			e.stopImmediatePropagation();
+			$.magnificPopup.open( { 
+					type: 'inline',
+					items: { src: '#econt_quarter_locator'} 
+				});
+			setTimeout(function () { 
+					$('#econt_quarter_search').focus();
+				} , 500);
+		});
+	 
+	//въвеждане на квартал ръчно
+	$("#econt_quarter_search").on("keyup", function(e) { 
+			e.stopImmediatePropagation(); 
+			var value = $(this).val().toLowerCase();
+			var bg_value = transliterate(value);
+			var en_value = transliterateEN(value);
+			$("#econt_quarter_locator .radio_box .radio_elements").filter(function() { 
+					$(this).toggle(($(this).text().toLowerCase().indexOf(value) > -1 || $(this).text().toLowerCase().indexOf(bg_value) > -1 || $(this).text().toLowerCase().indexOf(en_value) > -1));
+				});
+		});
+
+	//добавяне на селектирания кавартал
+	$(document).delegate('#econt_quarter_locator .radio_elements input[type=\'radio\']', 'click', function(e) { 
+			e.stopImmediatePropagation();
+			var econt_quarter_id = $(this).val();
+			var econt_quarter = $(this).data('name');
+			$('#econt_quarter_id').val(econt_quarter_id);
+			$('#econt_quarter').val(econt_quarter);
+			$('#econt_quarter_select').val(econt_quarter);
+		
+			$('.tk_econt_quarter_select').addClass('tk_redy_box');
+
+			saveData();
+			$.magnificPopup.close()
+		});
+
+	//попъп за улици
+	$(document).on('click', '#econt_street_select', function(e) { 
+			e.stopImmediatePropagation();
+			$.magnificPopup.open( { 
+					type: 'inline',
+					items: { src: '#econt_street_locator'} 
+				});
+			getStreetsHtml();
+			setTimeout(function () { 
+					$('#econt_street_search').focus();
+				} , 500);
+		});
+ 
+	//въвеждане на улица ръчно
+	$('#econt_street_search').on('input',function(e) { 
+			e.stopImmediatePropagation();
+			$('#street_page').val(1);
+			getStreetsHtml();
+			var container = $('#econt_street_locator_radio_box');
+			var top = $('#econt_street_locator_radio_box .radio_box_top').position().top,currentScroll = container.scrollTop();
+			container.animate( { 
+					scrollTop: currentScroll + top + 50
+				} , 600);
+ 
+		});
+
+	//добавяне на нови улици при скрол
+	$(function($) { 
+			$('#econt_street_locator_radio_box').on('scroll', function(e) { 
+			e.stopImmediatePropagation();
+					if($(this).scrollTop() + $(this).innerHeight()+50 >= $(this)[0].scrollHeight) { 
+						var street_page = parseInt($('#econt_street_page').val());
+						$('#econt_street_page').val(street_page+1);
+						getStreetsHtml();
+					} 
+				})
+		});
+
+	//добавяне на селектираната улица
+	$(document).delegate('#econt_street_locator .radio_box input[type=\'radio\']', 'click', function(e) { 
+			e.stopImmediatePropagation();
+			var econt_street_id = $(this).val();
+			var econt_street = $(this).data('name');
+			$('#econt_street_id').val(econt_street_id);
+			$('#econt_street').val(econt_street);
+			$('#econt_street_select').val(econt_street);
+
+			$('.tk_econt_street_select').addClass('tk_redy_box');
+			
+			saveData();
+			$.magnificPopup.close()
+		});
+
+
+	//извежда списъка с градове в попъпа
+	function getCitiesHtml() { 
+		var url = 'index.php?route=extension/shipping/tk_econt/autocompleteCity';
+		var filter_name = $('input[name=\'econt_city_search\']').val();
+		var filter_page = $('input[name=\'econt_city_page\']').val();
+
+		if (filter_name) { 
+			url += '&filter_name=' + encodeURIComponent(filter_name);
+		} 
+		
+		if (filter_page) { 
+			url += '&page=' + filter_page;
+		} 
+		 
+		$.ajax( { 
+				url: url,
+				beforeSend: function() { 
+					$('.econt_city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+				} ,
+				success: function(data) { 
+					$('.econt_city_spin').html('');
+	 				
+					if (filter_name && filter_page == 1) { 
+						$('#econt_city_locator .radio_box_html').html('');
+					} 
+
+					html = '';
+					if(data) { 
+						//JSON.parse(data)
+						$.map(data, function(item) { 
+								html += '<div class="radio_elements"><label><input type="radio" name="tk_econt_address_city_id" value="' + item['city_id'] + '" data-name="' + item['name'] + '" data-select="' + item['post_code'] + ' ' + item['name'] + '"><span>' + item['post_code'] + '</span> ' + item['type'] + ' ' + item['name'] + '</label></div>';
+							});
+					} 
+					$('#econt_city_locator .radio_box_html').append(html);
+
+				} 
+			});
+	} 
+
+	//извежда списъка с улици в попъпа
+	function getStreetsHtml() { 
+		var url = 'index.php?route=extension/shipping/tk_econt/autocompleteStreet';
+		var filter_name = $('input[name=\'econt_street_search\']').val();
+		var filter_page = $('input[name=\'econt_street_page\']').val();
+		var city_id = $('#econt_address_city_id').val();
+
+		if (filter_name) { 
+			url += '&filter_name=' + encodeURIComponent(filter_name);
+		} 
+		
+		if (filter_page) { 
+			url += '&page=' + filter_page;
+		} 
+		
+		url += '&city_id=' + city_id;
+		 
+		$.ajax( { 
+				url: url,
+				beforeSend: function() { 
+					$('.econt_street_spin').html(' <i class="tk_icon-spin rotating"></i>');
+				} ,
+				success: function(data) { 
+					$('.econt_street_spin').html('');
+	 				
+					if (filter_name && filter_page == 1) { 
+						$('#econt_street_locator .radio_box_html').html('');
+					} 
+
+					html = '';
+					if(data) { 
+						$.map(data, function(item) { 
+								html += '<div class="radio_elements"><label><input type="radio" name="tk_econt_street_id" value="' + item['street_id'] + '" data-name="' + item['name'] + '">' + item['name'] + '</label></div>';
+							});
+					} 
+					
+					$('#econt_street_locator .radio_box_html').append(html);
+
+				} 
+			});
+	 
+	} 
+
+	//извежда кварталите и улиците спрямо избрания град	
+	//извиква призчислени методи за доставка => извежда преизчислени тотали в количката
+	//ако имаме само 1 улица или 1 квартал ги селектираме
+	//ако няма улици или квартали ги изключваме
+	function getQuarterStreet() { 
+		$('#econt_quarter_id').val('');
+		$('#econt_quarter').val('');
+		$('#econt_quarter_select').val('');
+		$('#econt_street_id').val('');
+		$('#econt_street').val('');
+		$('#econt_street_select').val('');
+		$('#econt_street_num').val('');
+		$('#econt_other').val('');
+		$('#econt_address_postcode').val('');
+		
+		$('.tk_econt_quarter_select').removeClass('tk_redy_box');
+		$('.tk_econt_street_select').removeClass('tk_redy_box');
+		$('#tk_econt_street_num').removeClass('tk_redy_box');
+		
+		city_id = $('#econt_address_city_id').val();
+		
+		if(city_id > 0) { 
+			$.ajax( { 
+					url: 'index.php?route=extension/shipping/tk_econt/getQuartereStreet',
+					type: 'POST',
+					data: 'city_id=' + encodeURIComponent(city_id),
+					dataType: 'json',
+					success: function(data) { 
+						if (data) { 
+							$('#econt_street_select').prop("disabled", false);
+							$('#econt_quarter_select').prop("disabled", false);
+							$('#econt_street_num').prop("disabled", false);
+						
+							$('#econt_address_postcode').val(data.city_post_code);
+		
+							//скрипт за квартали
+							if (data.quarters_count && data.quarters_count > 0) { 
+								$('#econt_quarter_select').prop("disabled", false);
+								
+								//ако има повече от 1 квартал извежда слектор ако е 1 го селектираме, ако няма квартали изключваме полето
+								if(data.quarters_count > 1) { 
+		
+									html_popup = '';
+									for (i = 0; i < data.quarters.length; i++) { 
+										
+										{% if (econt_quarter_id) %} 
+										var quarter_id = {{ econt_quarter_id}};
+										{% else %} 
+										var quarter_id = 0;
+										{% endif %} 
+										
+										if(quarter_id == data.quarters[i]['quarter_id']) { 
+											var quarter_checked = 'checked=""';
+										} else { 
+											var quarter_checked = '';
+										} 
+
+										html_popup += '<div class="radio_elements"><label><input type="radio" name="tk_econt_quarter_id" value="' + data.quarters[i]['quarter_id'] + '" ' + quarter_checked + ' data-name="' + data.quarters[i]['name'] + '">' + data.quarters[i]['name'] + '</label></div>';
+									} 
+									
+									$('#econt_quarter_locator .radio_box').html(html_popup);
+
+								} else { 
+									for (i = 0; i < data.quarters.length; i++) { 
+										var econt_quarter_id = data.quarters[i]['quarter_id'];
+										var econt_quarter = data.quarters[i]['name'];
+									} 
+									 
+									$('#econt_quarter_id').val(econt_quarter_id);
+									$('#econt_quarter').val(econt_quarter);
+									$('#econt_quarter_select').val(econt_quarter);
+									$('#econt_quarter_select').prop("disabled", true);
+									$('.tk_econt_quarter_select').addClass('tk_redy_box');
+								} 
+					
+							} else { 
+								$('#econt_quarter_id').val('');
+								$('#econt_quarter').val('');
+								$('#econt_quarter_select').val('');
+								$('#econt_quarter_select').prop("disabled", true);
+								$('.tk_econt_quarter_select').addClass('tk_redy_box');
+							} 
+							
+							//скрипт за улици
+							if (data.streets_count && data.streets_count > 0) { 
+								$('#econt_street_select').prop("disabled", false);
+								
+								$('#tk_econt_quarter_select').css('display','block');
+								$('#tk_econt_block_no').css('display','block');
+								$('#tk_econt_entrance_no').css('display','block');
+								$('#tk_econt_floor_no').css('display','block');
+								$('#tk_econt_apartment_no').css('display','block');
+								$('#tk_econt_street_select').css('display','block');
+								$('#tk_econt_street_num').css('display','block');
+									
+								$('#tk_econt_no_street').css('display','none');
+								$('#tk_econt_help_address').css('display','block');
+
+								$('#tk_econt_address_city_select').removeClass('tk_12_column');
+								$('#tk_econt_address_city_select').addClass('tk_6_column');
+								
+								//ако има повече от 1 улици извежда слектор ако е 1 я селектираме, ако няма изключваме полето
+								if(data.streets_count > 1) { 
+							
+									html_popup = '';
+									for (i = 0; i < data.streets.length; i++) { 
+										
+										{% if (econt_street_id) %} 
+										var street_id = {{ econt_street_id}};
+										{% else %} 
+										var street_id = 0;
+										{% endif %} 
+										
+										if(street_id == data.streets[i]['street_id']) { 
+											var street_checked = 'checked=""';
+										} else { 
+											var street_checked = '';
+										} 
+
+										html_popup += '<div class="radio_elements"><label><input type="radio" name="tk_econt_street_id" value="' + data.streets[i]['street_id'] + '" ' + street_checked + ' data-name="' + data.streets[i]['name'] + '">' + data.streets[i]['name'] + '</label></div>';
+									} 
+									
+									$('#econt_street_locator .radio_box_html').html(html_popup);
+	 							
+	 							
+								} else { 
+									for (i = 0; i < data.streets.length; i++) { 
+										var econt_street_id = data.streets[i]['street_id'];
+										var econt_street = data.streets[i]['name'];
+									} 
+									 
+									$('#econt_street_id').val(econt_street_id);
+									$('#econt_street').val(econt_street);
+									$('#econt_street_select').val(econt_street);
+									$('#econt_street_select').prop("disabled", true);
+									$('.tk_econt_street_select').addClass('tk_redy_box');
+									
+									$('#econt_street_num').val('1');
+									$('#tk_econt_street_num').addClass('tk_redy_box');
+								 
+									$('input#street_num').val('1');
+									$('input#other').val('Център');
+									
+									$('#tk_econt_quarter_select').css('display','none');
+									$('#tk_econt_block_no').css('display','none');
+									$('#tk_econt_entrance_no').css('display','none');
+									$('#tk_econt_floor_no').css('display','none');
+									$('#tk_econt_apartment_no').css('display','none');
+									$('#tk_econt_street_select').css('display','none');
+									$('#tk_econt_street_num').css('display','none');
+									
+									$('#tk_econt_no_street').css('display','block');
+									$('#tk_econt_help_address').css('display','none');
+
+									$('#tk_econt_address_city_select').removeClass('tk_6_column');
+									$('#tk_econt_address_city_select').addClass('tk_12_column');
+									
+								} 
+
+							} else { 
+								$('#econt_street_id').val('');
+								$('#econt_street').val('Център');
+								$('#econt_street_select').val('Център');
+								$('#econt_street_select').prop("disabled", true);
+								$('.tk_econt_street_select').addClass('tk_redy_box');
+								
+								$('#econt_street_num').val('1');
+								$('#econt_street_num').prop("disabled", true);
+								$('#tk_econt_street_num').addClass('tk_redy_box');
+								
+								$('#econt_street_id').prop("disabled", true);
+								$('.tk_econt_street_id').addClass('tk_redy_box');
+								
+								$('input#street_num').val('');
+								$('input#other').val('');
+								
+								$('#tk_econt_quarter_select').css('display','none');
+								$('#tk_econt_block_no').css('display','none');
+								$('#tk_econt_entrance_no').css('display','none');
+								$('#tk_econt_floor_no').css('display','none');
+								$('#tk_econt_apartment_no').css('display','none');
+								$('#tk_econt_street_select').css('display','none');
+								$('#tk_econt_street_num').css('display','none');
+									
+								$('#tk_econt_no_street').css('display','block');
+								$('#tk_econt_help_address').css('display','none');
+
+								$('#tk_econt_address_city_select').removeClass('tk_6_column');
+								$('#tk_econt_address_city_select').addClass('tk_12_column');
+									
+							} 
+						} 
+						
+						getShippingMethodAddress();
+					} 
+				});
+		} 
+	} 
+
+	//транслитерация за търсачката
+	function transliterate(word) { 
+		return word.split('').map(function (char) { 
+				return Lat2Cyr[char] || char; 
+			}).join("");
+	} 
+
+	Lat2Cyr= { "a":"а","b":"б","c":"ц","d":"д","e":"е","f":"ф","g":"г","h":"х","i":"и","j":"ј","k":"к","l":"л","m":"м","n":"н","o":"о","p":"п","q":"","r":"р","s":"с","t":"т","u":"у","v":"в","w":"","x":"","y":"","z":"з","A":"А","B":"Б","C":"Ц","D":"Д","E":"Е","F":"Ф","G":"Г","H":"Х","I":"И","J":"Ј","K":"К","L":"Л","M":"М","N":"Н","O":"О","P":"П","Q":"","R":"Р","S":"С","T":"Т","U":"У","V":"В","W":"","X":"","Y":"","Z":"З","č":"ч","ć":"ћ","đ":"ђ","ž":"ж","š":"ш","Č":"Ч","Ć":"Ћ","Đ":"Ђ","Ž":"Ж","Š":"Ш"} ;
+	
+	//транслитерация за търсачката
+	function transliterateEN(word) { 
+		return word.split('').map(function (char) { 
+				return getKeyByValue(Lat2Cyr,char) || char; 
+			}).join("");
+	} 
+	 
+	function getKeyByValue(object, value) {
+		return Object.keys(object).find(key => object[key] === value);
+	}
+
+</script>

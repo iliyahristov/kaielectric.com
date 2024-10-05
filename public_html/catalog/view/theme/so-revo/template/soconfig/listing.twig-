@@ -1,0 +1,136 @@
+{#
+****************************************************** 
+ * @package	SO Framework for Opencart 3.x
+ * @author	http://www.opencartworks.com
+ * @license	GNU General Public License
+ * @copyright(C) 2008-2017 opencartworks.com. All rights reserved.
+ ******************************************************
+#}
+{#====  Variables url parameter ==== #}
+{% if url_thumbgallery %} {% set thumbgallery = url_thumbgallery %}
+{% else %} {% set thumbgallery = soconfig.get_settings('card_gallery') %}{% endif %}
+
+{% if url_cartinfo %} {% set cartinfo = url_cartinfo %}
+{% else %} {% set cartinfo = soconfig.get_settings('desktop_addcart_position') %}{% endif %}
+
+
+
+{#==== Product Grid ==== #}
+
+<div class="products-list row nopadding-xs">
+	{% for  product in products %}
+	
+		<div class="product-layout product-grid product-grid-3 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+			<div class="product-item-container">
+				{#=======Show Group_cart_info ======= #}
+				{% if cartinfo == 'right' %}
+					{% set class_cart_info = 'cartinfo--right' %}
+				{% elseif cartinfo == 'bottom' %}
+					{% set class_cart_info = 'cartinfo--static' %}
+					{% set leftb = 'left-b' %}
+					{% set rightb = 'right-b' %}
+				{% elseif cartinfo == 'center' %}
+					{% set class_cart_info = 'cartinfo--center' %}
+				{% else %}
+					{% set class_cart_info = 'cartinfo--left' %}
+				{% endif %}
+				<div class="left-block {{ leftb }}">
+					{% if thumbgallery   and product.image_galleries %}
+
+					{% if thumbgallery == 1 %}
+						{% set  class_thumbgallery = 'product-card__left' %}
+					{% elseif thumbgallery == 2 %}
+						{% set  class_thumbgallery = 'product-card__right' %}
+					{% else %}
+						{% set  class_thumbgallery = 'product-card__bottom' %}
+					{% endif %}
+					<div class="product-card__gallery {{class_thumbgallery}}">
+						    <div class="item-img thumb-active" data-src="{{product.first_gallery['thumb']}}"><img class="lazyload" data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{product.first_gallery['cart']}}" alt="{{ product.name }}"></div>
+							{% set total_gallery = 2 %}
+							{% for number_gallery,image_gallery in product.image_galleries %}
+								{% if number_gallery < total_gallery %}
+								<div class="item-img" data-src="{{image_gallery.thumb}}"><img class="lazyload " data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{image_gallery.cart}}" alt="{{ product.name }}"></div>
+								{% endif %}
+							{% endfor %}
+					</div>
+					{% endif %}
+
+					<div class="product-image-container">
+					
+						<a href="{{ product.href }} " title="{{ product.name }} ">
+							<img  data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}"  title="{{ product.name }} " class="lazyload img-responsive" />
+							
+						</a>
+					</div>
+					
+					{#===== Show CountDown Product =======#}
+					{% if soconfig.get_settings('countdown_status') and product.special_end_date %}
+					
+						{% include theme_directory~'/template/soconfig/countdown.twig' with {product: product,special_end_date:product.special_end_date} %}
+					
+					{% endif %}
+					
+					{% if product.price  and  product.special  %} 
+					<div class="box-label">
+						{#=======Discount Label======= #}
+						{% if soconfig.get_settings('discount_status')  %} 
+							<span class="label-product label-sale">
+								 {{ product.discount }}
+							</span>
+						{% endif %} 
+						
+					</div> 
+					{% endif %} 
+				</div>
+				
+				<div class="right-block {{ rightb }}">
+					<h4><a href="{{ product.href }}">{{ product.name }} </a></h4>
+					<div class="rate-history">
+						{% if soconfig.get_settings('rating_status') %} 
+						<div class="ratings">
+							<div class="rating-box">
+							{% for i in 1..5 %}
+							{% if product.rating < i %} 
+								<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+							{% else %}   
+								<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i class="fa fa-star-o fa-stack-1x"></i></span>
+							{% endif %} 
+							{% endfor %}
+
+							</div>
+							<a class="rating-num"  href="{{ product.href }}" rel="nofollow" target="_blank" >{{product.reviews}}</a>
+						</div>
+						{% endif %}
+						
+					</div>
+
+					
+					{% if product.price %} 
+					<div class="price">
+						{% if not product.special %} 
+							<span class="price-new">{{ product.price }} </span>
+						{% else %}   
+							<span class="price-new">{{ product.special }} </span> <span class="price-old">{{ product.price }} </span>
+						{% endif %} 
+					</div>
+					{% endif %}
+					
+					<div class="description">
+						<p>{{ product.description }} </p>
+					</div>
+				</div>				
+			</div>
+		</div>
+		{# ====End Clearfix fluid grid layout =======#}
+	
+	{% endfor %}
+</div>
+
+{#==== filters panel Bottom==== #}
+<div class="product-filter product-filter-bottom filters-panel">
+	<div class="row">
+		<div class="col-sm-6 text-left">{{ pagination }}</div>
+		<div class="col-sm-6 text-right">{{ results }}</div>
+	</div>
+</div>
+

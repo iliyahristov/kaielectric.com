@@ -1,0 +1,61 @@
+{% if (shipping_error_warning) %} 
+<div class="tk_alert_stay"> {{ shipping_error_warning }}</div>
+<script> 
+	$(document).ready(function() { 
+			$('#tk_button_confirm').prop('disabled', false);
+		});
+</script>
+{% endif %} 
+						
+{% if (shipping_methods) %} 
+<div class="tk_shipping_methods">
+	{% set counter = 0 %} 
+	{% for key,shipping_method in shipping_methods %}
+										
+	{% if (not shipping_method['error']) %} 
+	{% set counter_quote = 0 %} 
+	{% for quote in shipping_method['quote'] %}
+		
+		<div class="tk_shipping_method">
+			<label for="shipping_check_{{ quote['code'] }}" class="{{ quote['code']|replace({ ".": "_" }) }}">
+				{% if (shipping_method_code['code'] is defined and quote['code'] == shipping_method_code['code']) %}
+					<input type="radio" name="shipping_method" value="{{ quote['code'] }}" title="{{ quote['title'] }}" checked="checked" id="shipping_check_{{ quote['code'] }}"/>
+				{% else %}
+					{% if (counter == 0 and counter_quote == 0) %}
+						<input type="radio" class="shipping_method" name="shipping_method" value="{{ quote['code'] }}" title="{{ quote['title'] }}" checked="checked" id="shipping_check_{{ quote['code'] }}"/>
+					{% else %}
+						<input type="radio" class="shipping_method" name="shipping_method" value="{{ quote['code'] }}" title="{{ quote['title'] }}" id="shipping_check_{{ quote['code'] }}"/>
+					{% endif %}
+				{% endif %}
+				<div class="tk_shipping_method_txt_box">
+					<span class="{{ quote['code']|replace({ ".": "_" }) }} {% if quote['name'] is defined %}tk_next_{{ quote['name']}}{% endif %} {{ key }} tk_shipping_method_icon "></span><span class="tk_shipping_method_title">{{ quote['title'] }}{% if quote['description'] %}
+							<br>
+							<small>{{ quote['description'] }}</small>{% endif %}</span>
+					<span class="tk_shipping_method_price">{{ quote['text'] }}</span>
+					<div class="tk_clear"></div>
+				</div>
+			</label>
+		</div>
+										
+	{% set counter_quote = counter_quote + 1 %}									
+	{% endfor %} 
+	{% else %} 
+	<div class="tk_alert">{{ shipping_method['error'] }}</div>
+	{% endif %}	
+	{% set counter = counter + 1 %}	
+	{% endfor %}		
+</div>
+
+<div class="tk_clear"></div>
+<script> 
+	$(document).ready(function() { 
+			getShippingAddress(); 
+		});
+</script>
+{% endif %} 
+<script> 
+	$(document).ready(function() { 
+			getPaymentMethod(); 
+			$('#tk_address_table').html('');
+		});
+</script>

@@ -1,0 +1,217 @@
+{{ header }}{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+				<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning %}
+		<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %}
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+			</div>
+			
+    
+				
+			{% if parcel %}
+			<div class="panel-body">
+				<form action="{{ action_parcel }}" method="post" enctype="multipart/form-data" id="form-boxnow" class="form-horizontal">
+					
+					<div class="form-group">
+						<div class="col-sm-3">
+							Товарителница: <b>{{ parcel }}</b>
+						</div>
+						<div class="col-sm-9">
+							<input type="submit" name="generate" class="btn btn-success" value="Принтирай товарителница">
+						</div>
+					</div> 
+				</form>
+			</div>
+			{% endif %}
+
+			<div class="panel-body">
+				<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-boxnow" class="form-horizontal">
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Номер на склад от който ще тръгне пратката</label>
+						<div class="col-sm-9">
+							<select class="form-control" name="warehouse_number">
+								{% for warehous in warehouses %}
+									<option value="{{ warehous }}" {% if (warehous == warehouse_number) %}selected="selected"{% endif %}>{{ warehous }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group required">
+						<label class="col-sm-3 control-label">Име на клиент</label>
+						<div class="col-sm-9">
+							<input class="form-control" type="text" name="firstname" value="{{ firstname }}" />
+							{% if error_firstname %}
+							<span class="text-danger">{{ error_firstname }}</span>
+							{% endif %}
+						</div>
+					</div>
+					<div class="form-group required">
+						<label class="col-sm-3 control-label">Фамилия на клиент</label>
+						<div class="col-sm-9">
+							<input class="form-control" type="text" name="lastname" value="{{ lastname }}" />
+							{% if error_lastname %}
+							<span class="text-danger">{{ error_lastname }}</span>
+							{% endif %}
+						</div>
+					</div>
+					<div class="form-group required">
+						<label class="col-sm-3 control-label">Телефон на клиент</label>
+						<div class="col-sm-9">
+							<input class="form-control" type="text" name="telephone" value="{{ phone }}" />
+							{% if error_telephone %}
+							<span class="text-danger">{{ error_telephone }}</span>
+							{% endif %}
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Е-майл на клиент</label>
+						<div class="col-sm-9">
+							<input class="form-control" type="text" name="email" value="{{ email }}" />
+	
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Размер на пратката</label>
+						<div class="col-sm-9">
+							<select class="form-control" name="size">
+								<option value="1" {% if (size == 1) %}selected="selected"{% endif %}>Малък - Small</option>
+								<option value="2" {% if (size == 2) %}selected="selected"{% endif %}>Среден - Medium</option>
+								<option value="3" {% if (size == 3) %}selected="selected"{% endif %}>Голям - Large</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group" id="speedy_cod_container" >
+					<label class="col-sm-3 control-label">Плащане</label>
+						<div class="col-sm-9">
+							<label class="radio-inline" style="display: inline; width: auto; float: none;">
+								<input type="radio" id="payment_mode_yes" name="payment_mode" value="cod" {% if payment_mode == 'cod' %} checked="checked"{% endif %}onclick="$('#total_container').show(); " />
+								Наложенo плащане
+							</label>
+							<label class="radio-inline" style="display: inline; width: auto; float: none;">
+								<input type="radio" id="payment_mode_no" name="payment_mode" value="prepaid" {% if payment_mode == 'prepaid' %}checked="checked"{% endif %}onclick="$('#total_container').hide(); " />
+								Без наложено плащане
+							</label>
+						</div>
+					</div>
+					
+					<div class="form-group" id="total_container" {% if payment_mode == 'cod' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+						<label class="col-sm-3 control-label" >Сума на наложен платеж</label>
+						<div class="col-sm-9">    
+							<input type="text" autocomplete="off" name="total" value="{{ total }}" placeholder="" class="form-control">
+						</div>
+					</div>
+						
+					<div class="form-group">
+						<label class="col-sm-3 control-label" >Тегло</label>
+						<div class="col-sm-9">    
+							<input type="text" autocomplete="off" name="weight" value="{{ weight }}" placeholder="" class="form-control">
+						</div>
+					</div>
+			  
+					<input type="hidden" autocomplete="off" name="quantity" value="1" placeholder="" class="form-control">
+				
+						
+					<div class="form-group">
+						<label class="col-sm-3 control-label" >Избери автомат</label>
+						<div class="col-sm-9">    
+							<div class="boxnow-iframe-window" id="boxnow-iframe-window" style="min-height: 600px;width:100%;margin-top: 15px">
+								<div id="boxnowmap" style="width:100%; height:600px;"></div>
+							</div>
+						</div>
+					</div>
+						
+					<div id="bownow_messages">
+							
+					</div>
+						
+					<div class="form-group required">
+						<label class="col-sm-3 control-label" >Номер на автомат</label>
+						<div class="col-sm-9">    
+							<input type="text" autocomplete="off" id="locker_id" name="locker_id" value="{{ locker_id }}" placeholder="" class="form-control">
+							
+							{% if error_locker_id %}
+							<span class="text-danger">{{ error_locker_id }}</span>
+							{% endif %}
+						</div>
+					</div>
+						
+					<div class="form-group">
+						<label class="col-sm-3 control-label" >Име на автомат</label>
+						<div class="col-sm-9">    
+							<input type="text" autocomplete="off" id="locker_name" name="locker_name" value="{{ locker_name }}" placeholder="" class="form-control">
+						</div>
+					</div>
+						
+					<div class="form-group">
+						<label class="col-sm-3 control-label" >Адрес на автомат</label>
+						<div class="col-sm-9">    
+							<input type="text" autocomplete="off" id="locker_address" name="locker_address" value="{{ locker_address }}" placeholder="" class="form-control">
+						</div>
+					</div>
+						
+					<div class="form-group">
+						<div class="col-sm-3">
+						</div>
+						<div class="col-sm-9">
+							<input type="submit" name="generate" class="btn btn-success" value="Създай товарителница">
+						</div>
+					</div> 
+						
+						
+				</form>
+			</div>
+			
+				
+				
+
+			
+		</div>
+	</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+	var _bn_map_widget_config = {
+		partnerId: '{{ partner_id }}',
+		zip: '{{ postcode }}',
+		autoshow: true,
+		parentElement: "#boxnowmap",
+		afterSelect: function(selected){
+			if (selected.boxnowLockerId !== undefined) {
+				$('#locker_id').val(selected.boxnowLockerId);
+				$('#locker_address').val(selected.boxnowLockerAddressLine1);
+				$('#locker_name').val(selected.boxnowLockerName);
+			
+				
+			}
+		}
+	};
+	(function(d){var e = d.createElement("script");e.src = "https://widget-cdn.boxnow.bg/map-widget/client/v4.js";e.async = true;e.defer = true;d.getElementsByTagName("head")[0].appendChild(e);})(document);
+</script>
+
+{{ footer }}

@@ -1,0 +1,1236 @@
+{{ header }}{{ column_left }} 
+{% set weight_value_row = 0 %}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				{% if (shipping_tk_next_logged) %}
+					<button type="submit" form="form-next" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary">
+						<i class="fa fa-save"></i></button>
+				{% endif %}
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		
+		{% if (error_warning) %}
+			<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		
+		{% if (success) %}
+			<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+			</div>
+		{% endif %}
+		
+		<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-next" class="form-horizontal">
+			
+			{% if module_tk_checkout_token %}
+				
+				{% if shipping_tk_next_logged %}
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="app_id">APP ID</label>
+								<div class="col-sm-9">
+									<input type="text" id="app_id" name="shipping_tk_next_app_id" value="{{ shipping_tk_next_app_id }}" placeholder="APP ID" class="form-control" disabled/>
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="app_secret">APP SECRET</label>
+								<div class="col-sm-9">
+									<input type="text" id="app_secret" name="shipping_tk_next_app_secret" value="{{ shipping_tk_next_app_secret }}" placeholder="APP SECRET" class="form-control" disabled/>
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="app_secret">SENDER ID</label>
+								<div class="col-sm-9">
+									<input type="text" id="app_secret" name="shipping_tk_next_sender_id" value="{{ shipping_tk_next_sender_id }}" placeholder="SENDER ID" class="form-control" disabled/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">
+									<a onclick="nextButtonLogout();" class="btn btn-primary"><span>{{ button_logout }}</span></a>
+								</div>
+							</div>
+							<hr>
+							<div class="form-group">
+								<div class="col-sm-3 text-right"><p><b>Крон за ъпдейт на пратки:</b></p></div>
+								<div class="col-sm-9">
+									<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}
+										catalog/controller/tk_checkout/cron_next_shipping.php {{ web_url }} > /dev/null 2>&1</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				
+				{% if not shipping_tk_next_logged %}
+					
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="app_id">APP ID</label>
+								<div class="col-sm-9">
+									<input type="text" id="app_id" name="shipping_tk_next_app_id" value="{{ shipping_tk_next_app_id }}" placeholder="APP ID" class="form-control"/>
+									{% if (error_app_id) %}
+										<span class="text-danger">{{ error_app_id }}</span>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="app_secret">APP SECRET</label>
+								<div class="col-sm-9">
+									<input type="text" id="app_secret" name="shipping_tk_next_app_secret" value="{{ shipping_tk_next_app_secret }}" placeholder="APP SECRET" class="form-control"/>
+									{% if (error_app_secret) %}
+										<span class="text-danger">{{ error_app_secret }}</span>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="app_secret">SENDER ID</label>
+								<div class="col-sm-9">
+									<input type="text" id="sender_id" name="shipping_tk_next_sender_id" value="{{ shipping_tk_next_sender_id }}" placeholder="SENDER ID" class="form-control"/>
+									{% if (error_sender_id) %}
+										<span class="text-danger">{{ error_sender_id }}</span>
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">
+									<a id="login_button" onclick="nextButtonLogin();" class="btn btn-primary"><span id="login_text">{{ button_login }}</span></a>
+									<span id="login_error"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				{% else %}
+					
+					<div class="panel panel-default">
+						<div class="panel-body" id="additional_table">
+							
+							<div class="col-sm-2">
+								<ul class="nav nav-pills nav-stacked">
+									<li class="active">
+										<a href="#v-pills-settings" data-toggle="tab">{{ text_settings }}</a>
+									</li>
+									<li>
+										<a href="#v-pills-statuses" data-toggle="tab">{{ text_statuses }}</a>
+									</li>
+									{% for next_country in next_countries %}
+										<li>
+											<a href="#v-pills-{{ next_country.code }}" data-toggle="tab">{{ next_country.name }}</a>
+										</li>
+									{% endfor %}
+								</ul>
+							</div>
+							
+							<div class="col-sm-10">
+								<div class="tab-content">
+									
+									<div class="tab-pane fade in active" id="v-pills-settings">
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_next_status">Статус</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_next_status" name="shipping_tk_next_status">
+													{% if (shipping_tk_next_status) %}
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+														<option value="0">{{ text_disabled }}</option>
+													{% else %}
+														<option value="1">{{ text_enabled }}</option>
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+													{% endif %}
+												</select>
+											</div>
+										</div>
+										
+										{% if custom_fields %}
+											<div class="form-group">
+												<label class="col-sm-3 control-label" for="shipping_tk_next_company">Поле за име на фирма</label>
+												<div class="col-sm-9">
+													<select name="shipping_tk_next_company" id="shipping_tk_next_company" class="form-control">
+														<option value="9999">{{ text_no_company}}</option>
+														{% for custom_field in custom_fields %}
+															{% if custom_field.custom_field_id == shipping_tk_next_company %}
+																<option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+															{% else %}
+																<option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+															{% endif %}
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+										{% endif %}
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_next_geo_zone_id">{{ text_geo_zone }}</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_next_geo_zone_id" name="shipping_tk_next_geo_zone_id">
+													<option value="0">{{ text_all_zones }}</option>
+													{% for geo_zone in geo_zones %}
+														{% if (geo_zone['geo_zone_id'] == shipping_tk_next_geo_zone_id) %}
+															<option value="{{ geo_zone['geo_zone_id'] }}" selected="selected">{{ geo_zone['name'] }}</option>
+														{% else %}
+															<option value="{{ geo_zone['geo_zone_id'] }}">{{ geo_zone['name'] }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="input-tax-class">Данъчен клас</label>
+											<div class="col-sm-9">
+												<select name="shipping_tk_next_tax_class_id" id="input-tax-class" class="form-control">
+													<option value="0">{{ text_none }}</option>
+													{% for tax_class in tax_classes %}
+														{% if tax_class.tax_class_id == shipping_tk_next_tax_class_id %}
+															<option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+														{% else %}
+															<option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_next_sort_order">{{ text_sort_order }}</label>
+											<div class="col-sm-9">
+												<input class="form-control" type="text" id="shipping_tk_next_sort_order" name="shipping_tk_next_sort_order" value="{{ shipping_tk_next_sort_order }}" size="1" />
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_next_status">Разреши дебъг функция</label>
+											<div class="col-sm-9">
+												<select class="form-control" id="shipping_tk_next_debug" name="shipping_tk_next_debug">
+													{% if (shipping_tk_next_debug) %}
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+														<option value="0">{{ text_disabled }}</option>
+													{% else %}
+														<option value="1">{{ text_enabled }}</option>
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+													{% endif %}
+												</select>
+											</div>
+										</div>
+									
+									</div>
+									
+									<div class="tab-pane" id="v-pills-statuses">
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="shipping_tk_next_order_status_id">{{ text_statuses_10 }}:</label>
+											<div class="col-sm-9">
+												<select name="shipping_tk_next_order_status_id" id="shipping_tk_next_order_status_id" class="form-control">
+													<option value="0">{{ text_statuses_9 }}</option>
+													{% for order_status in order_statuses %}
+														
+														{% if (order_status['order_status_id'] == shipping_tk_next_order_status_id) %}
+															<option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+														{% else %}
+															<option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+														{% endif %}
+													{% endfor %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" for="input-shipping_tk_next_order_status_id_mail">{{ text_statuses_8 }}:</label>
+											<div class="col-sm-9">
+												<select name="shipping_tk_next_order_status_id_mail" id="input-shipping_tk_next_order_status_id_mail" class="form-control">
+													{% if  shipping_tk_next_order_status_id_mail %}
+														<option value="0">{{ text_disabled }}</option>
+														<option value="1" selected="selected">{{ text_enabled }}</option>
+													{% else %}
+														<option value="0" selected="selected">{{ text_disabled }}</option>
+														<option value="1">{{ text_enabled }}</option>
+													{% endif %}
+												</select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-sm-3 control-label" >{{ text_statuses_1 }}<br> {shipment_number} - {{ text_statuses_2 }}:</label>
+											<div class="col-sm-9">
+												<textarea name="shipping_tk_next_order_status_id_mail_text" rows="3" class="form-control">{{ shipping_tk_next_order_status_id_mail_text }}</textarea>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<div class="col-sm-3 text-right"></div>
+											<div class="col-sm-9">
+												<br><br><h4><b>{{ text_statuses_3 }}</b></h4>
+											</div>
+										</div>
+										
+										{% for key,text_status in text_label_status %}
+											<div class="form-group">
+												<label class="col-sm-3 control-label">{{ key }} - {{ text_status }}</label>
+												
+												<div class="col-sm-9">
+													<div class="row">
+														<div class="col-sm-3">{{ text_statuses_4 }}</div>
+														<div class="col-sm-3">
+															<select name="shipping_tk_next_order_status[{{ key }}]" id="input-shipping_tk_next_order_status" class="form-control">
+																<option value="">{{ text_statuses_5 }}</option>
+																{% for order_status in order_statuses %}
+																	{% if  shipping_tk_next_order_status[key] == order_status.order_status_id %}
+																		<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+																	{% else %}
+																		<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+																	{% endif %}
+																{% endfor %}
+															</select>
+														</div>
+														<div class="col-sm-3">{{ text_statuses_6 }}</div>
+														<div class="col-sm-3">
+															<select name="shipping_tk_next_order_status_mail[{{ key }}]" id="input-shipping_tk_next_order_status_mail" class="form-control">
+																{% if  shipping_tk_next_order_status_mail[key] %}
+																	<option value="0">{{ text_disabled }}</option>
+																	<option value="1" selected="selected">{{ text_enabled }}</option>
+																{% else %}
+																	<option value="0" selected="selected">{{ text_disabled }}</option>
+																	<option value="1">{{ text_enabled }}</option>
+																{% endif %}
+															</select>
+														</div>
+														<div class="clearfix"></div>
+														<br>
+														
+														<div class="col-sm-3">{{ text_statuses_7 }}</div>
+														<div class="col-sm-9">
+															<textarea name="shipping_tk_next_order_status_mail_text[{{ key }}]" rows="3" placeholder="Въведи текст" id="input-shipping_tk_next_order_status_mail_text" class="form-control">{{ shipping_tk_next_order_status_mail_text[key] }}</textarea>
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endfor %}
+									
+									</div>
+									
+									
+									{% for next_country in next_countries %}
+										<div class="tab-pane fade" id="v-pills-{{ next_country.code }}">
+											
+											<div class="form-group">
+												<div class="col-sm-12">
+													<h3>{{ next_country.name }}
+														<small>{{ text_code }}:{{ next_country.code }}</small> <small>{{ text_currency }}
+															:{{ next_country.currency }}</small>
+													</h3>
+												</div>
+											</div>
+											
+											<input type="hidden" name="shipping_tk_next_countries[{{ next_country.code }}][id]" value="{{ next_country.id }}"/>
+											<input type="hidden" name="shipping_tk_next_countries[{{ next_country.code }}][code]" value="{{ next_country.code }}"/>
+											<input type="hidden" name="shipping_tk_next_countries[{{ next_country.code }}][currency]" value="{{ next_country.currency }}"/>
+											<input type="hidden" name="shipping_tk_next_countries[{{ next_country.code }}][name]" value="{{ next_country.name }}"/>
+											
+											<div class="form-group">
+												<label class="col-sm-1 control-label">{{ text_status }}</label>
+												<div class="col-sm-11">
+													{% if shipping_tk_next_countries[next_country.code]['status'] %}
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][status]" value="0" class="input-{{ next_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_disabled }}</span> </label>
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][status]" value="1" checked="checked" class="input-{{ next_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_enabled }}</span> </label>
+													{% else %}
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][status]" value="0" checked="checked" class="input-{{ next_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_disabled }}</span> </label>
+														<label class="button-label">
+															<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][status]" value="1" class="input-{{ next_country.code }}-status"/>
+															<span class="btn btn-default">{{ text_enabled }}</span> </label>
+													{% endif %}
+												</div>
+											</div>
+									
+											<div id="box-{{ next_country.code }}-status" {% if shipping_tk_next_countries[next_country.code]['status'] %}style="display: block" {% else %}style="display: none"{% endif %}>
+												
+												
+												<ul class="nav nav-tabs">
+													{% for key,courier in next_country.couriers_in_detail %}
+													<li class="{% if key == 0 %}active{% endif %}">
+														<a href="#tab-{{ next_country.code }}-{{ courier.id }}" data-toggle="tab">{{ courier.name }}</a>
+													</li>
+													{% endfor %}
+												</ul>
+												
+												
+												<div class="tab-content">
+													
+													{% for key,courier in next_country.couriers_in_detail %}
+													<div class="tab-pane {% if key == 0 %}active{% endif %}" id="tab-{{ next_country.code }}-{{ courier.id }}">
+														
+														<input type="hidden" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][id]" value="{{ courier.id }}"/>
+														<input type="hidden" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][name]" value="{{ courier.name }}"/>
+													
+														<div class="form-group">
+														<h4 class="col-sm-1 control-label">{{ courier.name }}</h4>
+														<div class="col-sm-11">
+															{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['status'] %}
+																<label class="button-label">
+																	<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][status]" value="0" class="input-{{ next_country.code }}-{{ courier.id }}-status"/>
+																	<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																<label class="button-label">
+																	<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][status]" value="1" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-status"/>
+																	<span class="btn btn-default">{{ text_enabled }}</span> </label>
+															{% else %}
+																<label class="button-label">
+																	<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][status]" value="0" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-status"/>
+																	<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																<label class="button-label">
+																	<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][status]" value="1" class="input-{{ next_country.code }}-{{ courier.id }}-status"/>
+																	<span class="btn btn-default">{{ text_enabled }}</span> </label>
+															{% endif %}
+														</div>
+													</div>
+			
+														<div id="box-{{ next_country.code }}-{{ courier.id }}-status" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['status'] %}style="display: block" {% else %}style="display: none"{% endif %}>
+															
+															
+															<ul class="nav nav-tabs">
+																<li class="active">
+																		<a href="#tab-{{ next_country.code }}-{{ courier.id }}-settings" data-toggle="tab">{{ text_settings }}</a>
+																</li>
+																{% if courier.to_address %}
+																	<li>
+																		<a href="#tab-{{ next_country.code }}-{{ courier.id }}-address" data-toggle="tab">{{ text_address }}</a>
+																	</li>
+																{% endif %}
+																{% if courier.to_office %}
+																	<li>
+																		<a href="#tab-{{ next_country.code }}-{{ courier.id }}-office" data-toggle="tab">{{ text_office }}</a>
+																	</li>
+																	<li>
+																		<a href="#tab-{{ next_country.code }}-{{ courier.id }}-machine" data-toggle="tab">{{ text_machine }}</a>
+																	</li>
+																{% endif %}
+															</ul>
+															
+															<div class="tab-content">
+															
+															<div class="tab-pane active" id="tab-{{ next_country.code }}-{{ courier.id }}-settings">
+															
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_payer }}</label>
+																	<div class="col-sm-9">
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][payer]" value="receiver" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['payer'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['payer'] == 'receiver' %}checked="checked"{% endif %}/>
+																			<span class="btn btn-default">{{ text_recipient }}</span>
+																		</label>
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][payer]" value="sender" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['payer'] is not defined or shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['payer'] == 'sender' %}checked="checked"{% endif %}/>
+																			<span class="btn btn-default">{{ text_sender }}</span>
+																		</label>
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_included_shipping_price }}</label>
+																	<div class="col-sm-9">
+																		{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['included_shipping_price'] %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][included_shipping_price]" value="0"/>
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][included_shipping_price]" value="1" checked="checked"/>
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% else %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][included_shipping_price]" value="0" checked="checked"/>
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][included_shipping_price]" value="1"/>
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% endif %}
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_declared_value }}</label>
+																	<div class="col-sm-9">
+																		{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['declared_value'] %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][declared_value]" value="0"/>
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][declared_value]" value="1" checked="checked"/>
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% else %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][declared_value]" value="0" checked="checked"/>
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][declared_value]" value="1"/>
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% endif %}
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_option }}</label>
+																	<div class="col-sm-9">
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][option]" value="0" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] is not defined or var is null %}checked="checked"{% endif %} class="input-{{ next_country.code }}-{{ courier.id }}-option" />
+																			<span class="btn btn-default">{{ text_option_without }}</span>
+																		</label>
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][option]" value="OPEN" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] == 'OPEN' %}checked="checked"{% endif %}  class="input-{{ next_country.code }}-{{ courier.id }}-option" />
+																			<span class="btn btn-default">{{ text_option_open }}</span>
+																		</label>
+																		<label class="button-label">
+																			<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][option]" value="TEST" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] == 'TEST' %}checked="checked"{% endif %}  class="input-{{ next_country.code }}-{{ courier.id }}-option" />
+																			<span class="btn btn-default">{{ text_option_test }}</span>
+																		</label>
+																	</div>
+																</div>
+																
+																<div id="box-{{ next_country.code }}-{{ courier.id }}-option" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['option'] != 0 %}style="display: block"{% else %}style="display: none"{% endif %}>
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_return_shipment_payer }}</label>
+																		<div class="col-sm-9">
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][return_shipment_payer]" value="SENDER" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['return_shipment_payer'] is not defined or var is null or shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['return_shipment_payer'] == 'SENDER' %}checked="checked"{% endif %}/>
+																				<span class="btn btn-default">{{ text_sender }}</span>
+																			</label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][return_shipment_payer]" value="RECIPIENT" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['return_shipment_payer'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['return_shipment_payer'] == 'RECIPIENT' %}checked="checked"{% endif %}/>
+																				<span class="btn btn-default">{{ text_recipient }}</span>
+																			</label>
+																		</div>
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_fragile }}</label>
+																	<div class="col-sm-9">
+																		{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['fragile'] %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][fragile]" value="0"/>
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][fragile]" value="1" checked="checked"/>
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% else %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][fragile]" value="0" checked="checked"/>
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][fragile]" value="1"/>
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% endif %}
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_shipment_description }}</label>
+																	<div class="col-sm-5">
+																		<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][shipment_description]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['shipment_description'] }}" />
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_shipment_product }} </label>
+																	<div class="col-sm-5">
+																		<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][shipment_product]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['shipment_product'] }}" />
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_product_name }}</label>
+																	<div class="col-sm-3">
+																		<select class="form-control" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][product_name]">
+																			<option value="none" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['product_name'] == 'none' %}selected="selected"{% endif %}>{{ text_product_name_none }}</option>
+																			<option value="contents" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['product_name'] == 'contents' %}selected="selected"{% endif %}>{{ text_product_name_contents }}</option>
+																			<option value="ref" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['product_name'] == 'ref' %}selected="selected"{% endif %}>{{ text_product_name_ref }}</option>
+																		</select>
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_weight_type }}</label>
+																	<div class="col-sm-3">
+																		<select class="form-control" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][weight_type]">
+																			<option value="kilogram" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['weight_type'] == 'kg' %}selected="selected"{% endif %}>{{ text_kg }}</option>
+																			<option value="gram" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['weight_type'] == 'gr' %}selected="selected"{% endif %}>{{ text_gr }}</option>
+																		</select>
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_weight_total }}</label>
+																	<div class="col-sm-3">
+																		<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][weight_total]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['weight_total'] }}" />
+																	</div>
+																</div>
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label"><span data-toggle="tooltip" title="{{ help_totals }}">{{ text_totals }}</span></label>
+																	<div class="col-sm-9">
+																		<div class="well well-sm" style="height: 180px; overflow: auto;" id="totals">
+																			{% for total in oc_totals %}
+																				<div class="checkbox col-sm-4"><label><input type="checkbox" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][totals][]" value="{{ total.code }}" {% if total.code in shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['totals'] %}checked="checked"{% endif %} />{{ total.name }}</label></div>
+																			{% endfor %}
+																		</div>
+																	</div>
+																</div>
+															
+															</div>
+															
+															{% if courier.to_address %}
+															<div class="tab-pane" id="tab-{{ next_country.code }}-{{ courier.id }}-address">
+																
+																<div class="form-group">
+																	<label class="col-sm-3 control-label">{{ text_status }}</label>
+																	<div class="col-sm-9">
+																		{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['status'] %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][status]" value="0" class="input-{{ next_country.code }}-{{ courier.id }}-address-status" />
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][status]" value="1" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-address-status" />
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% else %}
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][status]" value="0" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-address-status" />
+																				<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																			<label class="button-label">
+																				<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][status]" value="1" class="input-{{ next_country.code }}-{{ courier.id }}-address-status" />
+																				<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																		{% endif %}
+																	</div>
+																</div>
+																
+																<div id="box-{{ next_country.code }}-{{ courier.id }}-address-status" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['status'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['status'] != 0 %}style="display: block"{% else %}style="display: none"{% endif %}>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_sort_order }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][sort]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['sort'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_on_to_weight }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['weight'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_calculate }}</label>
+																		<div class="col-sm-9">
+																			{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['calculate'] %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][calculate]" value="0"/>
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][calculate]" value="1" checked="checked"/>
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% else %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][calculate]" value="0" checked="checked"/>
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][calculate]" value="1"/>
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% endif %}
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_fixed_price }}{{ next_country.currency }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][fixed_price]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['fixed_price'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_free_total }}{{ next_country.currency }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][free_total]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['free_total'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_free_weight }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][free_weight]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['free_weight'] }}" />
+																		</div>
+																	</div>
+																	
+																	<hr>
+																	<div class="form-group">
+																		<label class="col-sm-12 text-left">{{ text_weight_price }}{{ next_country.currency }}</label>
+																	</div>
+																	<table id="weight-value-{{ next_country.code }}-{{ courier.id }}-address" class="table table-striped table-bordered table-hover">
+																		<thead>
+																		<tr>
+																			<td class="text-left required">Килограми - От (включително)</td>
+																			<td class="text-left required">Килограми - До</td>
+																			<td class="text-left required">Цена</td>
+																			<td></td>
+																		</tr>
+																		</thead>
+																		<tbody>
+																		{% for weight_value in shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['weight_price'] %}
+																			<tr id="weight-value-row{{ loop.index }}">
+																				<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight_price][{{ loop.index }}][from]" value="{{ weight_value['from'] }}" class="form-control" /></td>
+																				<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight_price][{{ loop.index }}][to]" value="{{ weight_value['to'] }}" class="form-control" /></td>
+																				<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight_price][{{ loop.index }}][price]" value="{{ weight_value['price'] }}" class="form-control" /></td>
+																				<td class="text-right"><button type="button" onclick="$('#weight-value-row{{ loop.index }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+																			</tr>
+																		{% endfor %}
+																		</tbody>
+																		
+																		<tfoot>
+																		<tr>
+																			<td colspan="3"></td>
+																			<td class="text-right"><button type="button" onclick="addWeight_{{ next_country.code }}_{{ courier.id }}_address();" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+																		</tr>
+																		</tfoot>
+																	</table>
+																	<script>
+                                      var weight_value_row_address_{{ courier.id }} = {{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['weight_price']|length }} + 1;
+
+                                      function addWeight_{{ next_country.code }}_{{ courier.id }}_address() {
+                                          html  = '<tr id="weight-value-row' + weight_value_row_address_{{ courier.id }} + '">';
+                                          html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight_price][' + weight_value_row_address_{{ courier.id }} + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+                                          html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight_price][' + weight_value_row_address_{{ courier.id }} + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+                                          html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][weight_price][' + weight_value_row_address_{{ courier.id }} + '][price]" value="" placeholder="0.00" class="form-control" /></td>';
+                                          html += '  <td class="text-right"><button type="button" onclick="$(\'#weight-value-row' + weight_value_row_address_{{ courier.id }} + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+                                          html += '</tr>';
+
+                                          $('#weight-value-{{ next_country.code }}-{{ courier.id }}-address tbody').append(html);
+
+                                          weight_value_row_address_{{ courier.id }}++;
+                                      }
+
+																	</script>
+																
+																
+																	<div class="form-group row">
+																		<label class="col-sm-3 control-label">Автомат - заглавие</label>
+																		<div class="col-sm-9">
+																			{% for language in languages %}
+																				<div class="input-group" style="margin-bottom: 5px">
+																					<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+																					<input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][title][{{ language.code }}]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['title'][language.code] }}" class="form-control" />
+																				</div>
+																			{% endfor %}
+																		</div>
+																	</div>
+																	
+																	<div class="form-group row">
+																		<label class="col-sm-3 control-label">Автомат - текст</label>
+																		<div class="col-sm-9">
+																			{% for language in languages %}
+																				<div class="input-group" style="margin-bottom: 5px">
+																					<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+																					<input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][address][text][{{ language.code }}]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['address']['text'][language.code] }}" class="form-control" />
+																				</div>
+																			{% endfor %}
+																		</div>
+																	</div>
+																	
+																	
+																</div>
+															</div>
+															{% endif %}
+															
+															{% if courier.to_office %}
+																<div class="tab-pane" id="tab-{{ next_country.code }}-{{ courier.id }}-office">
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_status }}</label>
+																		<div class="col-sm-9">
+																			{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['status'] %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][status]" value="0" class="input-{{ next_country.code }}-{{ courier.id }}-office-status" />
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][status]" value="1" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-office-status" />
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% else %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][status]" value="0" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-office-status" />
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][status]" value="1" class="input-{{ next_country.code }}-{{ courier.id }}-office-status" />
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% endif %}
+																		</div>
+																	</div>
+																	
+																	<div id="box-{{ next_country.code }}-{{ courier.id }}-office-status" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['status'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['status'] != 0 %}style="display: block"{% else %}style="display: none"{% endif %}>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_sort_order }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][sort]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['sort'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_on_to_weight }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['weight'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_calculate }}</label>
+																		<div class="col-sm-9">
+																			{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['calculate'] %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][calculate]" value="0"/>
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][calculate]" value="1" checked="checked"/>
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% else %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][calculate]" value="0" checked="checked"/>
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][calculate]" value="1"/>
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% endif %}
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_fixed_price }}{{ next_country.currency }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][fixed_price]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['fixed_price'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_free_total }}{{ next_country.currency }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][free_total]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['free_total'] }}" />
+																		</div>
+																	</div>
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_free_weight }}</label>
+																		<div class="col-sm-3">
+																			<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][free_weight]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['free_weight'] }}" />
+																		</div>
+																	</div>
+																		
+																		<hr>
+																		<div class="form-group">
+																			<label class="col-sm-12 text-left">{{ text_weight_price }}{{ next_country.currency }}</label>
+																		</div>
+																		<table id="weight-value-{{ next_country.code }}-{{ courier.id }}-office" class="table table-striped table-bordered table-hover">
+																			<thead>
+																			<tr>
+																				<td class="text-left required">Килограми - От (включително)</td>
+																				<td class="text-left required">Килограми - До</td>
+																				<td class="text-left required">Цена</td>
+																				<td></td>
+																			</tr>
+																			</thead>
+																			<tbody>
+																			{% for weight_value in shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['weight_price'] %}
+																				<tr id="weight-value-row{{ loop.index }}">
+																					<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight_price][{{ loop.index }}][from]" value="{{ weight_value['from'] }}" class="form-control" /></td>
+																					<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight_price][{{ loop.index }}][to]" value="{{ weight_value['to'] }}" class="form-control" /></td>
+																					<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight_price][{{ loop.index }}][price]" value="{{ weight_value['price'] }}" class="form-control" /></td>
+																					<td class="text-right"><button type="button" onclick="$('#weight-value-row{{ loop.index }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+																				</tr>
+																			{% endfor %}
+																			</tbody>
+																			
+																			<tfoot>
+																			<tr>
+																				<td colspan="3"></td>
+																				<td class="text-right"><button type="button" onclick="addWeight_{{ next_country.code }}_{{ courier.id }}_office();" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+																			</tr>
+																			</tfoot>
+																		</table>
+																		<script>
+                                        var weight_value_row_office_{{ courier.id }} = {{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['weight_price']|length }} + 1;
+
+                                        function addWeight_{{ next_country.code }}_{{ courier.id }}_office() {
+                                            html  = '<tr id="weight-value-row' + weight_value_row_office_{{ courier.id }} + '">';
+                                            html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight_price][' + weight_value_row_office_{{ courier.id }} + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+                                            html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight_price][' + weight_value_row_office_{{ courier.id }} + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+                                            html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][weight_price][' + weight_value_row_office_{{ courier.id }} + '][price]" value="" placeholder="0.00" class="form-control" /></td>';
+                                            html += '  <td class="text-right"><button type="button" onclick="$(\'#weight-value-row' + weight_value_row_office_{{ courier.id }} + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+                                            html += '</tr>';
+
+                                            $('#weight-value-{{ next_country.code }}-{{ courier.id }}-office tbody').append(html);
+
+                                            weight_value_row_office_{{ courier.id }}++;
+                                        }
+																		
+																		</script>
+																		
+																		
+																		<div class="form-group row">
+																			<label class="col-sm-3 control-label">Автомат - заглавие</label>
+																			<div class="col-sm-9">
+																				{% for language in languages %}
+																					<div class="input-group" style="margin-bottom: 5px">
+																						<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+																						<input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][title][{{ language.code }}]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['title'][language.code] }}" class="form-control" />
+																					</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																		
+																		<div class="form-group row">
+																			<label class="col-sm-3 control-label">Автомат - текст</label>
+																			<div class="col-sm-9">
+																				{% for language in languages %}
+																					<div class="input-group" style="margin-bottom: 5px">
+																						<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+																						<input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][office][text][{{ language.code }}]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['office']['text'][language.code] }}" class="form-control" />
+																					</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																
+																</div>
+															
+															</div>
+																
+																
+																<div class="tab-pane" id="tab-{{ next_country.code }}-{{ courier.id }}-machine">
+																	
+																	<div class="form-group">
+																		<label class="col-sm-3 control-label">{{ text_status }}</label>
+																		<div class="col-sm-9">
+																			{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['status'] %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][status]" value="0" class="input-{{ next_country.code }}-{{ courier.id }}-machine-status" />
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][status]" value="1" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-machine-status" />
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% else %}
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][status]" value="0" checked="checked" class="input-{{ next_country.code }}-{{ courier.id }}-machine-status" />
+																					<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																				<label class="button-label">
+																					<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][status]" value="1" class="input-{{ next_country.code }}-{{ courier.id }}-machine-status" />
+																					<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																			{% endif %}
+																		</div>
+																	</div>
+																	
+																	<div id="box-{{ next_country.code }}-{{ courier.id }}-machine-status" {% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['status'] is defined and shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['status'] != 0 %}style="display: block"{% else %}style="display: none"{% endif %}>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_sort_order }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][sort]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['sort'] }}" />
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_on_to_weight }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['weight'] }}" />
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_calculate }}</label>
+																			<div class="col-sm-9">
+																				{% if shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['calculate'] %}
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][calculate]" value="0"/>
+																						<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][calculate]" value="1" checked="checked"/>
+																						<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																				{% else %}
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][calculate]" value="0" checked="checked"/>
+																						<span class="btn btn-default">{{ text_disabled }}</span> </label>
+																					<label class="button-label">
+																						<input type="radio" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][calculate]" value="1"/>
+																						<span class="btn btn-default">{{ text_enabled }}</span> </label>
+																				{% endif %}
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_fixed_price }}{{ next_country.currency }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][fixed_price]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['fixed_price'] }}" />
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_free_total }}{{ next_country.currency }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][free_total]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['free_total'] }}" />
+																			</div>
+																		</div>
+																		
+																		<div class="form-group">
+																			<label class="col-sm-3 control-label">{{ text_free_weight }}</label>
+																			<div class="col-sm-3">
+																				<input class="form-control" type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][free_weight]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['free_weight'] }}" />
+																			</div>
+																		</div>
+																		
+																		<hr>
+																		<div class="form-group">
+																			<label class="col-sm-12 text-left">{{ text_weight_price }}{{ next_country.currency }}</label>
+																		</div>
+																		<table id="weight-value-{{ next_country.code }}-{{ courier.id }}-machine" class="table table-striped table-bordered table-hover">
+																			<thead>
+																			<tr>
+																				<td class="text-left required">Килограми - От (включително)</td>
+																				<td class="text-left required">Килограми - До</td>
+																				<td class="text-left required">Цена</td>
+																				<td></td>
+																			</tr>
+																			</thead>
+																			<tbody>
+																			{% for weight_value in shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['weight_price'] %}
+																				<tr id="weight-value-row{{ loop.index }}">
+																					<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight_price][{{ loop.index }}][from]" value="{{ weight_value['from'] }}" class="form-control" /></td>
+																					<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight_price][{{ loop.index }}][to]" value="{{ weight_value['to'] }}" class="form-control" /></td>
+																					<td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight_price][{{ loop.index }}][price]" value="{{ weight_value['price'] }}" class="form-control" /></td>
+																					<td class="text-right"><button type="button" onclick="$('#weight-value-row{{ loop.index }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+																				</tr>
+																			{% endfor %}
+																			</tbody>
+																			
+																			<tfoot>
+																			<tr>
+																				<td colspan="3"></td>
+																				<td class="text-right"><button type="button" onclick="addWeight_{{ next_country.code }}_{{ courier.id }}_machine();" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+																			</tr>
+																			</tfoot>
+																		</table>
+																		<script>
+                                        var weight_value_row_machine_{{ courier.id }} = {{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['weight_price']|length }} + 1;
+
+                                        function addWeight_{{ next_country.code }}_{{ courier.id }}_machine() {
+                                            html  = '<tr id="weight-value-row' + weight_value_row_machine_{{ courier.id }} + '">';
+                                            html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight_price][' + weight_value_row_machine_{{ courier.id }} + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+                                            html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight_price][' + weight_value_row_machine_{{ courier.id }} + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+                                            html += '  <td class="text-right"><input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][weight_price][' + weight_value_row_machine_{{ courier.id }} + '][price]" value="" placeholder="0.00" class="form-control" /></td>';
+                                            html += '  <td class="text-right"><button type="button" onclick="$(\'#weight-value-row' + weight_value_row_machine_{{ courier.id }} + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+                                            html += '</tr>';
+
+                                            $('#weight-value-{{ next_country.code }}-{{ courier.id }}-machine tbody').append(html);
+
+                                            weight_value_row_machine_{{ courier.id }}++;
+                                        }
+																		
+																		</script>
+																		
+																		
+																		<div class="form-group row">
+																			<label class="col-sm-3 control-label">Автомат - заглавие</label>
+																			<div class="col-sm-9">
+																				{% for language in languages %}
+																					<div class="input-group" style="margin-bottom: 5px">
+																						<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+																						<input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][title][{{ language.code }}]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['title'][language.code] }}" class="form-control" />
+																					</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																		
+																		<div class="form-group row">
+																			<label class="col-sm-3 control-label">Автомат - текст</label>
+																			<div class="col-sm-9">
+																				{% for language in languages %}
+																					<div class="input-group" style="margin-bottom: 5px">
+																						<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+																						<input type="text" name="shipping_tk_next_countries[{{ next_country.code }}][couriers][{{ courier.id }}][machine][text][{{ language.code }}]" value="{{ shipping_tk_next_countries[next_country.code]['couriers'][courier.id]['machine']['text'][language.code] }}" class="form-control" />
+																					</div>
+																				{% endfor %}
+																			</div>
+																		</div>
+																	
+																	</div>
+																
+																</div>
+															{% endif %}
+															
+															</div>
+															
+															
+														</div>
+													</div>
+													{% endfor %}
+													
+											</div>
+										
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							
+						</div>
+					</div>
+				{% endif %}
+			
+			{% else %}
+				
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<h3>Трябва да активирате модула TK Checkout за да позлвате Доставка със Спиди</h3>
+					</div>
+				</div>
+			
+			{% endif %}
+		</form>
+	
+	</div>
+</div>
+
+<style>
+    .button-label input {
+        display: none;
+    }
+
+    .button-label span {
+        color: #666;
+        background-color: #fff;
+        border-color: #ddd;
+    }
+
+    .button-label input:checked + span {
+        color: #fff;
+        background-color: #3c933c;
+        border-color: #2f722f;
+    }
+
+    .button-label input:checked + span.btn-danger {
+        color: #fff;
+        background-color: #e3503e;
+        border-color: #dd3520;
+    }
+
+    .button-label i {
+        font-size: 15px;
+        transition: 0.5s all;
+    }
+</style>
+
+<script>
+	{% for next_country in next_countries %}
+	  $('.input-{{ next_country.code }}-status').on('change', function () {
+	      if ($(this).val() > 0) {
+	          $('#box-{{ next_country.code }}-status').fadeIn();
+	      } else {
+	          $('#box-{{ next_country.code }}-status').fadeOut();
+	      }
+	  });
+ 
+		{% for courier in next_country.couriers_in_detail %}
+		  $('.input-{{ next_country.code }}-{{ courier.id }}-status').on('change', function () {
+		      if ($(this).val() > 0) {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-status').fadeIn();
+		      } else {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-status').fadeOut();
+		      }
+		  });
+
+		  $('.input-{{ next_country.code }}-{{ courier.id }}-option').on('change', function () {
+		      if ($(this).val() != 0) {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-option').fadeIn();
+		      } else {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-option').fadeOut();
+		      }
+		  });
+
+		  $('.input-{{ next_country.code }}-{{ courier.id }}-address-status').on('change', function () {
+		      if ($(this).val() != 0) {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-address-status').fadeIn();
+		      } else {
+              $('#box-{{ next_country.code }}-{{ courier.id }}-address-status').fadeOut();
+		      }
+		  });
+
+		  $('.input-{{ next_country.code }}-{{ courier.id }}-office-status').on('change', function () {
+		      if ($(this).val() != 0) {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-office-status').fadeIn();
+		      } else {
+		          $('#box-{{ next_country.code }}-{{ courier.id }}-office-status').fadeOut();
+		      }
+		  });
+
+      $('.input-{{ next_country.code }}-{{ courier.id }}-machine-status').on('change', function () {
+	      if ($(this).val() != 0) {
+	          $('#box-{{ next_country.code }}-{{ courier.id }}-machine-status').fadeIn();
+	      } else {
+	          $('#box-{{ next_country.code }}-{{ courier.id }}-status-status').fadeOut();
+	      }
+      });
+		{% endfor %}
+	{% endfor %}
+
+
+  function nextButtonLogin() {
+      $('#loading').remove();
+      $('#login_error').html('').removeClass("text-danger");
+      $('#login_button').after('<span id="loading" class="attention" style="padding: 5px;">Моля, изчакайте.</span>');
+
+      $.ajax({
+          url: 'index.php?route=extension/shipping/tk_next/login&user_token={{ user_token }}',
+          type: 'POST',
+          data: 'app_id=' + encodeURIComponent($('#app_id').val()) + '&app_secret=' + encodeURIComponent($('#app_secret').val()) + '&sender_id=' + encodeURIComponent($('#sender_id').val()),
+          dataType: 'json',
+          success: function (data) {
+              if (data) {
+                  $('#loading').remove();
+
+                  if (data.success) {
+                      window.location = window.location;
+                  } else {
+                      $('#login_error').html(data.message).addClass('text-danger');
+                  }
+              }
+          },
+          error: function (request) {
+              $('#loading').remove();
+
+              $('#login_error').html('Login Error').addClass("text-danger");
+          }
+      });
+  }
+
+	function nextButtonLogout() {
+			if (confirm('{{ text_warning_logout }}')) {
+					$.get('index.php?route=extension/shipping/tk_next/logout&user_token={{ user_token }}').done(function () {
+							window.location = window.location;
+					});
+			}
+    }
+
+</script>
+{{ footer }}

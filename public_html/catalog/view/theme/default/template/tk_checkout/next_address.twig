@@ -1,0 +1,271 @@
+<div id="tk_next_address">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span>
+			<span class="tk_panel_text"> {{ text_address }}</span>
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>
+		
+		<div class="tk_panel_body">
+			<div id="tk_next_addresses">
+				
+				<input type="hidden" id="shipping_to" name="shipping_to" value="address"/>
+				<input type="hidden" id="shipping_type" name="shipping_type" value="next"/>
+				<input type="hidden" id="country_iso" name="country_iso" value="{{ country_iso }}"/>
+				<input type="hidden" id="courier_id" name="courier_id" value="{{ courier_id }}"/>
+				<input type="hidden" id="courier_name" name="courier_name" value="{{ courier_name }}"/>
+				
+				{% if module_tk_checkout_zone is not defined or module_tk_checkout_zone == 0 %}
+					<input type="hidden" id="zone_id" name="zone_id" value="{{ zone_id }}"/>
+				{% endif %}
+				
+				{% if (customer_addresses) %}
+					<div class="tk_12_column tk_center_column">
+						<label>
+							<input type="radio" name="customer_type" value="existing" checked="checked" {% if (customer_type is defined and customer_type == 'existing') %}checked=""{% endif %} onclick="jQuery('#address_new').hide();jQuery('#address_existing').show();"/>
+							{{ text_address_existing }}
+						</label>
+					</div>
+					
+					<div id="address_existing">
+						<div class="tk_12_column tk_center_column">
+							<select name="next_customer_id">
+								{% for address in customer_addresses %}
+									<option value="{{ address['next_customer_id'] }}" {% if (next_customer_id is defined and address['next_customer_id'] == next_customer_id) %}selected="selected"{% endif %}>{{ address['postcode'] }} - {{ address['city'] }}, {{ address['street'] }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					
+					<div class="tk_12_column tk_center_column">
+						<label>
+							<input type="radio" name="customer_type" value="new" {% if (customer_type is defined and customer_type == 'new') %}checked=""{% endif %} onclick="jQuery('#address_new').show();jQuery('#address_existing').hide();"/>
+							{{ text_address_new }}
+						</label>
+					</div>
+				
+				{% else %}
+					<input type="hidden" name="customer_type" value="new">
+				{% endif %}
+				
+				<div id="address_new" {% if (customer_addresses is not defined or (customer_type is defined and customer_type == 'new')) %} style="display:block" {% else %}style="display:none"{% endif %}>
+					
+					<input type="hidden" name="default" value="1"/>
+					<input type="hidden" id="city_id" name="city_id" value="{{ city_id }}">
+					<input type="hidden" id="city" name="city" value="{{ city }}">
+		
+					<div class="tk_8_column tk_center_column box_next_address_city_select tk_required_box {% if city_id %} tk_redy_box{% endif %}" id="box_next_address_city_select">
+						<input type="text" id="next_address_city_select" readonly="readonly" name="next_address_city_select" value="{{ city }}" placeholder="{{ text_city }}"/>
+						<span class="tk_floating_label">{{ text_city }}</span>
+					</div>
+					<div class="tk_4_column tk_center_column" id="box_postcode">
+						<input type="text" id="postcode" name="postcode" value="{{ postcode }}" placeholder="{{ text_postcode }}"/>
+						<span class="tk_floating_label">{{ text_postcode }}</span>
+					</div>
+					<div class="tk_clear"></div>
+					
+					<div class="box_street" id="box_street">
+						
+						<div class="tk_8_column tk_center_column box_street_select tk_required_box {% if street %}tk_redy_box{% endif %}" id="box_street_select">
+							<input type="text" id="street" name="street" value="{% if street %}{{ street }}{% endif %}" placeholder="{{ text_street }}"/>
+							<span class="tk_floating_label">{{ text_street }}</span>
+						</div>
+						<div class="tk_4_column tk_center_column" id="box_street_num">
+							<input type="text" id="street_num" name="street_num" value="{% if street_num %}{{ street_num }}{% else %}1{% endif %}" placeholder="{{ text_street_num }}"/>
+							<span class="tk_floating_label">{{ text_street_num }}</span>
+						</div>
+						<div class="tk_clear"></div>
+						
+						<div class="box_quarter_remove" id="box_quarter_remove">
+							<div class="tk_6_column tk_center_column" id="box_quarter">
+								<input type="text" id="quarter" name="quarter" value="{{ quarter }}" placeholder="{{ text_quarter }}"/>
+								<span class="tk_floating_label">{{ text_quarter }}</span>
+							</div>
+							<div class="tk_1_column tk_center_column" id="box_block">
+								<input type="text" id="block" name="block" value="{{ block }}" placeholder="{{ text_block }}"/>
+								<span class="tk_floating_label">{{ text_block }}</span>
+							</div>
+							<div class="tk_1_column tk_center_column" id="box_entrance">
+								<input type="text" id="entrance" name="entrance" value="{{ entrance }}" placeholder="{{ text_entrance }}"/>
+								<span class="tk_floating_label">{{ text_entrance }}</span>
+							</div>
+							<div class="tk_1_column tk_center_column" id="box_floor">
+								<input type="text" id="floor" name="floor" value="{{ floor }}" placeholder="{{ text_floor }}"/>
+								<span class="tk_floating_label">{{ text_floor }}</span>
+							</div>
+							<div class="tk_1_column tk_center_column" id="box_apartment">
+								<input type="text" id="apartment" name="apartment" value="{{ apartment }}" placeholder="{{ text_apartment }}"/>
+								<span class="tk_floating_label">{{ text_apartment }}</span>
+							</div>
+							<div class="tk_clear"></div>
+						</div>
+						
+					</div>
+					
+					<div class="tk_12_column tk_center_column " id="other">
+						<input type="text" id="next_other" name="other" value="{{ other }}" placeholder="{{ text_other }}"/>
+						<span class="tk_floating_label">{{ text_other }}</span>
+					</div>
+					<div class="tk_clear"></div>
+					
+					{% if (error_address) %}
+						<span class="tk_alert">{{ error_address }}</span>
+					{% endif %}
+				
+				</div>
+				<div class="tk_clear"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="city_container radio_container mfp-hide" id="next_address_city_locator">
+		<div class="radio_search">
+			<span class="city_spin pull-right magnific_spin"></span>
+			<input id="city_search" name="city_search" type="text" placeholder="{{ text_search }}.." class="radio_box_search">
+		</div>
+		<div class="radio_box" id="city_radio_box">
+			{% for next_city in next_cities %}
+				<div class="radio_elements">
+					<label>
+						<input type="radio" name="city_id" value="{{ next_city['city_id'] }}" {% if (city_id is defined and next_city['city_id'] == city_id) %}checked=""{% endif %} data-name="{{ next_city['city_name'] }}" data-postcode="{{ next_city['postcode'] }}">{{ next_city['postcode'] }} - {{ next_city['city_name'] }}{% if next_city['region'] is defined %} {{ next_city['region'] }}{% endif %}
+					</label>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	
+	<div class="street_container radio_container mfp-hide" id="street_locator">
+		<div class="radio_search">
+			<span class="street_spin pull-right magnific_spin"></span>
+			<input id="street_search" name="street_search" type="text" class="radio_box_search" placeholder="{{ text_search }}..">
+		</div>
+		<div class="radio_box" id="street_radio_box">
+			{% for next_street in next_streets %}
+				<div class="radio_elements">
+					<label>
+						<input type="radio" name="street_id" value="{{ next_street['street_name'] }}" {% if (street is defined and next_street['street_name'] == street) %}checked=""{% endif %}>{{ next_street['street_name'] }}
+					</label>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	
+	<script>
+
+      $(document).ready(function () {
+          getPaymentMethod();
+      });
+      $('#street').change(function () {
+          saveData();
+      });
+      $('#street_num').change(function () {
+          saveData();
+      });
+      $('#block').change(function () {
+          saveData();
+      });
+      $('#entrance').change(function () {
+          saveData();
+      });
+      $('#floor').change(function () {
+          saveData();
+      });
+      $('#apartment').change(function () {
+          saveData();
+      });
+      $('#other').change(function () {
+          saveData();
+      });
+
+      //попъп за градове
+      $(document).on('click', '#next_address_city_select', function (e) {
+          e.stopImmediatePropagation();
+
+          $.magnificPopup.open({
+              type: 'inline',
+              items: {src: '#next_address_city_locator'}
+          });
+
+          getNextCities();
+
+          setTimeout(function () {
+              $('#city_search').focus();
+          }, 500);
+
+      });
+
+      //въвеждане на град ръчно
+      $('#city_search').on('input', function () {
+          getNextCities();
+      });
+
+      //добавяне на селектирания град и извеждаме квартали и улици спрямо него
+      $(document).delegate('#next_address_city_locator .radio_box input[type=\'radio\']', 'click', function (e) {
+          e.stopImmediatePropagation();
+
+          var city_id = $(this).val();
+          var city = $(this).data('name');
+          var postcode = $(this).data('postcode');
+
+          $('#city_id').val(city_id);
+          $('#city').val(city);
+          $('#postcode').val(postcode);
+          $('#next_address_city_select').val(city);
+
+          $('#box_next_address_city_select').addClass('tk_redy_box');
+
+          $('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+          $('#tk_checkout').css('opacity', '0.6');
+          $('#tk_checkout').css('pointer-events', 'none');
+          $('#tk_button_confirm').prop('disabled', true);
+
+          getShippingMethodAddress();
+
+          $.magnificPopup.close();
+
+      });
+
+      //извежда списъка с градове в попъпа
+      function getNextCities() {
+          var url = 'index.php?route=extension/shipping/tk_next/getCities';
+
+          var country_iso = $('#country_iso').val();
+          url += '&country_iso=' + encodeURIComponent(country_iso);
+
+          var courier = $('#courier_name').val();
+          url += '&courier=' + encodeURIComponent(courier);
+
+          var name = $('input[name=\'city_search\']').val();
+          if (name) {
+              url += '&name=' + encodeURIComponent(name);
+          }
+
+          $.ajax({
+              url: url,
+              type: 'GET',
+              dataType: 'json',
+              beforeSend: function () {
+                  $('.city_spin').html(' <i class="tk_icon-spin rotating"></i>');
+              },
+              success: function (data) {
+                  $('.city_spin').html('');
+                  $('#city_radio_box').html('{{ text_no_cities }}');
+
+                  html = '';
+
+                  for (i = 0; i < data.cities.length; i++) {
+                      html += '<div class="radio_elements"><label><input type="radio" name="city_id" value="' + data.cities[i]['city_id'] + '" data-name="' + data.cities[i]['city_name'] + '" data-postcode="' + data.cities[i]['postcode'] + '" >' + data.cities[i]['postcode'] + ' - ' + data.cities[i]['city_name'];
+
+	                    if(data.cities[i]['region']) {
+	                        html += ', ' + data.cities[i]['region'];
+	                    }
+	
+	                    html += '</label></div>';
+
+                  }
+
+                  $('#city_radio_box').html(html);
+              }
+          });
+      }
+</script>

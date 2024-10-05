@@ -1,0 +1,1222 @@
+{{ header }}{{ column_left }} 
+{% set weight_value_row = 0 %}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="pull-right">
+				{% if (shipping_tk_speedy_logged and cities) %} 
+				<button type="submit" form="form-speedy" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+				{% endif %} 
+				<a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %} 
+				<li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+				{% endfor %} 
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+ 
+		{% if (error_warning) %} 
+		<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }} 
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %} 
+ 
+		{% if (success) %} 
+		<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }} 
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+		</div>
+		{% endif %} 
+		
+		<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-speedy" class="form-horizontal">
+ 			
+ 			{% if module_tk_checkout_token %}
+				
+			{% if shipping_tk_speedy_logged %}
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">{{ text_get_data_info }}</label>
+						<div class="col-sm-9">
+							<a id="get_data" onclick="if (!$(this).attr('disabled')) { refreshData(); } " class="btn btn-primary"><span id="get_data_text">{{ button_get_data }}</span></a>
+							<span id="data_error">{% if (error_get_data) %}{{ error_get_data }}{% endif %}</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="shipping_tk_speedy_name">{{ entry_username }}</label>
+						<div class="col-sm-9">
+							<input type="text" id="shipping_tk_speedy_name" value="{{ shipping_tk_speedy_username }}" readonly class="form-control" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label"></label>
+						<div class="col-sm-9">
+							<a onclick="speedyButtonLogout();" class="btn btn-primary"><span>{{ entry_button_logout }}</span></a>
+						</div>
+					</div>
+					<hr>
+					
+					<div class="form-group">
+						<div class="col-sm-3 text-right"><p><b>Крон за ъпдейт на офиси:</b></p></div>
+						<div class="col-sm-9">
+							<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}catalog/controller/tk_checkout/cron_speedy.php {{ web_url }} > /dev/null 2>&1</p>
+						
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-3 text-right"><p><b>Крон за ъпдейт на пратки:</b></p></div>
+						<div class="col-sm-9">
+							<p>/opt/cpanel/ea-php74/root/usr/bin/php {{ root }}catalog/controller/tk_checkout/cron_speedy_shipping.php {{ web_url }} > /dev/null 2>&1</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endif %} 
+					
+			{% if not shipping_tk_speedy_logged %}
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="form-group required">
+						<label class="col-sm-3 control-label" for="shipping_tk_speedy_username">{{ entry_username }}</label>
+						<div class="col-sm-9">
+							<input type="text" id="shipping_tk_speedy_username" name="shipping_tk_speedy_username" value="{{ shipping_tk_speedy_username }}" placeholder="{{ shipping_tk_speedy_username }}" class="form-control" />
+							{% if (error_username) %} 
+							<span class="text-danger">{{ error_username }}</span>
+							{% endif %} 
+						</div>
+					</div>
+					<div class="form-group required">
+						<label class="col-sm-3 control-label" for="shipping_tk_speedy_password">{{ entry_password }}</label>
+						<div class="col-sm-9">
+							<input type="password" id="shipping_tk_speedy_password" name="shipping_tk_speedy_password" value="{{ shipping_tk_speedy_password }}" placeholder="{{ shipping_tk_speedy_password }}" class="form-control" />
+							{% if (error_password) %} 
+							<span class="text-danger">{{ error_password }}</span>
+							{% endif %} 
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label"></label>
+						<div class="col-sm-9">
+							<a id="login_button" onclick="speedyButtonLogin();" class="btn btn-primary"><span id="login_text">{{ button_login }}</span></a>
+							<span id="login_error"></span>
+						</div>
+					</div>
+ 
+				</div>
+			</div>
+			{% else %} 
+			<div class="panel panel-default">
+				<div class="panel-body" id="additional_table">
+
+					{% if (cities) %} 
+					
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab-general" data-toggle="tab">{{ entry_general_settings }}</a></li>
+						<li><a href="#tab-speedy_settings" data-toggle="tab">{{ text_tab_speedy_settings }}</a></li>
+						<li><a href="#tab-price" data-toggle="tab">{{ text_tab_price }}</a></li>
+						<li><a href="#tab-price_weight" data-toggle="tab">Ценообрзвуане спрямо килограми</a></li>
+						<li><a href="#tab-status" data-toggle="tab">{{ text_tab_status }}</a></li>
+						<li><a href="#tab-lang" data-toggle="tab">Текстове</a></li>
+					</ul>
+			          
+					<div class="tab-content">
+			          
+						<div class="tab-pane active" id="tab-general">
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_status">{{ entry_status }}</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_speedy_status" name="shipping_tk_speedy_status">
+										{% if (shipping_tk_speedy_status) %} 
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_geo_zone_id">{{ entry_geo_zone }}</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_speedy_geo_zone_id" name="shipping_tk_speedy_geo_zone_id">
+										<option value="0">{{ text_all_zones }}</option>
+										{% for geo_zone in geo_zones %} 
+										{% if (geo_zone['geo_zone_id'] == shipping_tk_speedy_geo_zone_id) %} 
+										<option value="{{ geo_zone['geo_zone_id'] }}" selected="selected">{{ geo_zone['name'] }}</option>
+										{% else %} 
+										<option value="{{ geo_zone['geo_zone_id'] }}">{{ geo_zone['name'] }}</option>
+										{% endif %} 
+										{% endfor %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-tax-class">Данъчен клас</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_tax_class_id" id="input-tax-class" class="form-control">
+										<option value="0">{{ text_none }}</option>
+										{% for tax_class in tax_classes %}
+											{% if tax_class.tax_class_id == shipping_tk_speedy_tax_class_id %}
+												<option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+											{% else %}
+												<option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_sort_order">{{ entry_sort_order }}</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" id="shipping_tk_speedy_sort_order" name="shipping_tk_speedy_sort_order" value="{{ shipping_tk_speedy_sort_order }}" size="1" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="tab-pane" id="tab-speedy_settings">
+												
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">{{ entry_allowed_methods }}</label>
+								<div class="col-sm-9">
+									<div class="well well-sm" style="height: 150px; overflow: auto;">
+										{% for service_id, service in services %}
+										<div class="checkbox">
+											<label>
+												{% if service_id in shipping_tk_speedy_allowed_methods %}
+												<input type="checkbox" name="shipping_tk_speedy_allowed_methods[]" value="{{ service_id }}" checked="checked" />
+												{{ service }} <i>({{ text_sevice_id }} {{ service_id }})</i>
+												{% else %}
+												<input type="checkbox" name="shipping_tk_speedy_allowed_methods[]" value="{{ service_id }}" />
+												{{ service }} <i>({{ text_sevice_id }} {{ service_id }})</i>
+												{% endif %}
+											</label>
+										</div>
+										{% endfor %}
+									</div>
+									<a onclick="$(this).parent().find(':checkbox').prop('checked', true);" style="cursor: pointer;">{{ text_select_all }}</a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);" style="cursor: pointer;">{{ text_unselect_all }}</a>
+									{% if error_allowed_methods %}
+									<div class="text-danger">{{ error_allowed_methods }}</div>
+									{% endif %}
+								</div>
+							</div>
+		
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_client_id">{{ entry_client_id }}</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_client_id" id="speedy_client_id" class="form-control">
+										{% if clients|length > 1 or clients|length == 0 %}
+										<option value="0">{{ text_none }}</option>
+										{% endif %}
+										{% for client in clients %}
+										{% if client.clientId == shipping_tk_speedy_client_id %}
+										<option value="{{ client.clientId }}" selected="selected">{{ text_client_id|format(client.clientId, client.name, client.address) }}</option>
+										{% else %}
+										<option value="{{ client.clientId }}">{{ text_client_id|format(client.clientId, client.name, client.address) }}</option>
+										{% endif %}
+										{% endfor %}
+									</select>
+									{% if (error_client_id) %} 
+									<div class="text-danger">{{ error_client_id }}</div>
+									{% endif %} 
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_special_delivery_requirement_id">Номер на допълнително споразумение при обслужване:</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_special_delivery_requirement_id" value="{{ shipping_tk_speedy_special_delivery_requirement_id }}" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_administrative_fee">Допълнителна административна такса:</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_administrative_fee" id="shipping_tk_speedy_administrative_fee" class="form-control">
+										{% if (shipping_tk_speedy_administrative_fee) %} 
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %} 
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_discount_contract_id">Карта за отстъпка - договор:</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_discount_contract_id" value="{{ shipping_tk_speedy_discount_contract_id }}" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_discount_card_id">Карта за отстъпка - карта:</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_discount_card_id" value="{{ shipping_tk_speedy_discount_card_id }}" class="form-control" />
+								</div>
+							</div>
+							
+							{% if custom_fields %}
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_company">Поле за име на фирма</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_company" id="shipping_tk_speedy_company" class="form-control">
+											<option value="9999">{{ text_no_company}}</option>
+											{% for custom_field in custom_fields %}
+												{% if custom_field.custom_field_id == shipping_tk_speedy_company %}
+													<option value="{{ custom_field.custom_field_id }}" selected="selected">{{ custom_field.name }}</option>
+												{% else %}
+													<option value="{{ custom_field.custom_field_id }}">{{ custom_field.name }}</option>
+												{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+							{% endif %}
+					
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_name">{{ entry_name }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_name" value="{{ shipping_tk_speedy_name }}" placeholder="{{ entry_name }}" id="shipping_tk_speedy_name" class="form-control" />
+									{% if (error_name) %} 
+									<div class="text-danger">{{ error_name }}</div>
+									{% endif %} 
+								</div>
+							</div>
+							
+							<div class="form-group required">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_telephone">{{ entry_telephone }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_telephone" value="{{ shipping_tk_speedy_telephone }}" placeholder="{{ entry_telephone }}" id="shipping_tk_speedy_telephone" class="form-control" />
+									{% if (error_telephone) %} 
+									<div class="text-danger">{{ error_telephone }}</div>
+									{% endif %} 
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_shipment_product_name">Името на продукта</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_speedy_shipment_product_name" name="shipping_tk_speedy_shipment_product_name">
+										<option value="0" {% if shipping_tk_speedy_shipment_product_name is not defined or shipping_tk_speedy_shipment_product_name == 0 %}selected="selected"{% endif %}>Не се използва</option>
+										<option value="1" {% if shipping_tk_speedy_shipment_product_name is defined and shipping_tk_speedy_shipment_product_name == 1 %}selected="selected"{% endif %}>В описанието на пратката - продукт и модел номер</option>
+										<option value="2" {% if shipping_tk_speedy_shipment_product_name is defined and shipping_tk_speedy_shipment_product_name == 2 %}selected="selected"{% endif %}>В описанието на пратката - продукт</option>
+										<option value="3" {% if shipping_tk_speedy_shipment_product_name is defined and shipping_tk_speedy_shipment_product_name == 3 %}selected="selected"{% endif %}>В описанието на пратката - модел номер</option>
+										<option value="4" {% if shipping_tk_speedy_shipment_product_name is defined and shipping_tk_speedy_shipment_product_name == 4 %}selected="selected"{% endif %}>В поле - Забележка (клиент) - продукт и модел номер</option>
+										<option value="5" {% if shipping_tk_speedy_shipment_product_name is defined and shipping_tk_speedy_shipment_product_name == 5 %}selected="selected"{% endif %}>В поле - Забележка (клиент) - продукт</option>
+										<option value="6" {% if shipping_tk_speedy_shipment_product_name is defined and shipping_tk_speedy_shipment_product_name == 6 %}selected="selected"{% endif %}>В поле - Забележка (клиент) - модел номер</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_speedy_shipment_description">Описание на пратката</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_shipment_description" value="{{ shipping_tk_speedy_shipment_description }}" placeholder="Описание на пратката" id="input-shipping_tk_speedy_shipment_description" class="form-control" />
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_back_documents">{{ entry_back_documents }}</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_back_documents" id="shipping_tk_speedy_back_documents" class="form-control">
+										{% if (shipping_tk_speedy_back_documents) %} 
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %} 
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_back_receipt">{{ entry_back_receipt }}</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_back_receipt" id="shipping_tk_speedy_back_receipt" class="form-control">
+										{% if (shipping_tk_speedy_back_receipt) %} 
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %} 
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_packing">{{ entry_packing }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_packing" value="{{ shipping_tk_speedy_packing }}" placeholder="{{ entry_packing }}" id="shipping_tk_speedy_packing" class="form-control" />
+								</div>
+							</div>
+
+							<div class="speedy-group">
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_option_before_payment">{{ entry_options_before_payment }}</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_option_before_payment" id="shipping_tk_speedy_option_before_payment" class="form-control">
+											{% for option_id, option in options_before_payment %}
+											{% if option_id == shipping_tk_speedy_option_before_payment %}
+											<option value="{{ option_id }}" selected="selected">{{ option }}</option>
+											{% else %}
+											<option value="{{ option_id }}">{{ option }}</option>
+											{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group" >
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_return_payer_type">{{ entry_return_payer_type }}</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_return_payer_type" id="shipping_tk_speedy_return_payer_type" class="form-control">
+											{% for option_id, option in return_payer_types %}
+											{% if option_id == shipping_tk_speedy_return_payer_type %}
+											<option value="{{ option_id }}" selected="selected">{{ option }}</option>
+											{% else %}
+											<option value="{{ option_id }}">{{ option }}</option>
+											{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								<div class="form-group" >
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_return_package_city_service_id">{{ entry_return_package_city_service_id }}</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_return_package_city_service_id" id="shipping_tk_speedy_return_package_city_service_id" class="form-control">
+											{% for service_id,service in services %} 
+											{% if (service_id == shipping_tk_speedy_return_package_city_service_id) %} 
+											<option value="{{ service_id }}" selected="selected">{{ service }}</option>
+											{% else %} 
+											<option value="{{ service_id }}">{{ service }}</option>
+											{% endif %} 
+											{% endfor %} 
+										</select>
+									</div>
+								</div>
+								<div class="form-group" >
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_return_package_intercity_service_id">{{ entry_return_package_intercity_service_id }}</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_return_package_intercity_service_id" id="shipping_tk_speedy_return_package_intercity_service_id" class="form-control">
+											{% for service_id,service in services %} 
+											{% if (service_id == shipping_tk_speedy_return_package_intercity_service_id) %} 
+											<option value="{{ service_id }}" selected="selected">{{ service }}</option>
+											{% else %} 
+											<option value="{{ service_id }}">{{ service }}</option>
+											{% endif %} 
+											{% endfor %} 
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_label_printer">{{ entry_label_printer }}</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_label_printer" id="shipping_tk_speedy_label_printer" class="form-control">
+										{% if (shipping_tk_speedy_label_printer) %} 
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %} 
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_weight_type">Мерна единица</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_speedy_weight_type" name="shipping_tk_speedy_weight_type">
+										<option value="kilogram" {% if shipping_tk_speedy_weight_type == 'kilogram' %}selected="selected"{% endif %}>Килограм</option>
+										<option value="gram" {% if shipping_tk_speedy_weight_type == 'gram' %}selected="selected"{% endif %}>Грам</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-weight-total">{{ entry_weight_total }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_weight_total" value="{{ shipping_tk_speedy_weight_total }}" placeholder="{{ entry_weight_total }}" id="input-weight-total" class="form-control" />
+								</div>
+							</div>
+					
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_machine_enabled">Да се включат ли доставки до Автомат на Спиди</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-2">
+											<select class="form-control" id="shipping_tk_speedy_machine_enabled" name="shipping_tk_speedy_machine_enabled">
+												{% if shipping_tk_speedy_machine_enabled %}
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %}
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %}
+											</select>
+										</div>
+									
+										<label class="col-sm-2 control-label" for="shipping_tk_speedy_machine_sort">Подредба</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_speedy_machine_sort" value="{{ shipping_tk_speedy_machine_sort }}" placeholder="Подредба" id="shipping_tk_speedy_machine_sort" class="form-control" />
+										</div>
+										
+										<label class="col-sm-2 control-label" for="shipping_tk_speedy_machine_weight">До кг.</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_speedy_machine_weight" value="{{ shipping_tk_speedy_machine_weight }}" placeholder="До кг." id="shipping_tk_speedy_machine_weight" class="form-control" />
+										</div>
+										
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_office_enabled">Да се включат ли доставки до Офис на Спиди</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-2">
+											<select class="form-control" id="shipping_tk_speedy_office_enabled" name="shipping_tk_speedy_office_enabled">
+												{% if shipping_tk_speedy_office_enabled %}
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %}
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %}
+											</select>
+										</div>
+									
+										<label class="col-sm-2 control-label" for="shipping_tk_speedy_office_sort">Подредба</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_speedy_office_sort" value="{{ shipping_tk_speedy_office_sort }}" placeholder="Подредба" id="shipping_tk_speedy_office_sort" class="form-control" />
+										</div>
+										
+										<label class="col-sm-2 control-label" for="shipping_tk_speedy_office_weight">До кг.</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_speedy_office_weight" value="{{ shipping_tk_speedy_office_weight }}" placeholder="До кг." id="shipping_tk_speedy_office_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_address_enabled">Да се включат ли доставки до Адрес със Спиди</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-2">
+											<select class="form-control" id="shipping_tk_speedy_address_enabled" name="shipping_tk_speedy_address_enabled">
+												{% if shipping_tk_speedy_address_enabled %}
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %}
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %}
+											</select>
+										</div>
+									
+										<label class="col-sm-2 control-label" for="shipping_tk_speedy_address_sort">Подредба</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_speedy_address_sort" value="{{ shipping_tk_speedy_address_sort }}" placeholder="Подредба" id="shipping_tk_speedy_address_sort" class="form-control" />
+										</div>
+										<label class="col-sm-2 control-label" for="shipping_tk_speedy_address_weight">До кг.</label>
+										<div class="col-sm-3">
+											<input type="text" name="shipping_tk_speedy_address_weight" value="{{ shipping_tk_speedy_address_weight }}" placeholder="До кг." id="shipping_tk_speedy_address_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					
+						<div class="tab-pane" id="tab-price">
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_os_enabled">Ще се изплащат ли сумите като паричен превод?</label>
+								<div class="col-sm-9">
+									<select class="form-control" id="shipping_tk_speedy_ppp_enabled" name="shipping_tk_speedy_ppp_enabled">
+										{% if (shipping_tk_speedy_ppp_enabled) %} 
+										<option value="1" selected="selected">{{ text_yes }}</option>
+										<option value="0">{{ text_no }}</option>
+										{% else %} 
+										<option value="1">{{ text_yes }}</option>
+										<option value="0" selected="selected">{{ text_no }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+	
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">Надбавка за обработка:</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_calculator_fixed" value="{{ shipping_tk_speedy_calculator_fixed }}" placeholder="Надбавка за обработка" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">Минимална такса ППП (0.60 в лева с ДДС):</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_ppp_min" value="{{ shipping_tk_speedy_ppp_min }}" placeholder="Минимална такса ППП" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">Такса ППП (1.6 в %):</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_ppp_tax" value="{{ shipping_tk_speedy_ppp_tax }}" placeholder="Такса ППП" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+		
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_payer_type">Платец на куриерската услуга</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_payer_type" id="shipping_tk_speedy_payer_type" class="form-control">
+										{% for option_id, option in return_payer_types %}
+											{% if option_id == shipping_tk_speedy_payer_type %}
+												<option value="{{ option_id }}" selected="selected">{{ option }}</option>
+											{% else %}
+												<option value="{{ option_id }}">{{ option }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_speedy_machine_free">Сума за безплатна доставка до автомат</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_speedy_machine_free" value="{{ shipping_tk_speedy_machine_free }}" placeholder="Сума за безплатна доставка до Спиди автомат" id="input-shipping_tk_speedy_machine_free" class="form-control" />
+										</div>
+									
+										<label class="col-sm-4 control-label" for="input-shipping_tk_speedy_machine_free_weight">Тегло за безплатна доставка до автомат</label>
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_speedy_machine_free_weight" value="{{ shipping_tk_speedy_machine_free_weight }}" placeholder="Тегло" id="input-shipping_tk_speedy_machine_free_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_speedy_office_free">{{ entry_office_cost }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_speedy_office_free" value="{{ shipping_tk_speedy_office_free }}" placeholder="{{ entry_office_cost }}" id="input-shipping_tk_speedy_office_free" class="form-control" />
+										</div>
+									
+										<label class="col-sm-4 control-label" for="input-shipping_tk_speedy_office_free_weight">Тегло за безплатна доставка до офис</label>
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_speedy_office_free_weight" value="{{ shipping_tk_speedy_office_free_weight }}" placeholder="Тегло" id="input-shipping_tk_speedy_office_free_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_speedy_door_free">{{ entry_door_cost }}</label>
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_speedy_door_free" value="{{ shipping_tk_speedy_door_free }}" placeholder="{{ entry_door_cost }}" id="input-shipping_tk_speedy_door_free" class="form-control" />
+										</div>
+									
+										<label class="col-sm-4 control-label" for="input-shipping_tk_speedy_door_free_weight">Тегло за безплатна доставка до адрес</label>
+										<div class="col-sm-4">
+											<input type="text" name="shipping_tk_speedy_door_free_weight" value="{{ shipping_tk_speedy_door_free_weight }}" placeholder="Тегло" id="input-shipping_tk_speedy_door_free_weight" class="form-control" />
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><span data-toggle="tooltip" title="Избери списък със суми които да се пресмятат за сума която трябва да се достигне преди да се активира отстъпката.">Избери суми</span></label>
+								<div class="col-sm-9">
+									<div class="well well-sm" style="height: 180px; overflow: auto;" id="totals">
+										{% for total in oc_totals %}
+										<div class="checkbox col-sm-4"><label><input type="checkbox" name="shipping_tk_speedy_totals[]" value="{{ total.code }}" {% if total.code in shipping_tk_speedy_totals %}checked="checked"{% endif %} />{{ total.name }}</label></div>
+										{% endfor %}
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">Твърда сума за доставка до автомат</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_machine_fixed_cost" value="{{ shipping_tk_speedy_machine_fixed_cost }}" placeholder="Твърда сума за доставка до автомат" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+				
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">{{ entry_office_fixed_cost }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_office_fixed_cost" value="{{ shipping_tk_speedy_office_fixed_cost }}" placeholder="{{ entry_office_fixed_cost }}" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+ 
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-fixed-cost">{{ entry_door_fixed_cost }}</label>
+								<div class="col-sm-9">
+									<input type="text" name="shipping_tk_speedy_door_fixed_cost" value="{{ shipping_tk_speedy_door_fixed_cost }}" placeholder="{{ entry_door_fixed_cost }}" id="input-fixed-cost" class="form-control" />
+								</div>
+							</div>
+	
+							<div id="calculate_settings" >
+					
+								<div class="form-group">
+									<div class="col-sm-3 text-right"></div>
+									<div class="col-sm-9">
+										<br><br><h4><b>{{ entry_price_auto_settings }}</b></h4>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_calculate_enabled">{{ entry_calculate_enabled }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_speedy_calculate_enabled" name="shipping_tk_speedy_calculate_enabled">
+											{% if (shipping_tk_speedy_calculate_enabled) %} 
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %} 
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %} 
+										</select>
+									</div>
+								</div>
+						
+								<div class="speedy-group">
+							
+									<div class="form-group">
+										<label class="col-sm-3 control-label" for="shipping_tk_speedy_from_office"><span data-toggle="tooltip" title="{{ help_from_office }}">{{ entry_from_office }}</span></label>
+										<div class="col-sm-9">
+											<select name="shipping_tk_speedy_from_office" id="shipping_tk_speedy_from_office" class="form-control" >
+												{% if (shipping_tk_speedy_from_office) %} 
+												<option value="1" selected="selected">{{ text_yes }}</option>
+												<option value="0">{{ text_no }}</option>
+												{% else %} 
+												<option value="1">{{ text_yes }}</option>
+												<option value="0" selected="selected">{{ text_no }}</option>
+												{% endif %} 
+											</select>
+										</div>
+									</div>
+								
+									<div class="form-group" >
+										<label class="col-sm-3 control-label" for="shipping_tk_speedy_office_id">{{ entry_office }}</label>
+										<div class="col-sm-9">
+											<select name="shipping_tk_speedy_office_id" id="shipping_tk_speedy_office_id" class="form-control">
+												{% for office in offices %} 
+												{% if (office['id'] == shipping_tk_speedy_office_id) %} 
+												<option value="{{ office['id'] }}" selected="selected">{{ office['label'] }}</option>
+												{% else %} 
+												<option value="{{ office['id'] }}">{{ office['label'] }}</option>
+												{% endif %} 
+												{% endfor %} 
+											</select>
+										</div>
+									</div>
+								</div>
+ 
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_np_enabled">{{ entry_np }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_speedy_np_enabled" name="shipping_tk_speedy_np_enabled">
+											{% if (shipping_tk_speedy_np_enabled) %} 
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %} 
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %} 
+										</select>
+									</div>
+								</div>
+						
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_os_enabled">{{ entry_os }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_speedy_os_enabled" name="shipping_tk_speedy_os_enabled">
+											{% if (shipping_tk_speedy_os_enabled) %} 
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %} 
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %} 
+										</select>
+									</div>
+								</div>
+						
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_os_enabled">{{ entry_fragile }}</label>
+									<div class="col-sm-9">
+										<select class="form-control" id="shipping_tk_speedy_fragile_enabled" name="shipping_tk_speedy_fragile_enabled">
+											{% if (shipping_tk_speedy_fragile_enabled) %} 
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %} 
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %} 
+										</select>
+									</div>
+								</div>
+								
+							</div>
+							
+							<div class="form-group">
+								<div class="col-sm-3 text-right"></div>
+								<div class="col-sm-9">
+									<br><br><h4><b>Избор на офис за всеки клиентски номер</b></h4>
+								</div>
+							</div>
+								
+									
+							{% for client in clients %}
+							<br>
+							<hr>
+							<div class="form-group">
+								<div class="col-sm-3 text-right"></div>
+								<div class="col-sm-9">
+									<p><b>{{ text_client_id|format(client.clientId, client.name, client.address) }}</b></p>
+								</div>
+							</div>
+							<div class="speedy-group">
+										
+								<div class="form-group">
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_from_offices_{{ client.clientId }}">
+										{{ entry_from_office }}
+									</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_from_offices[{{ client.clientId }}]" id="shipping_tk_speedy_from_offices_{{ client.clientId }}" class="form-control" >
+											{% if shipping_tk_speedy_from_offices[client.clientId] %}
+											<option value="1" selected="selected">{{ text_yes }}</option>
+											<option value="0">{{ text_no }}</option>
+											{% else %} 
+											<option value="1">{{ text_yes }}</option>
+											<option value="0" selected="selected">{{ text_no }}</option>
+											{% endif %}
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group" >
+									<label class="col-sm-3 control-label" for="shipping_tk_speedy_offices_id_{{ client.clientId }}">{{ entry_office }}</label>
+									<div class="col-sm-9">
+										<select name="shipping_tk_speedy_offices_id[{{ client.clientId }}]" id="shipping_tk_speedy_offices_id_{{ client.clientId }}" class="form-control">
+											{% for office in offices %}
+											{% if office.id == shipping_tk_speedy_offices_id[client['clientId']] %}
+											<option value="{{ office['id'] }}" selected="selected">{{ office['label'] }}</option>
+											{% else %} 
+											<option value="{{ office['id'] }}">{{ office['label'] }}</option>
+											{% endif %}
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" >{{ entry_telephone }}</label>
+									<div class="col-sm-9">
+										<input type="text" name="shipping_tk_speedy_telephone_client[{{ client.clientId }}]" value="{{ shipping_tk_speedy_telephone_client[client['clientId']] }}" placeholder="{{ entry_telephone }}" class="form-control" />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-sm-3 control-label" >{{ entry_name }}</label>
+									<div class="col-sm-9">
+										<input type="text" name="shipping_tk_speedy_name_client[{{ client.clientId }}]" value="{{ shipping_tk_speedy_name_client[client['clientId']] }}" placeholder="{{ entry_name }}" class="form-control" />
+									</div>
+								</div>
+								
+							</div>
+							{% endfor %}
+							
+						</div>
+					
+						<div class="tab-pane" id="tab-status">
+
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="shipping_tk_speedy_order_status_id">Статус на поръчката след генериране на товарителница:</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_order_status_id" id="shipping_tk_speedy_order_status_id" class="form-control">
+										<option value="0">Без смяна на статуса</option>
+										{% for order_status in order_statuses %} 
+								
+										{% if (order_status['order_status_id'] == shipping_tk_speedy_order_status_id) %} 
+										<option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+										{% else %} 
+										<option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+										{% endif %} 
+										{% endfor %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_speedy_order_status_id_mail">Да се пратили и-меил след генериране на товарителница:</label>
+								<div class="col-sm-9">
+									<select name="shipping_tk_speedy_order_status_id_mail" id="input-shipping_tk_speedy_order_status_id_mail" class="form-control">
+										{% if  shipping_tk_speedy_order_status_id_mail %} 
+										<option value="0">{{ entry_no }}</option>
+										<option value="1" selected="selected">{{ entry_yes }}</option>
+										{% else %} 
+										<option value="0" selected="selected">{{ entry_no }}</option>
+										<option value="1">{{ entry_yes }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-shipping_tk_speedy_order_status_id_mail_text">Текст към и-меила след генериране на товарителница<br> ({shipment_number} - заменя номера на товарителница в текста):</label>
+								<div class="col-sm-9">
+									<textarea name="shipping_tk_speedy_order_status_id_mail_text" rows="3" placeholder="Въведи текст" id="input-shipping_tk_speedy_order_status_id_mail_text" class="form-control">{{ shipping_tk_speedy_order_status_id_mail_text }}</textarea>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-sm-3 text-right"></div>
+								<div class="col-sm-9">
+									<br><br><h4><b>Синхронизиране на статуси между Speedy и Opencart и изпращане на и-мейл до клиента</b></h4>
+								</div>
+							</div>
+
+							{% for key,text_status in text_statuses %}
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ text_status }}</label>
+							
+								<div class="col-sm-9">
+									<div class="row">
+										<div class="col-sm-3">Избери статус за синхронизиране</div>
+										<div class="col-sm-3">
+											<select name="shipping_tk_speedy_order_status[{{ key }}]" id="input-shipping_tk_speedy_order_status" class="form-control">
+												<option value="">Без смяна на статуса</option>
+												{% for order_status in order_statuses %}
+												{% if  shipping_tk_speedy_order_status[key] == order_status.order_status_id %} 
+												<option value="{{ order_status.order_status_id }}" selected="selected">{{ order_status.name }}</option>
+												{% else %} 
+												<option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+												{% endif %} 
+												{% endfor %} 
+											</select>
+										</div>
+										<div class="col-sm-3">Да се изпратили и-мейл до клиента</div>
+										<div class="col-sm-3">
+											<select name="shipping_tk_speedy_order_status_mail[{{ key }}]" id="input-shipping_tk_speedy_order_status_mail" class="form-control">
+												{% if  shipping_tk_speedy_order_status_mail[key] %} 
+												<option value="0">{{ entry_no }}</option>
+												<option value="1" selected="selected">{{ entry_yes }}</option>
+												{% else %} 
+												<option value="0" selected="selected">{{ entry_no }}</option>
+												<option value="1">{{ entry_yes }}</option>
+												{% endif %} 
+											</select>
+										</div>
+										<div class="clearfix"></div>
+										<br>
+									
+										<div class="col-sm-3">Допълнителен текст към и-меила</div>
+										<div class="col-sm-9">
+											<textarea name="shipping_tk_speedy_order_status_mail_text[{{ key }}]" rows="3" placeholder="Въведи текст" id="input-shipping_tk_speedy_order_status_mail_text" class="form-control">{{ shipping_tk_speedy_order_status_mail_text[key] }}</textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %} 
+					
+						</div>
+						
+						<div class="tab-pane" id="tab-price_weight">
+						
+							<table id="weight-value" class="table table-striped table-bordered table-hover">
+								<thead>
+									<tr>
+										<td class="text-left required">Килограми - От</td>
+										<td class="text-left required">Килограми - До (включително)</td>
+										<td class="text-left required">Твърда цена</td>
+										<td class="text-left required">Вид доставка</td>
+										<td></td>
+									</tr>
+								</thead>
+								<tbody>
+              
+									
+									{% for weight_value in shipping_tk_speedy_weight_value %}
+									<tr id="weight-value-row{{ weight_value_row }}">
+										<td class="text-right"><input type="text" name="shipping_tk_speedy_weight_value[{{ weight_value_row }}][from]" value="{{ weight_value.from }}" class="form-control" /></td>
+										<td class="text-right"><input type="text" name="shipping_tk_speedy_weight_value[{{ weight_value_row }}][to]" value="{{ weight_value.to }}" class="form-control" /></td>
+										<td class="text-right"><input type="text" name="shipping_tk_speedy_weight_value[{{ weight_value_row }}][price]" value="{{ weight_value.price }}" class="form-control" /></td>
+										
+										<td class="text-right">
+											<select class="form-control" name="shipping_tk_speedy_weight_value[{{ weight_value_row }}][type]">
+												<option value="machine" {% if  weight_value.type == 'machine' %}selected="selected"{% endif %}>До автомат</option>
+												<option value="office" {% if  weight_value.type == 'office' %}selected="selected"{% endif %}>До офис</option>
+												<option value="door" {% if  weight_value.type == 'door' %}selected="selected"{% endif %}>До адрес</option>
+											</select>
+										</td>
+										<td class="text-right"><button type="button" onclick="$('#weight-value-row{{ weight_value_row }}').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>
+										
+										
+									</tr>
+									{% set weight_value_row = weight_value_row + 1 %}
+									{% endfor %}
+								</tbody>
+              
+								<tfoot>
+									<tr>
+										<td colspan="4"></td>
+										<td class="text-right"><button type="button" onclick="addWeightValue();" data-toggle="tooltip" title="{{ button_weight_value_add }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+									</tr>
+								</tfoot>
+							</table>
+						
+						</div>
+						
+						<div class="tab-pane" id="tab-lang">
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Автомат - заглавие</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_speedy_text[{{ language.language_id }}][machine_title]" value="{{ shipping_tk_speedy_text[language.language_id].machine_title ? shipping_tk_speedy_text[language.language_id].machine_title : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Автомат - текст</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_speedy_text[{{ language.language_id }}][machine_text]" value="{{ shipping_tk_speedy_text[language.language_id].machine_text ? shipping_tk_speedy_text[language.language_id].machine_text : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Офис - заглавие</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_speedy_text[{{ language.language_id }}][office_title]" value="{{ shipping_tk_speedy_text[language.language_id].office_title ? shipping_tk_speedy_text[language.language_id].office_title : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Офис - текст</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_speedy_text[{{ language.language_id }}][office_text]" value="{{ shipping_tk_speedy_text[language.language_id].office_text ? shipping_tk_speedy_text[language.language_id].office_text : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Адрес - заглавие</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_speedy_text[{{ language.language_id }}][address_title]" value="{{ shipping_tk_speedy_text[language.language_id].address_title ? shipping_tk_speedy_text[language.language_id].address_title : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+							
+							<div class="form-group row">
+								<label class="col-sm-3 control-label">Адрес - текст</label>
+								<div class="col-sm-9">
+									{% for language in languages %}
+										<div class="input-group" style="margin-bottom: 5px">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input type="text" name="shipping_tk_speedy_text[{{ language.language_id }}][address_text]" value="{{ shipping_tk_speedy_text[language.language_id].address_text ? shipping_tk_speedy_text[language.language_id].address_text : '' }}" class="form-control" />
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+						
+						</div>
+						
+					</div>
+
+					{% else %} 
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-sm-3"></div>
+							<div class="col-sm-9">
+								<b>{{ text_sync_info_warning }}</b>
+							</div>
+						</div>
+					</div>
+					{% endif %} 
+				</div>
+			</div>
+			{% endif %} 
+			
+			{% else %} 
+			
+			<div class="panel panel-default">
+				<div class="panel-body">
+				<h3>Трябва да активирате модула TK Checkout за да позлвате Доставка със Спиди</h3>
+				</div>
+			</div>	
+			
+			{% endif %} 
+		</form>
+		
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var weight_value_row = {{ weight_value_row}};
+
+function addWeightValue() {
+	html  = '<tr id="weight-value-row' + weight_value_row + '">';
+	html += '  <td class="text-right"><input type="text" name="shipping_tk_speedy_weight_value[' + weight_value_row + '][from]" value="" placeholder="0.00" class="form-control" /></td>';
+	html += '  <td class="text-right"><input type="text" name="shipping_tk_speedy_weight_value[' + weight_value_row + '][to]" value="" placeholder="0.00" class="form-control" /></td>';
+	html += '  <td class="text-right"><input type="text" name="shipping_tk_speedy_weight_value[' + weight_value_row + '][price]" value="" placeholder="0.00" class="form-control" /></td>';
+	html += '  <td class="text-right"><select class="form-control" name="shipping_tk_speedy_weight_value[' + weight_value_row + '][type]"><option value="machine">До автомат</option><option value="office">До офис</option><option value="door">До адрес</option></select></td>';
+	html += '  <td class="text-right"><button type="button" onclick="$(\'#weight-value-row' + weight_value_row + '\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+	html += '</tr>';
+
+	$('#weight-value tbody').append(html);
+
+	weight_value_row++;
+}
+
+function speedyButtonLogin() { 
+	$('#loading').remove();
+	$('#login_error').html('').removeClass("text-danger");
+	$('#login_button').after('<span id="loading" class="attention" style="padding: 5px;">Моля, изчакайте.</span>');
+
+	$.ajax( { 
+			url: 'index.php?route=extension/shipping/tk_speedy/login&user_token={{ user_token }}',
+			type: 'POST',
+			data: 'username=' + encodeURIComponent($('#shipping_tk_speedy_username').val()) + '&password=' + encodeURIComponent($('#shipping_tk_speedy_password').val()) + '&test=' + encodeURIComponent($('#shipping_tk_speedy_test').val()),
+			dataType: 'json',
+			success: function(data) { 
+				if (data) { 
+					$('#loading').remove();
+
+					if (data.success) { 
+						window.location = window.location;
+					} else { 
+						$('#login_error').html(data.message).addClass('text-danger');
+					} 
+				} 
+			} ,
+			error: function(request) { 
+				$('#loading').remove();
+
+				$('#login_error').html('{{ error_general }}').addClass("text-danger");
+			} 
+		});
+} 
+
+function refreshData() { 
+	$('#data_error').html('').removeClass("text-danger");
+	$('#get_data').attr('disabled', true);
+	$('#get_data').after('<span id="loading" class="attention" style="padding: 5px;">{{ text_get_data }}</span>');
+
+
+	$.ajax( { 
+			url: 'index.php?route=extension/shipping/tk_speedy/update&user_token={{ user_token }}',
+			type: 'POST',
+			data: '',
+			dataType: 'json',
+			success: function(data) { 
+				if (data) { 
+					if (data.success) { 
+						window.location = window.location;
+					} else if (data.error) { 
+						$('#data_error').html(data.message).addClass('text-danger');
+					} 
+				} 
+			} ,
+			error: function(request) { 
+				$('#data_error').html('{{ error_general }}').addClass("text-danger");
+			} ,
+			complete: function() { 
+				$('#loading').remove();
+			} 
+		});
+} 
+
+function speedyButtonLogout() { 
+	if (confirm('{{ text_warning_logout }}')) { 
+		$.get('index.php?route=extension/shipping/tk_speedy/logout&user_token={{ user_token }}').done(function() { 
+				window.location = window.location;
+			});
+	} 
+} 
+
+function addSpeedyWeightDimension() { 
+	var next_row = 0;
+
+	if(typeof $('#weight_dimensions tbody tr:last').attr('data-row') != 'undefined') { 
+		next_row = parseInt($('#weight_dimensions tbody tr:last').attr('data-row')) + 1;
+	} 
+
+	var html = '';
+	html = '<tr data-row="' + next_row + '">';
+	html += '<td class="text-center">';
+	html += '<input type="text" name="weight_dimensions[' + next_row + '][WEIGHT]" class="form-control">';
+	html += '</td>';
+	html += '<td class="text-center">';
+	html += '<input type="text" name="weight_dimensions[' + next_row + '][XS]" class="form-control">';
+	html += '</td>';
+	html += '<td class="text-center">';
+	html += '<input type="text" name="weight_dimensions[' + next_row + '][S]" class="form-control">';
+	html += '</td>';
+	html += '<td class="text-center">';
+	html += '<input type="text" name="weight_dimensions[' + next_row + '][M]" class="form-control">';
+	html += '</td>';
+	html += '<td class="text-center">';
+	html += '<input type="text" name="weight_dimensions[' + next_row + '][L]" class="form-control">';
+	html += '</td>';
+	html += '<td class="text-center">';
+	html += '<input type="text" name="weight_dimensions[' + next_row + '][XL]" class="form-control">';
+	html += '</td>';
+	html += '<td class="text-center">';
+	html += '<button type="button" onclick="removeSpeedyWeightDimension(' + next_row + ');" data-toggle="tooltip" title="" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button>';
+	html += '</td>';
+	html += '</tr>';
+
+	$('#weight_dimensions tbody').append(html);
+}
+
+function removeSpeedyWeightDimension(row) { 
+	$('#weight_dimensions tr[data-row=' + row + ']').remove();
+}
+</script>
+{{ footer}} 

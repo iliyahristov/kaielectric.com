@@ -1,0 +1,136 @@
+<div id="tk_transpress_office">
+	<div class="tk_panel">
+		<div class="tk_panel_heading">
+			<span class="tk_panel_icon"><span class="tk_icon-address"></span></span> 
+			<span class="tk_panel_text"> {{ text_address }}</span> 
+			<span class="tk_all_spin"><i class="tk_icon-spin rotating"></i></span>
+		</div>				
+	
+		<div class="tk_panel_body">
+			<div id="tk_transpress">
+
+				<input type="hidden" id="shipping_to" name="shipping_to" value="address" />
+				<input type="hidden" id="shipping_type" name="shipping_type" value="transpress" />
+				<input type="hidden" id="zone_id" name="zone_id" value="{{ transpress_zone_id }}" />
+				
+				{% if (transpress_addresses_customer) %} 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="transpress_address_type" value="existing" checked="checked" {% if (transpress_address_type is defined and transpress_address_type == 'existing') %}checked=""{% endif %} onclick="jQuery('#transpress_address_new').hide();jQuery('#tk_transpress_address_existing').show();" />
+						{{ text_address_existing }} 
+					</label>
+				</div>
+				<div id="tk_transpress_address_existing">
+					<div class="tk_12_column tk_center_column">
+						<select name="transpress_address_customer_id" >
+							{% for transpress_address in transpress_addresses_customer %} 
+							
+							<option value="{{ transpress_address['transpress_customer_id'] }}" {% if (transpress_address_customer_id is defined and transpress_address['transpress_customer_id'] == transpress_address_customer_id) %}selected="selected"{% endif %}>{{ transpress_address['city'] }}, {{ transpress_address['street'] }}, {{ transpress_address['street_num'] }}</option>
+								
+							{% endfor %} 
+						</select>
+					</div>
+				</div>	 
+				<div class="tk_12_column tk_center_column">
+					<label>
+						<input type="radio" name="transpress_address_type" value="new" {% if (transpress_address_type is defined and transpress_address_type == 'new') %}checked=""{% endif %} onclick="jQuery('#transpress_address_new').show();jQuery('#tk_transpress_address_existing').hide();" />
+						{{ text_address_new }} 
+					</label>
+				</div>
+					
+				{% else %} 
+				<input type="hidden" name="transpress_address_type" value="new">
+				{% endif %} 
+				
+				
+			
+				<div id="transpress_address_new" {% if (not transpress_addresses_customer or (transpress_address_type is defined and transpress_address_type == 'new')) %} style="display:block"{% else %}style="display:none"{% endif %}>
+							
+					<input type="hidden" name="default" value="1" />
+					
+					<div class="tk_8_column tk_center_column tk_required_box">
+						<input type="text" id="transpress_address_city" name="transpress_address_city" value="{{ transpress_address_city }}" placeholder="{{ text_transpress_office_city }}" />
+						<span class="tk_floating_label">{{text_transpress_office_city }}</span>
+					</div>
+					
+					<div class="tk_4_column tk_center_column transpress_address_postcode tk_required_box">
+						<input type="text" id="transpress_address_postcode" name="transpress_address_postcode" value="{{ transpress_address_postcode }}" placeholder="{{entry_postcode }}" />
+						<span class="tk_floating_label">{{entry_postcode }}</span>
+					</div>
+							
+					<div class="tk_clear"></div>
+
+					<div class="tk_6_column tk_center_column">
+							
+						<input type="text" id="transpress_quarter" name="transpress_quarter" value="{{ transpress_quarter }}" placeholder="{{entry_quarter }}" />
+						<span class="tk_floating_label">{{entry_quarter }}</span>
+	
+					</div>
+					
+					<div class="tk_1_column tk_center_column ">
+						<input type="text" id="transpress_block_no" name="transpress_block_no" value="{{ transpress_block_no }}" placeholder="{{entry_block_no }}" />
+						<span class="tk_floating_label">{{entry_block_no }}</span>
+					</div>
+					
+					<div class="tk_1_column tk_center_column ">
+						<input type="text" id="transpress_entrance_no" name="transpress_entrance_no" value="{{ transpress_entrance_no }}" placeholder="{{entry_entrance_no }}" />
+						<span class="tk_floating_label">{{entry_entrance_no }}</span>
+					</div>
+					
+					<div class="tk_1_column tk_center_column ">
+						<input type="text" id="transpress_floor_no" name="transpress_floor_no" value="{{ transpress_floor_no }}" placeholder="{{entry_floor_no }}" />
+						<span class="tk_floating_label">{{entry_floor_no }}</span>
+					</div>
+					
+					<div class="tk_1_column tk_center_column">
+						<input type="text" id="transpress_apartment_no" name="transpress_apartment_no" value="{{ transpress_apartment_no }}" placeholder="{{entry_apartment_no }}" />
+						<span class="tk_floating_label">{{entry_apartment_no }}</span>
+					</div>
+					
+					<div class="tk_clear"></div>
+		 
+					<div class="tk_8_column tk_center_column" >
+						<input type="text" id="transpress_street" name="transpress_street" value="{{ transpress_street }}" placeholder="{{entry_street }}" />
+						<span class="tk_floating_label">{{entry_street }}</span>
+						
+					</div>
+							
+					<div class="tk_4_column tk_center_column">
+						<input type="text" id="transpress_street_num" name="transpress_street_num" value="{{ transpress_street_num }}" placeholder="{{entry_street_num }}" />
+						<span class="tk_floating_label">{{entry_street_num }}</span>
+					</div>
+				
+				</div>
+
+				<div class="tk_clear"></div>
+				{% if (error_address) %} 
+				<span class="tk_alert">{{ error_address }}</span>
+				{% endif %} 
+ 	
+			</div>	
+			<div class="tk_clear"></div>
+	
+		</div> 
+	</div>
+</div>
+
+<script type="text/javascript">
+
+$('.tk_form input').change(function() { saveData(); } );
+$('.tk_form select').change(function() { saveData(); } );
+$('.tk_form textarea').change(function() { saveData(); } );
+
+$(document).delegate('input[name=\'transpress_address_postcode\']', 'change', function(e) { 
+		e.stopImmediatePropagation(); 
+		$('.tk_all_spin').html(' <i class="tk_icon-spin rotating"></i>');
+		$('#tk_checkout').css('opacity','0.6');
+		$('#tk_checkout').css('pointer-events','none');
+		$('#tk_button_confirm').prop('disabled', true);
+		getShippingMethodPayment();
+	});
+		 
+$(document).ready(function() { 
+		getPaymentMethod();
+	});
+
+</script>

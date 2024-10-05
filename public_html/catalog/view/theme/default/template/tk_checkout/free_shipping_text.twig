@@ -1,0 +1,12 @@
+{% if (text_free_shipping is defined and text_free_shipping) %} 
+<hr>
+<span class="tk_text_free_shipping">{{ text_free_shipping }}</span>
+{% endif %}
+<script>
+    $(document).ready(function() {
+        $('#tk_button_confirm').button('reset');
+        $('.tk_all_spin').html('');
+        $('#tk_checkout').css('opacity', '1');
+        $('#tk_checkout').css('pointer-events', 'auto');
+    });
+</script>

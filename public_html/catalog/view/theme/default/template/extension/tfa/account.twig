@@ -1,0 +1,54 @@
+{{ header }}
+<div id="account-password" class="container">
+    <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="row">{{ column_left }}
+        {% if column_left and column_right %}
+            {% set class = 'col-sm-6' %}
+        {% elseif column_left or column_right %}
+            {% set class = 'col-sm-9' %}
+        {% else %}
+            {% set class = 'col-sm-12' %}
+        {% endif %}
+        <div id="content" class="{{ class }}">{{ content_top }}
+            {% if success %}
+                <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            {% endif %}
+            {% if error_warning %}
+                <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                </div>
+            {% endif %}
+            <h1>{{ heading_title }}</h1>
+            <form action="{{ action }}" method="post" id="form-tfa" class="form-inline">
+                {% if tfa_enable %}
+                    <p>{{ text_description_enabled }}</p>
+                    <input type="hidden" name="tfa_enable" value="0" />
+                    <input type="text" class="form-control" name="code" placeholder="{{ authentication_code }}" />
+                    <button type="submit" form="form-tfa" data-toggle="tooltip" title="{{ button_enable }}" class="btn btn-primary">{{ button_disable }}</button>
+                {% else %}
+                    <p>{{ text_description }}</p>
+                    <h3>{{ text_step1 }}</h3>
+                    <p>{{ text_step1_description }}</p>
+                    <h3>{{ text_step2 }}</h3>
+                    <p>{{ text_step2_description }}</p>
+                    <p><big><strong>{{ backup_code }}</strong></big></p>
+                    <h3>{{ text_step3 }}</h3>
+                    <p>{{ text_step3_description }}</p>
+                    <p><img src="{{ qr_image }}" /></p>
+                    <h3>{{ text_step4 }}</h3>
+                    <p>{{ text_step4_description }}</p>
+                    <input type="hidden" name="tfa_enable" value="1" />
+                    <input type="text" class="form-control" name="code" placeholder="{{ authentication_code }}" />
+                    <button type="submit" form="form-tfa" data-toggle="tooltip" title="{{ button_enable }}" class="btn btn-primary">{{ button_enable }}</button>
+                {% endif %}
+            </form>
+            {{ content_bottom }}</div>
+        {{ column_right }}</div>
+</div>
+{{ footer }}

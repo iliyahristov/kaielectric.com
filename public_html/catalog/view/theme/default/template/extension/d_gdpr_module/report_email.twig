@@ -1,0 +1,603 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<container>
+    <div class="title">
+        <img src="{{ logo }}" class="logo" alt=""/>
+    </div>
+    <div class="body">
+        <h1>{{ hi_customer }}</h1>
+        <p class="message">{{ message }}</p>
+
+        {% if customer_data %}
+            <div class="main-title">{{ text_account_detail }}</div>
+            <row>
+                <columns>
+                    <div class="table-title">
+                        {{ text_firstname }}<br>
+                        {{ text_lastname }}<br>
+                        {{ text_email }}<br>
+                        {{ text_phone }}<br>
+                        {{ text_fax }}<br>
+                        {{ text_account_newsletter }}<br>
+                        {{ text_date_created }}<br>
+                    </div>
+                </columns>
+                <columns class="text-left">
+                    <div class="table-value">
+                        {{ customer_data.firstname }}<br>
+                        {{ customer_data.lastname }}<br>
+                        {{ customer_data.email }}<br>
+                        {{ customer_data.telephone }}<br>
+                        {{ customer_data.firstname }}<br>
+                        {{ customer_data.newsletter ? text_yes : text_no }}<br>
+                        {{ customer_data.date_added }}<br>
+                    </div>
+                </columns>
+            </row>
+            <hr/>
+        {% endif %}
+
+        {% if gdpr_setting %}
+            {% if gdpr_setting.location_personal_information %}
+                <div class="main-title">{{ text_location_personal_data }}</div>
+                <row>
+                    <columns>
+                        <span class="table-value">{{ gdpr_setting.location_personal_information }}</span>
+                    </columns>
+                </row>
+                <hr/>
+            {% endif %}
+            {% if gdpr_setting.physical_location_host %}
+                <div class="main-title">{{ text_physical_location_host }}</div>
+                <row>
+                    <columns>
+                        <span class="table-value">{{ gdpr_setting.physical_location_host }}</span>
+                    </columns>
+                </row>
+                <hr/>
+            {% endif %}
+        {% endif %}
+
+        {% if addresses %}
+            <div class="main-title">{{ text_addresses }}</div>
+            {% for key, address in addresses %}
+                <row>
+                    <columns><span class="table-title">{{ key + 1 }}.</span> <span
+                                class="table-value">{{ address.firstname }} {{ address.lastname }}
+                            , {{ address.company }}, {{ address.address_1 }}, {{ address.address_2 }}
+                            , {{ address.city }}, {{ address.postcode }} </span></columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if orders %}
+            <div class="main-title">{{ text_orders }}</div>
+            {% for key, order in orders %}
+                <div class="sub-title">{{ text_order_number }}{{ order.order_id }}</div>
+                <row>
+                    <columns>
+                        <div class="table-title">
+                            {{ text_invoice_no }}<br>
+                            {{ text_store_name }}<br>
+                            {{ text_firstname }}<br>
+                            {{ text_lastname }}<br>
+                            {{ text_email }}<br>
+                            {{ text_phone }}<br>
+                            {{ text_payment_method }}<br>
+                            {{ text_shipping_method }}<br>
+                            {{ text_currency }}<br>
+                            {{ text_total }}<br>
+                            {{ text_address_ip }}<br>
+                            {{ text_date_created }}<br>
+                            {{ text_date_updated }}<br>
+                        </div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">
+                            {{ order.invoice_prefix }}<br>
+                            {{ order.store_name }}<br>
+                            {{ order.firstname }}<br>
+                            {{ order.lastname }}<br>
+                            {{ order.email }}<br>
+                            {{ order.telephone }}<br>
+                            {{ order.payment_method }}<br>
+                            {{ order.shipping_method }}<br>
+                            {{ order.currency_code }}<br>
+                            {{ order.total }}<br>
+                            {{ order.ip }}<br>
+                            {{ order.date_added }}<br>
+                            {{ order.date_modified }}<br>
+                        </div>
+                    </columns>
+                </row>
+                <div class="sub-title">{{ text_user_agent }}</div>
+                <row>
+                    <columns>
+                        <div class="table-value">{{ order.user_agent }}</div>
+                    </columns>
+                </row>
+                <div class="sub-title">{{ text_payment_address }}</div>
+                <row>
+                    <columns>
+                        <div class="table-title">
+                            {{ text_firstname }}<br>
+                            {{ text_lastname }}<br>
+                            {{ text_company_name }}<br>
+                            {{ text_address }}<br>
+                            {{ text_address }}<br>
+                            {{ text_city }}<br>
+                            {{ text_postcode }}<br>
+                            {{ text_country }}<br>
+                        </div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">
+                            {{ order.payment_firstname }}<br>
+                            {{ order.payment_lastname }}<br>
+                            {{ order.payment_company }}<br>
+                            {{ order.payment_address_1 }}<br>
+                            {{ order.payment_address_2 }}<br>
+                            {{ order.payment_city }}<br>
+                            {{ order.payment_postcode }}<br>
+                            {{ order.payment_country }}<br>
+                        </div>
+                    </columns>
+                </row>
+                <div class="sub-title">{{ text_shipping_address }}</div>
+                <row>
+                    <columns>
+                        <div class="table-title">
+                            {{ text_firstname }}<br>
+                            {{ text_lastname }}<br>
+                            {{ text_company_name }}<br>
+                            {{ text_address }}<br>
+                            {{ text_address }}<br>
+                            {{ text_city }}<br>
+                            {{ text_postcode }}<br>
+                            {{ text_country }}<br>
+                        </div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">
+                            {{ order.shipping_firstname }}<br>
+                            {{ order.shipping_lastname }}<br>
+                            {{ order.shipping_company }}<br>
+                            {{ order.shipping_address_1 }}<br>
+                            {{ order.shipping_address_2 }}<br>
+                            {{ order.shipping_city }}<br>
+                            {{ order.shipping_postcode }}<br>
+                            {{ order.shipping_country }}<br>
+                        </div>
+                    </columns>
+                </row>
+                <div class="sub-title">{{ text_products }}</div>
+                <row>
+                    <columns small="2" large="2">
+                        <span class="table-title">{{ text_product_model }}</span>
+                    </columns>
+                    <columns small="3" large="3">
+                        <span class="table-title">{{ text_product_name }}</span>
+                    </columns>
+                    <columns small="2" large="2">
+                        <span class="table-title">{{ text_product_quantity }}</span>
+                    </columns>
+                    <columns small="2" large="2">
+                        <span class="table-title">{{ text_product_total }}</span>
+                    </columns>
+                    <columns small="2" large="2">
+                        <span class="table-title">{{ text_product_tax }}</span>
+                    </columns>
+                    <columns small="2" large="2">
+                        <span class="table-title">{{ text_product_reward }}</span>
+                    </columns>
+                </row>
+                {% for product in order.products %}
+                    <div class="table-value">
+                        <row>
+                            <columns small="2" large="2">
+                                <span class="table-value">{{ product.model }}</span>
+                            </columns>
+                            <columns small="3" large="3">
+                                <span class="table-value">{{ product.name }}</span>
+                            </columns>
+                            <columns small="2" large="2">
+                                <span class="table-value">{{ product.quantity }}</span>
+                            </columns>
+                            <columns small="2" large="2">
+                                <span class="table-value">{{ product.total }}</span>
+                            </columns>
+                            <columns small="2" large="2">
+                                <span class="table-value">{{ product.tax }}</span>
+                            </columns>
+                            <columns small="2" large="2">
+                                <span class="table-value">{{ product.reward }}</span>
+                            </columns>
+                        </row>
+                    </div>
+                {% endfor %}
+
+                <hr/>
+            {% endfor %}
+        {% endif %}
+
+        {% if rewards %}
+            <div class="main-title">{{ text_rewards }}</div>
+            <row>
+                <columns large="1">
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_order_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_description }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_points }}</div>
+                </columns>
+                <columns large="1">
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for reward in rewards %}
+                <row>
+                    <columns large="1">
+                        <div class="table-value">{{ reward.customer_reward_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ reward.order_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ reward.description }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ reward.points }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ reward.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if wishlists %}
+            <div class="main-title">{{ text_wishlist }}</div>
+            <row>
+                <columns>
+                    <div class="table-title">{{ text_product_id }}</div>
+                </columns>
+                {% if not wishlist_short %}
+                    <columns>
+                        <div class="table-title">{{ text_date_created }}</div>
+                    </columns>
+                {% endif %}
+            </row>
+            {% for wishlist in wishlists %}
+                <row>
+                    <columns>
+                        <div class="table-value">{{ wishlist.product_id }}</div>
+                    </columns>
+                    {% if not wishlist_short %}
+                        <columns>
+                            <div class="table-value">{{ wishlist.date_added }}</div>
+                        </columns>
+                    {% endif %}
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if reviews %}
+            <div class="main-title">{{ text_reviews }}</div>
+            <row>
+                <columns large="1">
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_product_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_text }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_rating }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_status }}</div>
+                </columns>
+                <columns large="1">
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for review in reviews %}
+                <row>
+                    <columns large="1">
+                        <div class="table-value">{{ review.review_id }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ review.product_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ review.text }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ review.rating }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ review.status }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ review.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if transactions %}
+            <div class="main-title">{{ text_transactions }}</div>
+            <row>
+                <columns large="1">
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_order_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_description }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_amount }}</div>
+                </columns>
+                <columns large="1">
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for transaction in transactions %}
+                <row>
+                    <columns large="1">
+                        <div class="table-value">{{ transaction.customer_transaction_id }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ transaction.order_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ transaction.description }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ transaction.amount }}</div>
+                    </columns>
+                    <columns large="1">
+                        <div class="table-value">{{ transaction.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if activities %}
+            <div class="main-title">{{ text_activity }}</div>
+            <row>
+                <columns large="1">
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_key }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_data }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_ip }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for activity in activities %}
+                <row>
+                    <columns large="1">
+                        <div class="table-value">{{ activity.customer_activity_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ activity.key }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value" style="word-break: break-all;">{{ activity.data }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ activity.ip }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ activity.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if histories %}
+            <div class="main-title">{{ text_history }}</div>
+            <row>
+                <columns>
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_comment }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for history in histories %}
+                <row>
+                    <columns>
+                        <div class="table-value">{{ history.customer_history_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ history.comment }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ history.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if ip_data %}
+            <div class="main-title">{{ text_saved_ip }}</div>
+            <row>
+                <columns>
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_address_ip }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for ip in ip_data %}
+                <row>
+                    <columns>
+                        <div class="table-value">{{ ip.customer_ip_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ ip.ip }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ ip.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if onlines %}
+            <div class="main-title">{{ text_onlines }}</div>
+            <row>
+                <columns>
+                    <div class="table-title">{{ text_ip }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_url }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_referer }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+            </row>
+            {% for online in onlines %}
+                <row>
+                    <columns>
+                        <div class="table-value">{{ online.ip }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value" style="word-break: break-all;">{{ online.url }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value" style="word-break: break-all;">{{ online.referer }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ online.date_added }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if logins %}
+            <div class="main-title">{{ text_logins }}</div>
+            <row>
+                <columns>
+                    <div class="table-title">{{ text_id }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_email }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_ip }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_date_created }}</div>
+                </columns>
+                <columns>
+                    <div class="table-title">{{ text_date_modified }}</div>
+                </columns>
+            </row>
+            {% for login in logins %}
+                <row>
+                    <columns>
+                        <div class="table-value">{{ login.customer_login_id }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ login.email }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ login.ip }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ login.total }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ login.date_added }}</div>
+                    </columns>
+                    <columns>
+                        <div class="table-value">{{ login.date_modified }}</div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+
+        {% if requests %}
+            <div class="main-title">{{ text_gdpr_requests }}</div>
+            {% for request in requests %}
+                <div class="sub-title">{{ text_request_id }}{{ request.id }}</div>
+                <row>
+                    <columns>
+                        <div class="table-title">
+                            {{ text_email }}<br>
+                            {{ text_request_type }}<br>
+                            {{ text_status }}<br>
+                            {{ text_datetime }}<br>
+                        </div>
+                    </columns>
+
+                    <columns class="text-left">
+                        <div class="table-value">
+                            {{ request.email }}<br>
+                            {{ request.request_type }}<br>
+                            {{ request.confirmed ? text_confirmed : text_await }}<br>
+                            {{ request.quest_date }}<br>
+                        </div>
+                    </columns>
+                </row>
+            {% endfor %}
+
+            <hr/>
+        {% endif %}
+    </div>
+</container>
+</body>
+</html>
+

@@ -1,0 +1,25 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<container>
+    <div class="title">
+        <img src="{{logo}}" class="logo" alt=""/>
+    </div>
+    <div class="body">
+        <h1>{{hi_customer}}</h1>
+        <div class="message">
+            <div class="main-text">{{mail_text}}</div>
+            <div class="mail-list-item">- {{ mail_text_customer_profile }}</div>
+            <div class="mail-list-item">- {{ mail_text_customer_addresses }}</div>
+            <div class="mail-list-item">- {{ mail_text_session_information }}</div>
+            <div class="additional-text">{{ mail_text_additional }}</div>
+        </div>
+        <a class="btn" href="{{request_link}}">Потвърждавам</a>
+    </div>
+</container>
+</body>
+</html>
+
