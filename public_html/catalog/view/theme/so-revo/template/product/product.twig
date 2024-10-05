@@ -155,246 +155,252 @@
 
 
 				<div id="product">
-					{% if options %}
-					<h3>{{ text_option }}</h3>
-					{% for option in options %}
+					{% if stock == 'Out Of Stock' %}
+						<h3 class="price-new">
+							<strong style="font-size: large">ИЗЧЕРПАНА НАЛИЧНОСТ</strong>
+						</h3>
+					{% else %}
+						{% if options %}
+						<h3>{{ text_option }}</h3>
+						<p>{{ product }}</p>
+						{% for option in options %}
 
-						{% if option.type == 'select' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-							<label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-							<select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-control width50">
-								<option value="">{{ text_select }}</option>
-							{% for option_value in option.product_option_value %}
-								<option value="{{ option_value.product_option_value_id }}">{{ option_value.name }}
-								{% if option_value.price %}
-									({{ option_value.price_prefix }}{{ option_value.price }})
-								{% endif %}
-								</option>
-							{% endfor %}
-						  </select>
-						</div>
-						{% endif %}
-
-						{% if option.type == 'radio' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  	<label class="control-label">{{ option.name }}</label>
-							<div id="input-option{{ option.product_option_id }}">
-								{% set radio_style 	 = soconfig.get_settings('radio_style') %}
-								{% set radio_type 	 = radio_style ? ' radio-type-button':'' %}
-
+							{% if option.type == 'select' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+								<label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+								<select name="option[{{ option.product_option_id }}]" id="input-option{{ option.product_option_id }}" class="form-control width50">
+									<option value="">{{ text_select }}</option>
 								{% for option_value in option.product_option_value %}
-								{% set radio_image 	=  option_value.image ? 'option_image' : '' %}
-								{% set radio_price 	=  radio_style ? option_value.price_prefix ~ option_value.price : '' %}
-
-									<div class="radio {{ radio_image ~ radio_type }}">
-										<label>
-											<input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" />
-											<span class="option-content-box" data-title="{{ option_value.name}} {{ radio_price }}" data-toggle='tooltip'>
-												{% if option_value.image %}
-													<img src="{{ option_value.image }} " alt="{{ option_value.name}}  {{radio_price}}" />
-												{% endif %}
-												<span class="option-name">{{ option_value.name }} </span>
-												{% if option_value.price  and  radio_style  != '1' %} ({{ option_value.price_prefix }} {{ option_value.price }} ){% endif %}
-
-											</span>
-										</label>
-									</div>
+									<option value="{{ option_value.product_option_value_id }}">{{ option_value.name }}
+									{% if option_value.price %}
+										({{ option_value.price_prefix }}{{ option_value.price }})
+									{% endif %}
+									</option>
 								{% endfor %}
-
-								{% if radio_style %}
-								<script type="text/javascript">
-									 $(document).ready(function(){
-										  $('#input-option{{ option.product_option_id }} ').on('click', 'span', function () {
-											   $('#input-option{{ option.product_option_id }}  span').removeClass("active");
-											   $(this).toggleClass("active");
-										  });
-									 });
-								</script>
-								{% endif %}
-
+							  </select>
 							</div>
-						</div>
-						{% endif %}
+							{% endif %}
 
-						{% if option.type == 'checkbox' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  	<label class="control-label">{{ option.name }}</label>
-						  	<div id="input-option{{ option.product_option_id }}">
-								{% set radio_style 	 = soconfig.get_settings('radio_style') %}
-								{% set radio_type 	 = radio_style ? ' radio-type-button':'' %}
+							{% if option.type == 'radio' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+								<label class="control-label">{{ option.name }}</label>
+								<div id="input-option{{ option.product_option_id }}">
+									{% set radio_style 	 = soconfig.get_settings('radio_style') %}
+									{% set radio_type 	 = radio_style ? ' radio-type-button':'' %}
 
-								{% for option_value in option.product_option_value %}
-								{% set radio_image 	=  option_value.image ? 'option_image' : '' %}
-								{% set radio_price 	=  radio_style ? option_value.price_prefix ~ option_value.price : '' %}
+									{% for option_value in option.product_option_value %}
+									{% set radio_image 	=  option_value.image ? 'option_image' : '' %}
+									{% set radio_price 	=  radio_style ? option_value.price_prefix ~ option_value.price : '' %}
 
-									<div class="checkbox  {{ radio_image ~ radio_type }}">
-										<label>
-											<input type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" />
-											<span class="option-content-box" data-title="{{ option_value.name}} {{ radio_price }}" data-toggle='tooltip'>
-												{% if option_value.image %}
-													<img src="{{ option_value.image }} " alt="{{ option_value.name}}  {{radio_price}}" />
-												{% endif %}
+										<div class="radio {{ radio_image ~ radio_type }}">
+											<label>
+												<input type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" />
+												<span class="option-content-box" data-title="{{ option_value.name}} {{ radio_price }}" data-toggle='tooltip'>
+													{% if option_value.image %}
+														<img src="{{ option_value.image }} " alt="{{ option_value.name}}  {{radio_price}}" />
+													{% endif %}
+													<span class="option-name">{{ option_value.name }} </span>
+													{% if option_value.price  and  radio_style  != '1' %} ({{ option_value.price_prefix }} {{ option_value.price }} ){% endif %}
 
-												<span class="option-name">{{ option_value.name }} </span>
-												{% if option_value.price  and  radio_style  != '1' %}
-													({{ option_value.price_prefix }} {{ option_value.price }} )
-												{% endif %}
+												</span>
+											</label>
+										</div>
+									{% endfor %}
 
-											</span>
-										</label>
-									</div>
-								{% endfor %}
+									{% if radio_style %}
+									<script type="text/javascript">
+										 $(document).ready(function(){
+											  $('#input-option{{ option.product_option_id }} ').on('click', 'span', function () {
+												   $('#input-option{{ option.product_option_id }}  span').removeClass("active");
+												   $(this).toggleClass("active");
+											  });
+										 });
+									</script>
+									{% endif %}
 
-								{% if radio_style %}
-								<script type="text/javascript">
-									 $(document).ready(function(){
-										  $('#input-option{{ option.product_option_id }} ').on('click', 'span', function () {
-											   $(this).toggleClass("active");
-										  });
-									 });
-								</script>
-								{% endif %}
-
-							</div>
-						</div>
-						{% endif %}
-
-						{% if option.type == 'text' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-						  <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control" />
-						</div>
-						{% endif %}
-
-						{% if option.type == 'textarea' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-						  <textarea name="option[{{ option.product_option_id }}]" rows="5" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control">{{ option.value }}</textarea>
-						</div>
-						{% endif %}
-
-						{% if option.type == 'file' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  <label class="control-label">{{ option.name }}</label>
-						  <button type="button" id="button-upload{{ option.product_option_id }}" data-loading-text="{{ text_loading }}" class="btn btn-default btn-block"><i class="fa fa-upload"></i> {{ button_upload }}</button>
-						  <input type="hidden" name="option[{{ option.product_option_id }}]" value="" id="input-option{{ option.product_option_id }}" />
-						</div>
-						{% endif %}
-
-						{% if option.type == 'date' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-						  <div class="input-group date">
-							<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD" id="input-option{{ option.product_option_id }}" class="form-control" />
-							<span class="input-group-btn">
-							<button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
-							</span></div>
-						</div>
-						{% endif %}
-
-						{% if option.type == 'datetime' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-						  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-						  <div class="input-group datetime">
-							<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
-							<span class="input-group-btn">
-							<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-							</span></div>
-						</div>
-						{% endif %}
-
-						{% if option.type == 'time' %}
-						<div class="form-group{% if option.required %} required {% endif %}">
-							<label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
-							<div class="input-group time">
-							<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
-							<span class="input-group-btn">
-							<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
-							</span></div>
-						</div>
-						{% endif %}
-
-					{% endfor %}
-					{% endif %}
-
-					<div class="box-cart clearfix ">
-						{% if recurrings %}
-						<h3>{{ text_payment_recurring }}</h3>
-						<div class="form-group required">
-							<select name="recurring_id" class="form-control">
-							<option value="">{{ text_select }}</option>
-							{% for recurring in recurrings %}
-							<option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
-							{% endfor %}
-							</select>
-						  <div class="help-block" id="recurring-description"></div>
-						</div>
-						{% endif %}
-
-						<div class="form-group box-info-product">
-							<div class="option quantity">
-								<label class="control-label" for="input-quantity">{{ entry_qty }}</label>
-								<div class="input-group quantity-control">
-									  <span class="input-group-addon product_quantity_down fa fa-minus"></span>
-									  <input class="form-control" type="text" name="quantity" value="{{ minimum }}" />
-									  <input type="hidden" name="product_id" value="{{ product_id }}" />
-									  <span class="input-group-addon product_quantity_up fa fa-plus"></span>
 								</div>
 							</div>
-							<div class="detail-action">
-								{# =========button Cart ======#}
-								<div class="cart kai">
-									<input type="button" value="Добави" data-loading-text="{{ text_loading }}" id="button-cart" class="btn btn-mega">
-								</div>
+							{% endif %}
 
-								<div class="add-to-links wish_comp kai">
+							{% if option.type == 'checkbox' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+								<label class="control-label">{{ option.name }}</label>
+								<div id="input-option{{ option.product_option_id }}">
+									{% set radio_style 	 = soconfig.get_settings('radio_style') %}
+									{% set radio_type 	 = radio_style ? ' radio-type-button':'' %}
 
-									<ul class="blank list-inline">
-										<li class="wishlist">
+									{% for option_value in option.product_option_value %}
+									{% set radio_image 	=  option_value.image ? 'option_image' : '' %}
+									{% set radio_price 	=  radio_style ? option_value.price_prefix ~ option_value.price : '' %}
 
-											<a onclick="wishlist.add({{ product_id }});"> Добави в любими <i class="fa fa-heart"></i></a>
-										</li>
-										<li class="free-delivery">
-											<a href=""> <img src="image/catalog/demo/icon/icon1.png" alt="free-shipping-icon"/> Безплатна доставка над 120 лв. до 5 кг</a>
-										</li>
+										<div class="checkbox  {{ radio_image ~ radio_type }}">
+											<label>
+												<input type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" />
+												<span class="option-content-box" data-title="{{ option_value.name}} {{ radio_price }}" data-toggle='tooltip'>
+													{% if option_value.image %}
+														<img src="{{ option_value.image }} " alt="{{ option_value.name}}  {{radio_price}}" />
+													{% endif %}
 
-										<li class="model"><span>Продуктов код: </span> {{ model }}</li>
-										<li class="weight"><span>Тегло: </span> {{ weight }} кг.</li>
-									</ul>
+													<span class="option-name">{{ option_value.name }} </span>
+													{% if option_value.price  and  radio_style  != '1' %}
+														({{ option_value.price_prefix }} {{ option_value.price }} )
+													{% endif %}
+
+												</span>
+											</label>
+										</div>
+									{% endfor %}
+
+									{% if radio_style %}
+									<script type="text/javascript">
+										 $(document).ready(function(){
+											  $('#input-option{{ option.product_option_id }} ').on('click', 'span', function () {
+												   $(this).toggleClass("active");
+											  });
+										 });
+									</script>
+									{% endif %}
+
 								</div>
 							</div>
-						</div>
+							{% endif %}
 
+							{% if option.type == 'text' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+							  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+							  <input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control" />
+							</div>
+							{% endif %}
 
-						{% if minimum > 1 %}
-							<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>
-						{% endif %}
-					</div>
+							{% if option.type == 'textarea' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+							  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+							  <textarea name="option[{{ option.product_option_id }}]" rows="5" placeholder="{{ option.name }}" id="input-option{{ option.product_option_id }}" class="form-control">{{ option.value }}</textarea>
+							</div>
+							{% endif %}
 
-					{% if soconfig.get_settings('product_page_button') and soconfig.get_settings('product_socialshare') %}
-					<div class="form-group social-share clearfix">
-						{{ soconfig.decode_entities( soconfig.get_settings('product_socialshare') ) }}
-					</div>
-					{% endif %}
-					<!-- Go to www.addthis.com/dashboard to customize your tools -->
+							{% if option.type == 'file' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+							  <label class="control-label">{{ option.name }}</label>
+							  <button type="button" id="button-upload{{ option.product_option_id }}" data-loading-text="{{ text_loading }}" class="btn btn-default btn-block"><i class="fa fa-upload"></i> {{ button_upload }}</button>
+							  <input type="hidden" name="option[{{ option.product_option_id }}]" value="" id="input-option{{ option.product_option_id }}" />
+							</div>
+							{% endif %}
 
-					    {#<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-529be2200cc72db5"></script>#}
+							{% if option.type == 'date' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+							  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+							  <div class="input-group date">
+								<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD" id="input-option{{ option.product_option_id }}" class="form-control" />
+								<span class="input-group-btn">
+								<button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+								</span></div>
+							</div>
+							{% endif %}
 
-					 {% if tags %}
-					<div id="tab-tags">
-						{{ text_tags }}
-						{% for i in 0..tags|length %}
-						{% if i < (tags|length - 1) %} <a class="btn btn-primary btn-sm" href="{{ tags[i].href }}">{{ tags[i].tag }}</a>
-						{% else %}
-						{% if tags[i] is not empty  %}
-						<a class="btn btn-primary btn-sm 22" href="{{ tags[i].href }}">{{ tags[i].tag }}</a> {% endif %}
-						{% endif %}
+							{% if option.type == 'datetime' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+							  <label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+							  <div class="input-group datetime">
+								<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="YYYY-MM-DD HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
+								<span class="input-group-btn">
+								<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+								</span></div>
+							</div>
+							{% endif %}
+
+							{% if option.type == 'time' %}
+							<div class="form-group{% if option.required %} required {% endif %}">
+								<label class="control-label" for="input-option{{ option.product_option_id }}">{{ option.name }}</label>
+								<div class="input-group time">
+								<input type="text" name="option[{{ option.product_option_id }}]" value="{{ option.value }}" data-date-format="HH:mm" id="input-option{{ option.product_option_id }}" class="form-control" />
+								<span class="input-group-btn">
+								<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+								</span></div>
+							</div>
+							{% endif %}
+
 						{% endfor %}
+						{% endif %}
+
+						<div class="box-cart clearfix ">
+							{% if recurrings %}
+							<h3>{{ text_payment_recurring }}</h3>
+							<div class="form-group required">
+								<select name="recurring_id" class="form-control">
+								<option value="">{{ text_select }}</option>
+								{% for recurring in recurrings %}
+								<option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
+								{% endfor %}
+								</select>
+							  <div class="help-block" id="recurring-description"></div>
+							</div>
+							{% endif %}
+
+							<div class="form-group box-info-product">
+								<div class="option quantity">
+									<label class="control-label" for="input-quantity">{{ entry_qty }}</label>
+									<div class="input-group quantity-control">
+										  <span class="input-group-addon product_quantity_down fa fa-minus"></span>
+										  <input class="form-control" type="text" name="quantity" value="{{ minimum }}" />
+										  <input type="hidden" name="product_id" value="{{ product_id }}" />
+										  <span class="input-group-addon product_quantity_up fa fa-plus"></span>
+									</div>
+								</div>
+								<div class="detail-action">
+									{# =========button Cart ======#}
+									<div class="cart kai">
+										<input type="button" value="Добави" data-loading-text="{{ text_loading }}" id="button-cart" class="btn btn-mega">
+									</div>
+
+									<div class="add-to-links wish_comp kai">
+
+										<ul class="blank list-inline">
+											<li class="wishlist">
+
+												<a onclick="wishlist.add({{ product_id }});"> Добави в любими <i class="fa fa-heart"></i></a>
+											</li>
+											<li class="free-delivery">
+												<a href=""> <img src="image/catalog/demo/icon/icon1.png" alt="free-shipping-icon"/> Безплатна доставка над 120 лв. до 5 кг</a>
+											</li>
+
+											<li class="model"><span>Продуктов код: </span> {{ model }}</li>
+											<li class="weight"><span>Тегло: </span> {{ weight }} кг.</li>
+										</ul>
+									</div>
+								</div>
+							</div>
 
 
-					</div>
+							{% if minimum > 1 %}
+								<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text_minimum }}</div>
+							{% endif %}
+						</div>
+
+						{% if soconfig.get_settings('product_page_button') and soconfig.get_settings('product_socialshare') %}
+						<div class="form-group social-share clearfix">
+							{{ soconfig.decode_entities( soconfig.get_settings('product_socialshare') ) }}
+						</div>
+						{% endif %}
+						<!-- Go to www.addthis.com/dashboard to customize your tools -->
+
+							{#<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-529be2200cc72db5"></script>#}
+
+						 {% if tags %}
+						<div id="tab-tags">
+							{{ text_tags }}
+							{% for i in 0..tags|length %}
+							{% if i < (tags|length - 1) %} <a class="btn btn-primary btn-sm" href="{{ tags[i].href }}">{{ tags[i].tag }}</a>
+							{% else %}
+							{% if tags[i] is not empty  %}
+							<a class="btn btn-primary btn-sm 22" href="{{ tags[i].href }}">{{ tags[i].tag }}</a> {% endif %}
+							{% endif %}
+							{% endfor %}
+
+
+						</div>
+						{% endif %}
 					{% endif %}
-
 				</div>
 
 			</div>

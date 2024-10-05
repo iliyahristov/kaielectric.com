@@ -3,21 +3,21 @@ class ControllerProductProduct extends Controller {
 	private $error = array();
 
 	public function index() {
- 
- /*=======Show Themeconfig=======*/ 
- $this->load->language('extension/soconfig/soconfig'); 
- $data['objlang'] = $this->language; 
- $data['soconfig'] = $this->soconfig; 
- $data['theme_directory'] = $this->config->get('theme_default_directory'); 
- $data['our_url'] = $this->registry->get('url'); 
- $direction = $this->language->get('direction'); 
- $data['direction'] = $this->language->get('direction') == 'rtl' ? 'yes' : 'no' ; 
- /*=======url query parameters=======*/ 
- $data['url_sidebarsticky'] = isset($this->request->get['sidebarsticky']) ? $this->request->get['sidebarsticky'] : '' ; 
- $data['url_productGallery'] = isset($this->request->get['productGallery']) ? $this->request->get['productGallery'] : '' ; 
- $data['url_asidePosition'] = isset($this->request->get['asidePosition']) ? $this->request->get['asidePosition'] : '' ; 
- $data['url_asideType'] = isset($this->request->get['asideType']) ? $this->request->get['asideType'] : '' ; 
- 
+
+         /*=======Show Themeconfig=======*/
+         $this->load->language('extension/soconfig/soconfig');
+         $data['objlang'] = $this->language;
+         $data['soconfig'] = $this->soconfig;
+         $data['theme_directory'] = $this->config->get('theme_default_directory');
+         $data['our_url'] = $this->registry->get('url');
+         $direction = $this->language->get('direction');
+         $data['direction'] = $this->language->get('direction') == 'rtl' ? 'yes' : 'no' ;
+         /*=======url query parameters=======*/
+         $data['url_sidebarsticky'] = isset($this->request->get['sidebarsticky']) ? $this->request->get['sidebarsticky'] : '' ;
+         $data['url_productGallery'] = isset($this->request->get['productGallery']) ? $this->request->get['productGallery'] : '' ;
+         $data['url_asidePosition'] = isset($this->request->get['asidePosition']) ? $this->request->get['asidePosition'] : '' ;
+         $data['url_asideType'] = isset($this->request->get['asideType']) ? $this->request->get['asideType'] : '' ;
+
 		$this->load->language('product/product');
 
 		$data['breadcrumbs'] = array();
@@ -28,84 +28,67 @@ class ControllerProductProduct extends Controller {
 		);
 
 		$this->load->model('catalog/category');
+		$this->load->model('catalog/product');
 
-		if (isset($this->request->get['path'])) {
-			$path = '';
+		$promotions_category_id = 760;
 
-// 			$parts = explode('_', (string)$this->request->get['path']);
-                    $category_ids = $this->model_catalog_product->getCategories($product_id);
-                    // get the end category from array
-                    $category_id_array = end($category_ids);
-                    $category_id = $category_id_array['category_id'];
-            
-                    $parts = explode('_', (string)$product_id);
-			$category_id = (int)array_pop($parts);
+		if (isset($this->request->get['product_id'])) {
+		    $product_id = (int)$this->request->get['product_id'];
+		    $category_ids = $this->model_catalog_product->getCategories($product_id);
 
-			foreach ($parts as $path_id) {
-				if (!$path) {
-					$path = $path_id;
-				} else {
-					$path .= '_' . $path_id;
-				}
+		    if (!empty($category_ids)) {
+		        $category_id_array = end($category_ids);
+		        $category_id = $category_id_array['category_id'];
 
-				$category_info = $this->model_catalog_category->getCategory($path_id);
+		        $categories = array();
 
-				if ($category_info) {
-					$data['breadcrumbs'][] = array(
-						'text' => $category_info['name'],
-						'href' => $this->url->link('product/category', 'path=' . $path)
-					);
-				}
-			}
+		        while ($category_id) {
+		            $category_info = $this->model_catalog_category->getCategory($category_id);
+		            if ($category_info) {
+		                if ($category_info['category_id'] != $promotions_category_id) {
+		                    array_unshift($categories, $category_info);
+	                    }
+		                $category_id = $category_info['parent_id'];
+		            } else {
+		                break;
+		            }
+		        }
 
-			// Set the last category breadcrumb
-			$category_info = $this->model_catalog_category->getCategory($category_id);
+		        $path = '';
+		        foreach ($categories as $category) {
+		            if (!$path) {
+		                $path = $category['category_id'];
+		            } else {
+		                $path .= '_' . $category['category_id'];
+		            }
 
-			if ($category_info) {
-				$url = '';
-
-				if (isset($this->request->get['sort'])) {
-					$url .= '&sort=' . $this->request->get['sort'];
-				}
-
-				if (isset($this->request->get['order'])) {
-					$url .= '&order=' . $this->request->get['order'];
-				}
-
-				if (isset($this->request->get['page'])) {
-					$url .= '&page=' . $this->request->get['page'];
-				}
-
-				if (isset($this->request->get['limit'])) {
-					$url .= '&limit=' . $this->request->get['limit'];
-				}
-
-				$data['breadcrumbs'][] = array(
-					'text' => $category_info['name'],
-					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url)
-				);
-			}
+		            $data['breadcrumbs'][] = array(
+		                'text' => $category['name'],
+		                'href' => $this->url->link('product/category', 'path=' . $path)
+		            );
+		        }
+		    }
 		}
 
 		$this->load->model('catalog/manufacturer');
- 
- $so_recent_products = array(); 
- if (isset($this->request->cookie['sorecentproduct'])) { 
- $so_recent_products = explode(',', $this->request->cookie['sorecentproduct']); 
- } else if (isset($this->session->data['sorecentproduct'])) { 
- $so_recent_products = $this->session->data['sorecentproduct']; 
- } 
- 
- if (isset($this->request->get['route']) && $this->request->get['route'] == 'product/product') { 
- $product_id = $this->request->get['product_id']; 
- $so_recent_products = array_diff($so_recent_products, array($product_id)); 
- array_unshift($so_recent_products, $product_id); 
- setcookie('sorecentproduct', implode(',', $so_recent_products), time() + 60 * 60 * 24 * 30, '/', $this->request->server['HTTP_HOST']); 
- if (!isset($this->session->data['sorecentproduct']) || $this->session->data['sorecentproduct'] != $so_recent_products) { 
- $this->session->data['sorecentproduct'] = $so_recent_products; 
- } 
- } 
- 
+
+         $so_recent_products = array();
+         if (isset($this->request->cookie['sorecentproduct'])) {
+         $so_recent_products = explode(',', $this->request->cookie['sorecentproduct']);
+         } else if (isset($this->session->data['sorecentproduct'])) {
+         $so_recent_products = $this->session->data['sorecentproduct'];
+         }
+
+         if (isset($this->request->get['route']) && $this->request->get['route'] == 'product/product') {
+         $product_id = $this->request->get['product_id'];
+         $so_recent_products = array_diff($so_recent_products, array($product_id));
+         array_unshift($so_recent_products, $product_id);
+         setcookie('sorecentproduct', implode(',', $so_recent_products), time() + 60 * 60 * 24 * 30, '/', $this->request->server['HTTP_HOST']);
+         if (!isset($this->session->data['sorecentproduct']) || $this->session->data['sorecentproduct'] != $so_recent_products) {
+         $this->session->data['sorecentproduct'] = $so_recent_products;
+         }
+         }
+
 
 		if (isset($this->request->get['manufacturer_id'])) {
 			$data['breadcrumbs'][] = array(
@@ -257,10 +240,10 @@ class ControllerProductProduct extends Controller {
 			$this->document->setDescription($product_info['meta_description']);
 			$this->document->setKeywords($product_info['meta_keyword']);
 			$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
-			
- $this->document->addScript('catalog/view/javascript/soconfig/js/jquery.sticky-kit.min.js'); 
- $this->document->addScript('catalog/view/javascript/soconfig/js/lightslider.js'); 
- 
+
+             $this->document->addScript('catalog/view/javascript/soconfig/js/jquery.sticky-kit.min.js');
+             $this->document->addScript('catalog/view/javascript/soconfig/js/lightslider.js');
+
 			$this->document->addStyle('catalog/view/javascript/soconfig/css/lightslider.css');
 			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
 			$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
@@ -269,80 +252,80 @@ class ControllerProductProduct extends Controller {
 
 			$data['heading_title'] = $product_info['name'];
 
-$this->load->model('tool/image');
-$this->load->model('catalog/review');
-$schema = array('@context'=>'http://schema.org');
-$schema['@type'] = 'Product';
-$schema['name'] = $product_info['name'];
-if($product_info['meta_description']){
-$schema['description'] = $product_info['meta_description'];
-}
-if ($product_info['image']) {
-    $schema['image'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
-}
-if ($product_info['mpn']) {
-    $schema['mpn'] = $product_info['mpn'];
-}
-if ($product_info['sku']) {
-    $schema['sku'] = $product_info['sku'];
-}
-if ($product_info['ean']) {
-    $schema['gtin'] = $product_info['ean'];
-}
-if ($product_info['model']) {
-    $schema['model'] = $product_info['model'];
-}
-$schema['offers']['@type'] = 'Offer';
-if ($product_info['special']) {
-    $schema['offers']['price'] = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
-} else {
-    $schema['offers']['price'] = $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
-}
-$schema['offers']['price'] = floatval($schema['offers']['price']);
-$schema['offers']['priceCurrency'] = $this->config->get('config_currency');
-$schema['offers']['url'] = $this->url->link('product/product' . '&product_id=' . $this->request->get['product_id']);
-if ($product_info['quantity'] >= 0) {
-    $schema['offers']['availability'] = 'http://schema.org/InStock';
-} else {
-    $schema['offers']['availability'] = 'http://schema.org/OutOfStock';
-}
-if ($product_info['special_date_end']) {
-    $schema['offers']['priceValidUntil'] = $product_info['special_date_end'];
-}else{
-	$schema['offers']['priceValidUntil'] = '3000-01-01';
-}
-if ((int)$product_info['reviews'] > 0) {
-    $schema['aggregateRating']['@type'] = 'AggregateRating';
-    $schema['aggregateRating']['ratingValue'] = (int)$product_info['rating'];
-    $schema['aggregateRating']['reviewCount'] = (int)$product_info['reviews'];
-}
-if ($product_info['manufacturer']) {
-    $schema['brand']['@type'] = 'Thing';
-    $schema['brand']['name'] = $product_info['manufacturer'];
-    $schema['brand']['url'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
-}
-$reviews = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], (1 - 1) * 5, 5);
-if ($reviews) {
-    foreach ($reviews as $review) {
-        $schema['review'][] = array('@type' => 'Review', 'author' => $review['author'], 'datePublished' => date($this->language->get('date_format_short'), strtotime($review['date_added'])), 'description' => strip_tags(html_entity_decode($review['text'], ENT_QUOTES, 'UTF-8')));
-    }
-}
-$this->document->setSchema($schema);
-unset($schema);
-$schema = array('@context'=>'http://schema.org');
-$schema['@type'] = 'BreadcrumbList';
-$number = 1;
-foreach ($data['breadcrumbs'] as $breadcrumb) {
-    if ($number == 1) {
-        $text = 'Home';
-    } else {
-        $text = $breadcrumb['text'];
-    }
-    $schema['itemListElement'][] = array('@type' => 'ListItem', 'position' => $number, 'item' => array('@id' => $breadcrumb['href'], 'name' => $text));
-    $number++;
-}
-$this->document->setSchema($schema);
-			
+            $this->load->model('tool/image');
+            $this->load->model('catalog/review');
+            $schema = array('@context'=>'http://schema.org');
+            $schema['@type'] = 'Product';
+            $schema['name'] = $product_info['name'];
+            if($product_info['meta_description']){
+            $schema['description'] = $product_info['meta_description'];
+            }
+            if ($product_info['image']) {
+                $schema['image'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+            }
+            if ($product_info['mpn']) {
+                $schema['mpn'] = $product_info['mpn'];
+            }
+            if ($product_info['sku']) {
+                $schema['sku'] = $product_info['sku'];
+            }
+            if ($product_info['ean']) {
+                $schema['gtin'] = $product_info['ean'];
+            }
+            if ($product_info['model']) {
+                $schema['model'] = $product_info['model'];
+            }
+            $schema['offers']['@type'] = 'Offer';
+            if ($product_info['special']) {
+                $schema['offers']['price'] = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+            } else {
+                $schema['offers']['price'] = $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+            }
+            $schema['offers']['price'] = floatval($schema['offers']['price']);
+            $schema['offers']['priceCurrency'] = $this->config->get('config_currency');
+            $schema['offers']['url'] = $this->url->link('product/product' . '&product_id=' . $this->request->get['product_id']);
+            if ($product_info['quantity'] >= 0) {
+                $schema['offers']['availability'] = 'http://schema.org/InStock';
+            } else {
+                $schema['offers']['availability'] = 'http://schema.org/OutOfStock';
+            }
+            if ($product_info['special_date_end']) {
+                $schema['offers']['priceValidUntil'] = $product_info['special_date_end'];
+            }else{
+                $schema['offers']['priceValidUntil'] = '3000-01-01';
+            }
+            if ((int)$product_info['reviews'] > 0) {
+                $schema['aggregateRating']['@type'] = 'AggregateRating';
+                $schema['aggregateRating']['ratingValue'] = (int)$product_info['rating'];
+                $schema['aggregateRating']['reviewCount'] = (int)$product_info['reviews'];
+            }
+            if ($product_info['manufacturer']) {
+                $schema['brand']['@type'] = 'Thing';
+                $schema['brand']['name'] = $product_info['manufacturer'];
+                $schema['brand']['url'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
+            }
+            $reviews = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], (1 - 1) * 5, 5);
+            if ($reviews) {
+                foreach ($reviews as $review) {
+                    $schema['review'][] = array('@type' => 'Review', 'author' => $review['author'], 'datePublished' => date($this->language->get('date_format_short'), strtotime($review['date_added'])), 'description' => strip_tags(html_entity_decode($review['text'], ENT_QUOTES, 'UTF-8')));
+                }
+            }
+            $this->document->setSchema($schema);
+            unset($schema);
+            $schema = array('@context'=>'http://schema.org');
+            $schema['@type'] = 'BreadcrumbList';
+            $number = 1;
+            foreach ($data['breadcrumbs'] as $breadcrumb) {
+                if ($number == 1) {
+                    $text = 'Home';
+                } else {
+                    $text = $breadcrumb['text'];
+                }
+                $schema['itemListElement'][] = array('@type' => 'ListItem', 'position' => $number, 'item' => array('@id' => $breadcrumb['href'], 'name' => $text));
+                $number++;
+            }
+            $this->document->setSchema($schema);
+
 
 			$data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);
 			$data['text_login'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
@@ -355,40 +338,40 @@ $this->document->setSchema($schema);
 			$data['manufacturer'] = $product_info['manufacturer'];
 			$data['manufacturers'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
 			$data['model'] = $product_info['model'];
-			
+
 			if( !empty( $product_info['specif'] ) ){
 			    $data['specif'] = $this->url->link('product/product/download_specif', 'tspecif=' . $product_info['specif']);
 			} else {
 			    $data['specif'] = '';
 			}
-			
+
 			$data['weight'] = number_format( $product_info['weight'], 3, '.', ' ');
 			$data['reward'] = $product_info['reward'];
 			$data['points'] = $product_info['points'];
 			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
- 
- //custom code 
- $this->load->model('extension/soconfig/general'); 
- $data['special_end_date'] = $this->model_extension_soconfig_general->getDateEnd($product_id); 
- $limit = 250; 
- $full_description = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8'); 
- $product_description_short = (strlen($full_description) > $limit ? utf8_substr($full_description, 0, $limit) . '...' : $full_description); 
- $data['description_short'] = strip_tags($product_description_short); 
- //SEO Rich Snippets 
- if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) { 
- $data['price_value']=$this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')); 
- } else { 
- $data['price_value']=0; 
- } 
- 
- if ((float)$product_info['special']) { 
- $data['special_value'] = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')); 
- } else { 
- $data['special_value'] = false; 
- } 
- $data['currency']=$this->session->data['currency']; 
- $data['count_reviews']=(int)$product_info['reviews']; 
- 
+
+             //custom code
+             $this->load->model('extension/soconfig/general');
+             $data['special_end_date'] = $this->model_extension_soconfig_general->getDateEnd($product_id);
+             $limit = 250;
+             $full_description = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+             $product_description_short = (strlen($full_description) > $limit ? utf8_substr($full_description, 0, $limit) . '...' : $full_description);
+             $data['description_short'] = strip_tags($product_description_short);
+             //SEO Rich Snippets
+             if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+             $data['price_value']=$this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+             } else {
+             $data['price_value']=0;
+             }
+
+             if ((float)$product_info['special']) {
+             $data['special_value'] = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+             } else {
+             $data['special_value'] = false;
+             }
+             $data['currency']=$this->session->data['currency'];
+             $data['count_reviews']=(int)$product_info['reviews'];
+
 
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
@@ -412,17 +395,17 @@ $this->document->setSchema($schema);
 				$data['thumb'] = '';
 			}
 
-if ($product_info['image']) { 
- $data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')); 
- } else { 
- $data['popup'] = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')); 
- } 
- 
- if ($product_info['image']) { 
- $data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')); 
- } else { 
- $data['thumb'] = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')); 
- }
+            if ($product_info['image']) {
+             $data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+             } else {
+             $data['popup'] = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+             }
+
+             if ($product_info['image']) {
+             $data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'));
+             } else {
+             $data['thumb'] = $this->model_tool_image->resize('placeholder.png', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'));
+             }
 			$data['images'] = array();
 
 			$results = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
@@ -433,7 +416,7 @@ if ($product_info['image']) {
 					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
 				);
 			}
-			
+
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				if ( !$product_info['special'] ) {
 					$data['price'] = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
@@ -467,33 +450,33 @@ if ($product_info['image']) {
 				);
 			}
 
- 
- if ((float)$product_info['special']) $data['discount'] = '-'.round((($product_info['price'] - $product_info['special'])/$product_info['price'])*100, 0).'%'; 
- else $data['discount'] = false; 
- /*======Check New Label=======*/ 
- $sold = 0; 
- $data['totalQuantity'] = $product_info['quantity']; 
- if($this->model_extension_soconfig_general->getUnitsSold($product_info['product_id'])){ 
- $sold = $this->model_extension_soconfig_general->getUnitsSold($product_info['product_id']); 
- } 
- 
- $data['orders'] = sprintf($this->language->get('text_product_orders'),$sold, $data['totalQuantity']); 
- if($product_info['viewed']< 2) $data['viewed'] = sprintf($this->language->get('text_product_view'),$product_info['viewed']); 
- else $data['viewed'] = sprintf($this->language->get('text_product_viewed'),$product_info['viewed']); 
- /*====== insert image to the beginning of array=======*/ 
- $firstimg = array('popup' => $data['popup'],'thumb' => $data['thumb']); 
- array_unshift($data['images'], $firstimg); 
- 
- 
- 
- $productoption_info = $this->model_extension_soconfig_general->getProduct($product_id); 
- $data['product_video'] = array(); 
- $data['product_tabtitle'] = array(); 
- $data['product_tabcontent'] = array(); 
- if(isset($productoption_info['video'])) $data['product_video'] = $productoption_info['video']; 
- if(isset($productoption_info['tab_title'])) $data['product_tabtitle'] = $productoption_info['tab_title']; 
- if(isset($productoption_info['html_product_tab'])) $data['product_tabcontent'] = html_entity_decode($productoption_info['html_product_tab'], ENT_QUOTES, 'UTF-8'); 
- 
+
+             if ((float)$product_info['special']) $data['discount'] = '-'.round((($product_info['price'] - $product_info['special'])/$product_info['price'])*100, 0).'%';
+             else $data['discount'] = false;
+             /*======Check New Label=======*/
+             $sold = 0;
+             $data['totalQuantity'] = $product_info['quantity'];
+             if($this->model_extension_soconfig_general->getUnitsSold($product_info['product_id'])){
+             $sold = $this->model_extension_soconfig_general->getUnitsSold($product_info['product_id']);
+             }
+
+             $data['orders'] = sprintf($this->language->get('text_product_orders'),$sold, $data['totalQuantity']);
+             if($product_info['viewed']< 2) $data['viewed'] = sprintf($this->language->get('text_product_view'),$product_info['viewed']);
+             else $data['viewed'] = sprintf($this->language->get('text_product_viewed'),$product_info['viewed']);
+             /*====== insert image to the beginning of array=======*/
+             $firstimg = array('popup' => $data['popup'],'thumb' => $data['thumb']);
+             array_unshift($data['images'], $firstimg);
+
+
+
+             $productoption_info = $this->model_extension_soconfig_general->getProduct($product_id);
+             $data['product_video'] = array();
+             $data['product_tabtitle'] = array();
+             $data['product_tabcontent'] = array();
+             if(isset($productoption_info['video'])) $data['product_video'] = $productoption_info['video'];
+             if(isset($productoption_info['tab_title'])) $data['product_tabtitle'] = $productoption_info['tab_title'];
+             if(isset($productoption_info['html_product_tab'])) $data['product_tabcontent'] = html_entity_decode($productoption_info['html_product_tab'], ENT_QUOTES, 'UTF-8');
+
 			$data['options'] = array();
 
 			foreach ($this->model_catalog_product->getProductOptions($this->request->get['product_id']) as $option) {
@@ -563,73 +546,73 @@ if ($product_info['image']) {
 
 			$data['attribute_groups'] = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
 
- 
- $data['option_data'] = array(); 
- if ($this->config->get('module_so_color_swatches_pro_status') && $this->config->get('module_so_color_swatches_pro_enable_product_page')) { 
- $data['width_product_page'] = $this->config->get('module_so_color_swatches_pro_width_product_page'); 
- if ($data['width_product_page'] == 0) { 
- $data['width_product_page'] = 20; 
- } 
- $data['height_product_page'] = $this->config->get('module_so_color_swatches_pro_height_product_page'); 
- if ($data['height_product_page'] == 0) { 
- $data['height_product_page'] = 20; 
- } 
- $data['colorswatch_type'] = $this->config->get('module_so_color_swatches_pro_type'); 
- $this->document->addStyle('catalog/view/javascript/so_color_swatches_pro/css/style.css'); 
- 
- $this->load->model('extension/module/so_color_swatches_pro'); 
- $option_selected = $this->config->get('module_so_color_swatches_pro_option'); 
- $product_option = $this->model_extension_module_so_color_swatches_pro->getProductOptionsByOptionId($this->request->get['product_id'], $option_selected); 
- if ($product_option) { 
- $data['product_option_id'] = $product_option['product_option_id']; 
- } 
- $data['option_selected'] = $option_selected; 
- 
- $options = $this->model_extension_module_so_color_swatches_pro->getProductOptions($this->request->get['product_id']); 
- foreach ($options as $option) { 
- $product_option_value_data = array(); 
- foreach ($option['product_option_value'] as $option_value) { 
- if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) { 
- $p_image = $this->model_extension_module_so_color_swatches_pro->getProductImages($this->request->get['product_id'], $option_value['option_value_id']); 
- if (isset($p_image['image']) && $p_image['image']) { 
- $pimage = $this->model_tool_image->resize($p_image['image'], $this->config->get('theme_'.$this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_'.$this->config->get('config_theme') . '_image_popup_height')); 
- $p_thumbimage = $this->model_tool_image->resize($p_image['image'], $this->config->get('theme_'.$this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_'.$this->config->get('config_theme') . '_image_thumb_height')); 
- } else { 
- $pimage = ''; 
- $p_thumbimage = ''; 
- } 
- if (isset($p_image['product_image_id']) && $p_image['product_image_id']) { 
- $product_image_id = $p_image['product_image_id']; 
- } 
- else { 
- $product_image_id = ''; 
- } 
- $product_option_value_data[] = array( 
- 'product_option_value_id' => $option_value['product_option_value_id'], 
- 'option_value_id' => $option_value['option_value_id'], 
- 'name' => $option_value['name'], 
- 'image' => $this->model_tool_image->resize($option_value['image'], $data['width_product_page'], $data['height_product_page']), 
- 'price' => $price, 
- 'price_prefix' => $option_value['price_prefix'], 
- 'color_image' => $pimage, 
- 'color_thumb_image' => $p_thumbimage, 
- 'product_image_id' => $product_image_id 
- ); 
- } 
- } 
- $data['option_data'][] = array( 
- 'product_option_id' => $option['product_option_id'], 
- 'product_option_value' => $product_option_value_data, 
- 'option_id' => $option['option_id'], 
- 'name' => $option['name'], 
- 'type' => $option['type'], 
- 'value' => $option['value'], 
- 'required' => $option['required'] 
- ); 
- } 
- } 
- $data['option_data'] = array_shift($data['option_data']); 
- 
+
+			 $data['option_data'] = array();
+			 if ($this->config->get('module_so_color_swatches_pro_status') && $this->config->get('module_so_color_swatches_pro_enable_product_page')) {
+			 $data['width_product_page'] = $this->config->get('module_so_color_swatches_pro_width_product_page');
+			 if ($data['width_product_page'] == 0) {
+			 $data['width_product_page'] = 20;
+			 }
+			 $data['height_product_page'] = $this->config->get('module_so_color_swatches_pro_height_product_page');
+			 if ($data['height_product_page'] == 0) {
+			 $data['height_product_page'] = 20;
+			 }
+			 $data['colorswatch_type'] = $this->config->get('module_so_color_swatches_pro_type');
+			 $this->document->addStyle('catalog/view/javascript/so_color_swatches_pro/css/style.css');
+
+			 $this->load->model('extension/module/so_color_swatches_pro');
+			 $option_selected = $this->config->get('module_so_color_swatches_pro_option');
+			 $product_option = $this->model_extension_module_so_color_swatches_pro->getProductOptionsByOptionId($this->request->get['product_id'], $option_selected);
+			 if ($product_option) {
+			 $data['product_option_id'] = $product_option['product_option_id'];
+			 }
+			 $data['option_selected'] = $option_selected;
+
+			 $options = $this->model_extension_module_so_color_swatches_pro->getProductOptions($this->request->get['product_id']);
+			 foreach ($options as $option) {
+			 $product_option_value_data = array();
+			 foreach ($option['product_option_value'] as $option_value) {
+			 if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
+			 $p_image = $this->model_extension_module_so_color_swatches_pro->getProductImages($this->request->get['product_id'], $option_value['option_value_id']);
+			 if (isset($p_image['image']) && $p_image['image']) {
+			 $pimage = $this->model_tool_image->resize($p_image['image'], $this->config->get('theme_'.$this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_'.$this->config->get('config_theme') . '_image_popup_height'));
+			 $p_thumbimage = $this->model_tool_image->resize($p_image['image'], $this->config->get('theme_'.$this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_'.$this->config->get('config_theme') . '_image_thumb_height'));
+			 } else {
+			 $pimage = '';
+			 $p_thumbimage = '';
+			 }
+			 if (isset($p_image['product_image_id']) && $p_image['product_image_id']) {
+			 $product_image_id = $p_image['product_image_id'];
+			 }
+			 else {
+			 $product_image_id = '';
+			 }
+			 $product_option_value_data[] = array(
+			 'product_option_value_id' => $option_value['product_option_value_id'],
+			 'option_value_id' => $option_value['option_value_id'],
+			 'name' => $option_value['name'],
+			 'image' => $this->model_tool_image->resize($option_value['image'], $data['width_product_page'], $data['height_product_page']),
+			 'price' => $price,
+			 'price_prefix' => $option_value['price_prefix'],
+			 'color_image' => $pimage,
+			 'color_thumb_image' => $p_thumbimage,
+			 'product_image_id' => $product_image_id
+			 );
+			 }
+			 }
+			 $data['option_data'][] = array(
+			 'product_option_id' => $option['product_option_id'],
+			 'product_option_value' => $product_option_value_data,
+			 'option_id' => $option['option_id'],
+			 'name' => $option['name'],
+			 'type' => $option['type'],
+			 'value' => $option['value'],
+			 'required' => $option['required']
+			 );
+			 }
+			 }
+			 $data['option_data'] = array_shift($data['option_data']);
+
 			$data['products'] = array();
 
 			$results = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
@@ -665,17 +648,16 @@ if ($product_info['image']) {
 					$rating = false;
 				}
 
- 
- if ((float)$result['special']) $discount = '-'.round((($result['price'] - $result['special'])/$result['price'])*100, 0).'%'; 
- else $discount = false; 
- 
+
+				if ((float)$result['special']) $discount = '-'.round((($result['price'] - $result['special'])/$result['price'])*100, 0).'%';
+				else $discount = false;
+
 				$data['products'][] = array(
 					'product_id'  => $result['product_id'],
 					'thumb'       => $image,
-'special_end_date' => $this->model_extension_soconfig_general->getDateEnd($result['product_id']), 
- 'discount' => $discount,
+					'special_end_date' => $this->model_extension_soconfig_general->getDateEnd($result['product_id']),
+					'discount' => $discount,
 					'name'        => $result['name'],
-				
 					'description' => utf8_substr(trim(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
 					'price'       => $price,
 					'special'     => $special,
@@ -687,11 +669,11 @@ if ($product_info['image']) {
 			}
 
 			$related_module_name = $this->model_catalog_product->getRelatedModuleName( $this->request->get['product_id'] );
-			
+
 
 			$data['related_module_name'] = $related_module_name;
 
-			
+
 
 			$data['tags'] = array();
 
@@ -709,7 +691,7 @@ if ($product_info['image']) {
 			$data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 
 			$this->model_catalog_product->updateViewed($this->request->get['product_id']);
-			
+
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
@@ -894,7 +876,7 @@ if ($product_info['image']) {
 		}
 
 		$product_info = $this->model_catalog_product->getProduct($product_id);
-		
+
 		$recurring_info = $this->model_catalog_product->getProfile($product_id, $recurring_id);
 
 		$json = array();
@@ -931,7 +913,7 @@ if ($product_info['image']) {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
-	
+
 	public function download_specif(){
 	    $pdfFile = DIR_IMAGE.$_GET['tspecif'];
 
@@ -955,6 +937,6 @@ header('Content-Disposition: attachment; filename=' . $downloadName);
 readfile($pdfFile);
 exit;
 	}
-	
-	
+
+
 }
