@@ -129,11 +129,13 @@ class ControllerDataPictureUpload extends Controller
 
                         if (!empty($data['picture'])) {
                             if ($position == 1 && $delete_existing) {
-                                $this->model_data_picture_upload->update_product_picture($data);
+                                $result = $this->model_data_picture_upload->update_product_picture($data);
                             } else if ($position > 1) {
                                 $result = $this->model_data_picture_upload->add_picture($data, $position);
+                            } else {
+                                $result = true;
                             }
-
+                            
                             $position++;
                             if ($result) {
                                 $updated++;
