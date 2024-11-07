@@ -2,60 +2,65 @@
 
 class ModelDataPictureUpload extends Model
 {
-
-    public function add_picture($data, $position)
+    private function downloadAndSaveImage($url, $barcode, $position)
     {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
+        }
 
-        $ext = exif_imagetype($data['picture']);
+        $ext = exif_imagetype($url);
 
         switch ($ext) {
-            case 1 :
-                // IMAGETYPE_GIF
+            case 1:
                 $extension = '.gif';
                 break;
-            case 2 :
-                // IMAGETYPE_JPEG
+            case 2:
                 $extension = '.jpeg';
                 break;
-
-            case 3 :
-                // IMAGETYPE_PNG
+            case 3:
                 $extension = '.png';
                 break;
-
             default:
                 $extension = '.jpg';
                 break;
         }
-        
-        
+
         $dir = DIR_IMAGE . 'catalog/products/';
-
-        $file_name = $data['barcode'] . '_' . $position.'_'.$ext . $extension;
-
-        // Save file into file location
+        $file_name = $barcode . '_' . $position . '_' . $ext . $extension;
         $save_file_loc = $dir . $file_name;
 
-        // Open file
         $fp = fopen($save_file_loc, 'wb');
-        $ch = curl_init($data['picture']);
-        // It set an option for a cURL transfer
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_FILE, $fp);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        // Perform a cURL session
         curl_exec($ch);
 
-        // Closes a cURL session and frees all resources
-        curl_close($ch);
-        // Close file
+        if (curl_errno($ch)) {
+            fclose($fp);
+            curl_close($ch);
+            return false;
+        }
 
+        curl_close($ch);
         fclose($fp);
 
-        
-        $image_path = 'catalog/products/' . $file_name;
+        if (filesize($save_file_loc) == 0) {
+            unlink($save_file_loc);
+            return false;
+        }
+
+        return 'catalog/products/' . $file_name;
+    }
+
+    public function add_picture($data, $position)
+    {
+        $image_path = $this->downloadAndSaveImage($data['picture'], $data['barcode'], $position);
+        if (!$image_path) {
+            return false;
+        }
+
         $sql = "INSERT INTO " . DB_PREFIX . "product_image (product_id, image, sort_order) ";
-        $sql .= "SELECT p.product_id, '" . $image_path . "', '". $position ."'";
+        $sql .= "SELECT p.product_id, '" . $image_path . "', '" . $position . "' ";
         $sql .= "FROM " . DB_PREFIX . "product p WHERE p.ean='" . $data['barcode'] . "'";
 
         $this->db->query($sql);
@@ -65,93 +70,27 @@ class ModelDataPictureUpload extends Model
 
     public function update_product_picture($data)
     {
-        $ext = exif_imagetype($data['picture']);
-
-        switch ($ext) {
-            case 1 :
-                // IMAGETYPE_GIF
-                $extension = '.gif';
-                break;
-            case 2 :
-                // IMAGETYPE_JPEG
-                $extension = '.jpeg';
-                break;
-
-            case 3 :
-                // IMAGETYPE_PNG
-                $extension = '.png';
-                break;
-
-            default:
-                $extension = '.jpg';
-                break;
+        $image_path = $this->downloadAndSaveImage($data['picture'], $data['barcode'], 0);
+        if (!$image_path) {
+            return false;
         }
 
-        $dir = DIR_IMAGE . 'catalog/products/';
-
-        $file_name = $data['barcode'] . '_' .$ext .  $extension;
-
-        // Save file into file location
-        $save_file_loc = $dir . $file_name;
-
-        // Open file
-        $fp = fopen($save_file_loc, 'wb');
-        $ch = curl_init($data['picture']);
-        // It set an option for a cURL transfer
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        // Perform a cURL session
-        curl_exec($ch);
-
-        // Closes a cURL session and frees all resources
-        curl_close($ch);
-        // Close file
-
-        fclose($fp);
-        
-        /*
-        $ch = curl_init($data['picture']);
-        $dir = DIR_IMAGE . 'catalog/products/';
-
-        $file_name = $data['barcode'] . $extension;
-
-        // Save file into file location
-        $save_file_loc = $dir . $file_name;
-
-        // Open file
-        $fp = fopen($save_file_loc, 'wb');
-
-        // It set an option for a cURL transfer
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        // Perform a cURL session
-        curl_exec($ch);
-
-        // Closes a cURL session and frees all resources
-        curl_close($ch);
-
-        // Close file
-
-        fclose($fp);*/
-        $db_name = 'catalog/products/' . $file_name;
-        $sql = "UPDATE " . DB_PREFIX . "product SET ";
-        $sql .= "image='" . $db_name . "' WHERE ean='" . $data['barcode'] . "'";
-
+        $sql = "UPDATE " . DB_PREFIX . "product SET image='" . $image_path . "' WHERE ean='" . $data['barcode'] . "'";
         $this->db->query($sql);
 
         return true;
     }
 
-    public function delete_picture($data){
+    public function delete_picture($data)
+    {
+        $sql = "UPDATE "  . DB_PREFIX . "product SET image = '' WHERE ean='" . $data['barcode'] . "'";
+        $this->db->query($sql);
+
         $sql = "DELETE FROM " . DB_PREFIX . "product_image ";
-        $sql .= "WHERE product_id = (SELECT DISTINCT p.product_id ";
-        $sql .= "FROM " . DB_PREFIX . "product p WHERE p.ean='" . $data['barcode'] . "')";
-
+        $sql .= "WHERE product_id = (SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE p.ean='" . $data['barcode'] . "')";
         $this->db->query($sql);
 
         return true;
     }
-
 }
+

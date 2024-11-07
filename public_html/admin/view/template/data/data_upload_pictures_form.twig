@@ -42,11 +42,11 @@
                     <fieldset>
                         <div class="row">
                             <div class="form-group required col-sm-4">
-                                <label class="col-sm-4 control-label">Баркод 1</label>
+                                <label class="col-sm-4 control-label" for="barcode">Баркод 1</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <input type="text" name="data[barcode]" value="{{ barcode }}"
-                                               placeholder="Баркод 1" class="form-control"/>
+                                               placeholder="Баркод 1" class="form-control" id="barcode"/>
                                         {% if error_barcode %}
                                             <div class="text-danger">{{ error_barcode }}</div>
                                         {% endif %}
@@ -54,29 +54,29 @@
                                 </div>
                             </div><!--1-->
                             <div class="form-group col-sm-4">
-                                <label class="col-sm-4 control-label">От ред</label>
+                                <label class="col-sm-4 control-label" for="from_row">От ред</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <input type="text" name="data[from_row]" value="{{ from_row }}"
-                                               placeholder="От ред" class="form-control"/>
+                                               placeholder="От ред" class="form-control" id="from_row"/>
                                     </div>
                                 </div>
                             </div><!--1-->
                             <div class="form-group col-sm-4">
-                                <label class="col-sm-4 control-label">До ред</label>
+                                <label class="col-sm-4 control-label" for="to_row">До ред</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <input type="text" name="data[to_row]" value="{{ to_row }}" placeholder="До ред"
-                                               class="form-control"/>
+                                               class="form-control" id="to_row"/>
                                     </div>
                                 </div>
                             </div><!--1-->
                             <div class="form-group col-sm-4 required">
-                                <label class="col-sm-4 control-label">Снимки от колона</label>
+                                <label class="col-sm-4 control-label" for="picture">Снимки от колона</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <input type="text" name="data[picture]" value="{{ picture }}" placeholder="A"
-                                               class="form-control"/>
+                                               class="form-control" id="picture"/>
                                         {% if error_picture %}
                                             <div class="text-danger">{{ error_picture }}</div>
                                         {% endif %}
@@ -84,11 +84,11 @@
                                 </div>
                             </div><!--1-->
                             <div class="form-group col-sm-4">
-                                <label class="col-sm-4 control-label">Снимки до колона</label>
+                                <label class="col-sm-4 control-label" for="picture_to">Снимки до колона</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <input type="text" name="data[picture_to]" value="{{ picture_to }}"
-                                               placeholder="B" class="form-control"/>
+                                               placeholder="B" class="form-control" id="picture_to"/>
                                         {% if error_picture_to %}
                                             <div class="text-danger">{{ error_picture_to }}</div>
                                         {% endif %}
@@ -103,7 +103,15 @@
                                     </div>
                                 </div>
                             </div><!--1-->
+                            <div class="form-group col-sm-4">
+                                <label class="col-sm-4 control-label" for="delete_existing">Изтрий старите снимки на продуктите</label>
+                                <div class="col-sm-8">
+                                    <input type="checkbox" name="data[delete_existing]" value="1" class="form-control" id="delete_existing"/>
+                                </div>
+                            </div><!--1-->
                         </div>
+                        <br/>
+                        <p>* Ако полето <strong>"Снимки до колона"</strong> е празно ще вземе снимки само от колоната посочена в <strong>"Снимки от колона"</strong></p>
                     </fieldset>
                 </form>
             </div>
