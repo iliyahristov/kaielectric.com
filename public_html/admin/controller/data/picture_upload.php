@@ -40,9 +40,9 @@ class ControllerDataPictureUpload extends Controller
         $data['to_row'] = '';
         $data['picture'] = '';
         $data['picture_to'] = '';
+        $data['delete_existing'] = false;
 
         if (!empty($post_data)) {
-            //set populate form fields
             if (!empty($post_data['barcode'])) {
                 $data['barcode'] = $post_data['barcode'];
             }
@@ -58,51 +58,50 @@ class ControllerDataPictureUpload extends Controller
             if (!empty($post_data['picture_to'])) {
                 $data['picture_to'] = $post_data['picture_to'];
             }
+            if (isset($post_data['delete_existing'])) {
+                $data['delete_existing'] = $post_data['delete_existing'];
+            }
         }
 
         $data['success'] = '';
         if (isset($post_data['success'])) {
             $data['success'] = $post_data['success'];
-
         }
-        $data['action'] = $this->url->link('data/picture_upload/add', 'user_token=' . $this->session->data['user_token'], true);
 
+        $data['action'] = $this->url->link('data/picture_upload/add', 'user_token=' . $this->session->data['user_token'], true);
         $data['header'] = $this->load->controller('common/header');
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
         $this->response->setOutput($this->load->view('data/data_upload_pictures_form', $data));
-
     }
 
     public function add()
     {
-
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-
-            $barcode_col = $_POST['data']['barcode'];
-            $picture_col = $_POST['data']['picture'];
+            $barcode_col = strtoupper(trim($_POST['data']['barcode']));
+            $picture_col = strtoupper(trim($_POST['data']['picture']));
+            $delete_existing = isset($_POST['data']['delete_existing']) ? $_POST['data']['delete_existing'] : false;
 
             if (!empty($_POST['data']['picture_to'])) {
-                $picture_to_col = $_POST['data']['picture_to'];
+                $picture_to_col = strtoupper(trim($_POST['data']['picture_to']));
             } else {
                 $picture_to_col = $picture_col;
             }
 
             $tmpfname = $_FILES["data_file"]["tmp_name"];
-
             $excelReader = PHPExcel_IOFactory::createReaderForFile($tmpfname);
             $excelObj = $excelReader->load($tmpfname);
             $worksheet = $excelObj->getSheet(0);
 
             if (!empty($_POST['data']['from_row'])) {
-                $firstRow = $_POST['data']['from_row'];
+                $firstRow = intval($_POST['data']['from_row']);
             } else {
                 $firstRow = 3;
             }
 
             if (!empty($_POST['data']['to_row'])) {
-                $lastRow = $_POST['data']['to_row'];
+                $lastRow = intval($_POST['data']['to_row']);
             } else {
                 $lastRow = $worksheet->getHighestRow();
             }
@@ -110,48 +109,36 @@ class ControllerDataPictureUpload extends Controller
             $updated = 0;
             $products = 0;
             $this->load->model('data/picture_upload');
-            // $cellAdded='';
+
             for ($row = $firstRow; $row <= $lastRow; $row++) {
                 $data = [];
-                if (isset($barcode_col)) {
-                    if (!empty($barcode_col)) {
+                if (isset($barcode_col) && !empty($barcode_col)) {
+                    $data['barcode'] = strip_tags($worksheet->getCell($barcode_col . $row)->getCalculatedValue());
 
-                        $data['barcode'] = strip_tags($worksheet->getCell($barcode_col . $row)->getCalculatedValue());
-
-                        // Delete pictures for that item
+                    if ($delete_existing) {
                         $this->model_data_picture_upload->delete_picture($data);
+                    }
 
-                        //at least one is expected
-                        if (!empty($picture_col)) {
-                            $data['picture'] = strip_tags($worksheet->getCell($picture_col . $row)->getCalculatedValue());
-                            // $cellAdded .= '<br/>main picture column : ' . $picture_col . ' row : ' . $row;
-                        }
+                    $position = 1;
+                    $startColumn = PHPExcel_Cell::columnIndexFromString($picture_col);
+                    $endColumn = PHPExcel_Cell::columnIndexFromString($picture_to_col);
 
-                        $result = $this->model_data_picture_upload->update_product_picture($data);
+                    for ($columnIndex = $startColumn; $columnIndex <= $endColumn; $columnIndex++) {
+                        $column = PHPExcel_Cell::stringFromColumnIndex($columnIndex - 1);
+                        $data['picture'] = strip_tags($worksheet->getCell($column . $row)->getCalculatedValue());
 
-                        if ($result) {
-                            $updated++;
-                            $products++;
-                        }
-                        
-                        $position = 1;
-                        if (!empty($picture_col) ){ //&& $picture_col != $picture_to_col
-                            $tmp = $picture_col;
-                            $tmp++;
-                            for ($column = $tmp; $column != $picture_to_col; $column++) {
-                                
-                                $data['picture'] = strip_tags($worksheet->getCell($column . $row)->getCalculatedValue());
-                                
-                                //  $cellAdded .= '<br/> column : ' . $column . ' row : ' . $row;
-                                
-                                if (!empty($data['picture'])){
-                                    $result = $this->model_data_picture_upload->add_picture($data, $position);
-                                    $position++;
-                                    if ($result) {
-                                        $updated++;
-                                    }
-                                } else {
-                                    break;
+                        if (!empty($data['picture'])) {
+                            if ($position == 1 && $delete_existing) {
+                                $this->model_data_picture_upload->update_product_picture($data);
+                            } else if ($position > 1) {
+                                $result = $this->model_data_picture_upload->add_picture($data, $position);
+                            }
+
+                            $position++;
+                            if ($result) {
+                                $updated++;
+                                if ($position == 2) {
+                                    $products++;
                                 }
                             }
                         }
@@ -159,8 +146,7 @@ class ControllerDataPictureUpload extends Controller
                 }
             }
 
-            $res['success'] = 'Обновихте/добавихте ' . $updated . ' снимки на '.$products.' продукта.';
-            // $res['success'] .= '<br/> ' . $cellAdded;
+            $res['success'] = 'Обновихте/добавихте ' . $updated . ' снимки на ' . $products . ' продукта.';
             $this->upload_form($res);
         } else {
             $this->upload_form($_POST['data']);
@@ -169,28 +155,22 @@ class ControllerDataPictureUpload extends Controller
 
     protected function validateForm()
     {
-
         if (!$this->user->hasPermission('modify', 'data/picture_upload')) {
             $this->error['warning'] = $this->language->get('error_permission');
         }
 
-        //validate barcode exists
         if (empty($_POST['data']['barcode'])) {
             $this->error['barcode'] = 'Въведете колона за баркод!';
         }
 
-        //validate picture exists
         if (empty($_POST['data']['picture'])) {
             $this->error['picture'] = 'Въведете колона за снимка!';
         }
 
-        //validate file not empty
         if ($_FILES['data_file']['size'] == 0) {
             $this->error['data_file'] = 'Изберете валиден файл!';
         }
 
         return !$this->error;
     }
-
-
 }
