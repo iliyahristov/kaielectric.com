@@ -553,7 +553,7 @@
 									{# <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-529be2200cc72db5"></script> #}
 
 									{% if tags %}
-										<div id="tab-tags">
+										<div id="tab-tags" style="visibility: hidden;">
 											{{ text_tags }}
 											{% for i in 0..tags|length %}
 												{% if i < (tags|length - 1) %} <a class="btn btn-primary btn-sm"
