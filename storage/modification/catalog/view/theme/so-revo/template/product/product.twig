@@ -580,7 +580,7 @@
 				</div>
 			{% endif %}
 			<div class="content-product-mainbody clearfix row">
-				<h2>Описание {{ heading_title }}</h2>
+{#				<h2>Описание {{ heading_title }}</h2>#}
 
 				{% if col_position== 'inside' %}
 					{# ====  Column left inside==== #}
@@ -614,7 +614,7 @@
 								{% if tabs_position == 2 %}
 									<ul class="nav nav-tabs font-sn">
 										<li class="active"><a data-toggle="tab"
-										                      href="#tab-description">Характеристики</a></li>
+										                      href="#tab-description">Описание</a></li>
 										<li><a href="#tab-customhtml" data-toggle="tab">Файлове</a></li>
 										<li><a href="#tab-contentshipping" data-toggle="tab">Доставка</a></li>
 
@@ -660,7 +660,7 @@
 								{% endif %}
 
 								<div class="tab-content {% if tabs_position == 1 %} {{ 'col-lg-9 col-sm-8' }} {% endif %} col-xs-12">
-									<div class="tab-pane active" id="tab-description">
+									<h2 class="tab-pane active" id="tab-description">
 
 										{% if attribute_groups %}
 											<h3 class="product-property-title"> {{ text_product_specifics }}</h3>
@@ -694,7 +694,7 @@
 												</a>
 											</div>
 										{% endif %}
-									</div>
+									</h2>
 
 
 									{% if review_status %}
@@ -750,17 +750,17 @@
 										</div>
 									{% endif %}
 
-									<div class="tab-pane" id="tab-customhtml">
+									<h3 class="tab-pane" id="tab-customhtml">
 										{% if specif %}
 											<a href="{{ specif }}" target="_blank">Техническа спесификация PDF</a>
 										{% endif %}
 
-									</div>
+									</h3>
 
 									{% if soconfig.get_settings('product_enableshipping') and soconfig.get_settings('product_contentshipping') %}
-										<div class="tab-pane" id="tab-contentshipping">
+										<h3 class="tab-pane" id="tab-contentshipping">
 											{{ soconfig.decode_entities( soconfig.get_settings('product_contentshipping') ) }}
-										</div>
+										</h3>
 									{% endif %}
 
 

@@ -16769,3 +16769,6 @@ a.list-group-item i {
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
 }
+#collapse-description{
+  font-size: 14px !important;
+}
