@@ -12,17 +12,17 @@ class ModelCatalogCategory extends Model {
 		return $query->rows;
 	}
 	public function getSearchCategories( $search, $parent_id = 0 ) {
-
-		$sql = "SELECT pc.category_id as child, c1.parent_id, c1.category_id, cd.name FROM oc_product p JOIN oc_product_description pd ON p.product_id=pd.product_id JOIN oc_product_to_category pc ON pc.product_id = p.product_id JOIN oc_category c ON pc.category_id=c.category_id JOIN oc_category_path cp ON cp.category_id=c.category_id JOIN oc_category c1 ON c1.category_id=cp.path_id JOIN oc_category_description cd ON c1.category_id = cd.category_id WHERE c.status = '1' AND c1.parent_id=". $parent_id ." AND ( p.model LIKE '" . $search . "%' OR p.jan LIKE '" .$search . "' OR pd.name LIKE '%" . $search ."%' ) GROUP BY c1.category_id ORDER BY c.sort_order, cd.name";
+		
+		$sql = "SELECT pc.category_id as child, c1.parent_id, c1.category_id, cd.name FROM oc_product p JOIN oc_product_description pd ON p.product_id=pd.product_id JOIN oc_product_to_category pc ON pc.product_id = p.product_id JOIN oc_category c ON pc.category_id=c.category_id JOIN oc_category_path cp ON cp.category_id=c.category_id JOIN oc_category c1 ON c1.category_id=cp.path_id JOIN oc_category_description cd ON c1.category_id = cd.category_id WHERE c.status = '1' AND c1.parent_id=". $parent_id ." AND ( p.model LIKE '" . $search . "%' OR p.jan LIKE '" .$search . "' OR pd.name LIKE '%" . $search ."%' ) GROUP BY c1.category_id ORDER BY c.sort_order, cd.name";	
 		$query = $this->db->query( $sql );
 		return $query->rows;
 	}
 
 	public function getManCategories( $man_id, $parent_id = 0 ) {
 		$sql = "SELECT m.name as man_name, pc.category_id as child, c1.parent_id, c1.category_id, cd.name FROM `oc_manufacturer` m JOIN oc_product p ON p.manufacturer_id=m.manufacturer_id JOIN oc_product_to_category pc ON pc.product_id = p.product_id JOIN oc_category c ON pc.category_id=c.category_id JOIN oc_category_path cp ON cp.category_id=c.category_id JOIN oc_category c1 ON c1.category_id=cp.path_id JOIN oc_category_description cd ON c1.category_id = cd.category_id WHERE m.manufacturer_id=".$man_id." AND c.status = '1' AND c1.parent_id=". $parent_id ." GROUP BY c1.category_id ORDER BY c.sort_order, cd.name";
-
+		
 		$query = $this->db->query( $sql );
-
+		
 
 		return $query->rows;
 	}
@@ -76,22 +76,22 @@ class ModelCatalogCategory extends Model {
 		}
 	}
 
-
+	
 	public function getFilterData( $filter_id ){
 		$query = $this->db->query("SELECT fd.filter_id, fd.name as filter_name, f.filter_group_id, fgd.name FROM " . DB_PREFIX . "filter_description fd JOIN " . DB_PREFIX . "filter f ON f.filter_id=fd.filter_id JOIN " . DB_PREFIX . "filter_group_description fgd ON f.filter_group_id=fgd.filter_group_id WHERE fd.filter_id = '" . (int)$filter_id . "'");
 
 		if ($query->num_rows) {
 			return $query->row;
-		}
+		} 
 	}
 
 	public function getManCategoryFilters( $man_id, $category_id = 0) {
-
+		
 		$implode = array();
 		//get all man's products + product filter ids
 		$sql = "SELECT pf.filter_id FROM " . DB_PREFIX . "product_filter pf JOIN " . DB_PREFIX . "product p ON pf.product_id=p.product_id ";
 		if( $category_id ){
-			//if isset category id - join product to product category and filter by category id,
+			//if isset category id - join product to product category and filter by category id, 
 			$sql .= " JOIN " . DB_PREFIX . "product_to_category pc ON p.product_id=pc.product_id";
 		}
 		$sql .= " WHERE p.manufacturer_id = '" . (int)$man_id . "'";
@@ -101,14 +101,14 @@ class ModelCatalogCategory extends Model {
 		}
 
 		$query = $this->db->query( $sql );
-
-		//group by filter_ids
+		
+		//group by filter_ids		
 
 		foreach ($query->rows as $result) {
 
 			$implode[] = (int)$result['filter_id'];
 		}
-
+		
 		$filter_group_data = array();
 
 		if ( $implode ) {
@@ -139,20 +139,20 @@ class ModelCatalogCategory extends Model {
 		return $filter_group_data;
 	}
 	public function getSearchCategoryFilters( $search, $category_id = 0) {
-
+		
 		$implode = array();
 		//get all man's products + product filter ids
 		$sql = "SELECT pf.filter_id FROM " . DB_PREFIX . "product_filter pf JOIN " . DB_PREFIX . "product p ON pf.product_id=p.product_id ";
 		$sql .= " JOIN " . DB_PREFIX . "product_description pd ON pd.product_id=p.product_id ";
-
+		
 		if( $category_id ){
-			//if isset category id - join product to product category and filter by category id,
+			//if isset category id - join product to product category and filter by category id, 
 			$sql .= " JOIN " . DB_PREFIX . "product_to_category pc ON p.product_id=pc.product_id";
 		}
 		$sql .= " WHERE ";
 
 		if ( !empty($search ) ) {
-
+			
 			$implode = array();
 
 			$words = explode(' ', trim(preg_replace('/\s+/', ' ', $search) ) );
@@ -163,9 +163,9 @@ class ModelCatalogCategory extends Model {
 
 			if ($implode) {
 				$sql .= " " . implode(" AND ", $implode) . "";
-			}
+			}				
 		}
-
+		
 		$sql .= " ";
 
 		if( $category_id ){
@@ -173,14 +173,14 @@ class ModelCatalogCategory extends Model {
 		}
 
 		$query = $this->db->query( $sql );
-
-		//group by filter_ids
+		
+		//group by filter_ids		
 		$implode=[];
 		foreach ($query->rows as $result) {
 
 			$implode[] = (int)$result['filter_id'];
 		}
-
+		
 		$filter_group_data = array();
 
 		if ( $implode ) {
@@ -216,7 +216,7 @@ class ModelCatalogCategory extends Model {
 		if( $category_id ){
 			$sql = "SELECT cd.category_id, cd.name, cp.path_id FROM oc_category_path cp JOIN oc_category_description cd ON cp.path_id=cd.category_id WHERE cp.category_id = " . (int)$category_id . " ORDER BY cp.level ASC";
 			$cats = $this->db->query( $sql );
-
+			
 			return $cats->rows;
 		}
 		return false;

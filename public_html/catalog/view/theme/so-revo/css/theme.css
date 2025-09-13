@@ -8312,3 +8312,6 @@ footer .news-letter .block_content .subcribe button:hover {
 .block-video .modcontent > div {
   background: url("../../images/bg-video-h7.jpg") 50% 50% / cover no-repeat black !important;
 }
+#collapse-description{
+  font-size: 14px !important;
+}

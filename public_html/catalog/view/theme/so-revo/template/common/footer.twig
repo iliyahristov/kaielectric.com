@@ -124,5 +124,478 @@
 	});
 	
 </script>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Проверяваме дали скриптът вече е изпълнен
+    if (window.euroPriceProcessorLoaded) {
+        console.log('⚠️ Euro Price Processor вече е зареден');
+        return;
+    }
+    window.euroPriceProcessorLoaded = true;
+    
+    // Конфигурация
+    const EUR_RATE = 1.95583; // BGN към EUR ставка
+    const DEBUG = false; // Смени на true за debugging
+    
+    // Уникален идентификатор за обработените елементи
+    const PROCESSED_ATTR = 'data-euro-processed';
+    const EURO_CLASS = 'euro-price-kaielectric';
+    
+    function log(message, data) {
+        if (DEBUG) console.log('🔄 EuroPrice:', message, data || '');
+    }
+    
+    // Функция за конвертиране на цена
+    function convertToEuro(priceText) {
+        if (!priceText) return null;
+        
+        let cleanPrice = priceText.toString()
+            .replace(/[^\d.,]/g, '')
+            .replace(/(\d),(\d{3})/g, '$1$2')
+            .replace(',', '.');
+        
+        const price = parseFloat(cleanPrice);
+        
+        if (isNaN(price) || price <= 0) {
+            return null;
+        }
+        
+        const euroPrice = (price / EUR_RATE).toFixed(2).replace('.', ',');
+        return euroPrice + '€';
+    }
+    
+    // Функция за проверка дали елементът вече е обработен
+    function isAlreadyProcessed(element) {
+        return element.hasAttribute(PROCESSED_ATTR) || 
+               element.querySelector('.' + EURO_CLASS) ||
+               element.textContent.includes('€');
+    }
+    
+    // Функция за намиране на най-подходящия елемент за добавяне на евро цена
+    function findBestTargetElement(element) {
+        // Ако елементът има деца с цени, намираме най-дълбокия който съдържа цифри
+        const childrenWithPrices = Array.from(element.querySelectorAll('*'))
+            .filter(child => {
+                const text = child.textContent;
+                return text.includes('лв') && 
+                       /\d/.test(text) && 
+                       child.children.length === 0; // Няма собствени деца
+            });
+        
+        // Ако има деца с цени, използваме първото
+        if (childrenWithPrices.length > 0) {
+            return childrenWithPrices[0];
+        }
+        
+        // Ако няма деца с цени, използваме самия елемент само ако няма деца
+        if (element.children.length === 0) {
+            return element;
+        }
+        
+        return null;
+    }
+    
+    // Функция за маркиране на елемент като обработен
+    function markAsProcessed(element) {
+        element.setAttribute(PROCESSED_ATTR, 'true');
+        // Маркираме и родителските елементи до определена дълбочина
+        let parent = element.parentElement;
+        let depth = 0;
+        while (parent && depth < 2) {
+            if (parent.textContent.includes('лв')) {
+                parent.setAttribute(PROCESSED_ATTR, 'true');
+            }
+            parent = parent.parentElement;
+            depth++;
+        }
+    }
+    
+    // Функция за добавяне на евро цена
+    function addEuroPrice(element, euroPrice) {
+        if (!euroPrice || !element || isAlreadyProcessed(element)) {
+            return false;
+        }
+        
+        // Определяме дали да добавим на нов ред
+        const shouldUseNewLine = element.closest('.product-price') || 
+                                element.classList.contains('product-price') ||
+                                element.closest('[class*="price"]');
+        
+        const euroSpan = document.createElement('span');
+        euroSpan.className = EURO_CLASS;
+        
+        if (shouldUseNewLine) {
+            euroSpan.style.cssText = `
+                color: #666; 
+                font-size: 0.85em; 
+                font-weight: normal;
+                white-space: nowrap;
+                display: block;
+                margin-top: 2px;
+            `;
+            euroSpan.innerHTML = euroPrice; // Без " / " за нов ред
+        } else {
+            euroSpan.style.cssText = `
+                color: #666; 
+                font-size: 0.85em; 
+                margin-left: 5px; 
+                font-weight: normal;
+                white-space: nowrap;
+            `;
+            euroSpan.innerHTML = ' / ' + euroPrice;
+        }
+        
+        element.appendChild(euroSpan);
+        markAsProcessed(element);
+        
+        log('Добавена евро цена:', euroPrice + ' към ' + element.tagName + (shouldUseNewLine ? ' (нов ред)' : ' (същия ред)'));
+        return true;
+    }
+    
+    // Премахване на всички съществуващи евро цени
+    function removeExistingEuroPrices() {
+        const existingEuroPrices = document.querySelectorAll('.' + EURO_CLASS);
+        existingEuroPrices.forEach(el => el.remove());
+        
+        // Премахваме атрибутите за обработка
+        const processedElements = document.querySelectorAll('[' + PROCESSED_ATTR + ']');
+        processedElements.forEach(el => el.removeAttribute(PROCESSED_ATTR));
+        
+        log('Премахнати ' + existingEuroPrices.length + ' съществуващи евро цени');
+    }
+    
+    // Основна функция за обработка на цените
+    function processAllPrices() {
+        log('🚀 Започваме обработка на цените по специфични класове...');
+    
+        let processedCount = 0;
+    
+        const priceSelectors = [
+            '.old-price',
+            '.new-price', 
+            '.price-new',
+            '.price-old',
+            ".tk_totals_right",
+            '.tk_text_free_shipping',
+            '[id^="tk_cart_product_total_"]',
+            '#to_office_price',
+            '#to_door_price'
+        ];
+    
+        const alreadyProcessedSet = new Set();
+    
+        priceSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            log(`Намерени ${elements.length} елемента с селектор: ${selector}`);
+    
+            elements.forEach(element => {
+                const text = element.textContent || '';
+    
+                if (
+                    !isAlreadyProcessed(element) &&
+                    !text.includes('€') &&           // Не е вече обработено
+                    /\d/.test(text) &&
+                    text.length < 200
+                ) {
+                    const hasChildren = element.children.length > 0;
+    
+                    if (hasChildren) {
+                        const childrenTypes = Array.from(element.children).map(child => child.tagName.toLowerCase());
+                        const hasOnlySimpleChildren = childrenTypes.every(tag => 
+                            ['span', 'small', 'em', 'strong', 'b', 'i', 'div'].includes(tag)
+                        );
+    
+                        if (hasOnlySimpleChildren && element.children.length <= 4) {
+                            const euroPrice = convertToEuro(text);
+                            if (euroPrice && addEuroPrice(element, euroPrice)) {
+                                processedCount++;
+                                alreadyProcessedSet.add(element);
+                                log(`Обработен ${selector}: ${text.substring(0, 30)}...`);
+                            }
+                        }
+                    } else {
+                        const euroPrice = convertToEuro(text);
+                        if (euroPrice && addEuroPrice(element, euroPrice)) {
+                            processedCount++;
+                            alreadyProcessedSet.add(element);
+                            log(`Обработен ${selector}: ${text.substring(0, 30)}...`);
+                        }
+                    }
+                }
+            });
+        });
+    
+        // Резервно обработване ако не е имало попадения
+        if (processedCount === 0) {
+            log('Няма намерени елементи със специфичните селектори, търсим общи price класове...');
+    
+            const generalSelectors = ['.price', '[class*="price"]', '[id*="price"]'];
+    
+            generalSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+    
+                elements.forEach(element => {
+                    const text = element.textContent || '';
+    
+                    if (
+                        !alreadyProcessedSet.has(element) &&
+                        !isAlreadyProcessed(element) &&
+                        !text.includes('€') &&
+                        /\d/.test(text) &&
+                        text.length < 100
+                    ) {
+                        const euroPrice = convertToEuro(text);
+                        if (euroPrice && addEuroPrice(element, euroPrice)) {
+                            processedCount++;
+                            log(`Обработен общ селектор ${selector}: ${text.substring(0, 30)}...`);
+                        }
+                    }
+                });
+            });
+        }
+    
+        log('✅ Обработени ' + processedCount + ' нови цени');
+        return processedCount;
+    }
+
+    
+    // Функция за намиране на дълбочината на елемент
+    function getElementDepth(element) {
+        let depth = 0;
+        let parent = element.parentElement;
+        while (parent) {
+            depth++;
+            parent = parent.parentElement;
+        }
+        return depth;
+    }
+    
+    // Функция за intelligent processing
+    function intelligentProcess() {
+        const unprocessedPrices = Array.from(document.querySelectorAll('*')).filter(el => {
+            return el.textContent.includes('лв') && 
+                   !isAlreadyProcessed(el) &&
+                   el.textContent.length < 100 &&
+                   /\d/.test(el.textContent);
+        });
+        
+        if (unprocessedPrices.length > 0) {
+            log('Намерени ' + unprocessedPrices.length + ' необработени цени');
+            return processAllPrices();
+        }
+        
+        return 0;
+    }
+    
+    // Функция за наблюдение на промени в DOM
+    function setupObserver() {
+        let observerTimeout;
+        
+        const observer = new MutationObserver(function(mutations) {
+            let shouldProcess = false;
+            
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.textContent) {
+                        if (node.textContent.includes('лв') && !isAlreadyProcessed(node)) {
+                            shouldProcess = true;
+                        }
+                    }
+                });
+            });
+            
+            if (shouldProcess) {
+                clearTimeout(observerTimeout);
+                observerTimeout = setTimeout(() => {
+                    log('🔄 DOM се промени, проверяваме за нови цени...');
+                    intelligentProcess();
+                }, 300);
+            }
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        log('👁️ Intelligent observer настроен');
+    }
+    
+    // Инициализация
+    function init() {
+        log('🎯 Euro Price Converter v3.0 за kaielectric.com');
+        
+        // Премахваме евентуални стари евро цени
+        removeExistingEuroPrices();
+        
+        // Първоначална обработка
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(intelligentProcess, 500);
+            });
+        } else {
+            setTimeout(intelligentProcess, 500);
+        }
+        
+        // Настройваме observer
+        setupObserver();
+        
+        // Финален контролен check
+        setTimeout(() => {
+            intelligentProcess();
+            log('⏰ Финален контролен check завършен');
+        }, 3000);
+    }
+    
+    // Глобални функции за контрол
+    window.euroPriceControls = {
+        reprocess: function() {
+            log('🔧 Ръчно преобработване...');
+            removeExistingEuroPrices();
+            return processAllPrices();
+        },
+        
+        clear: function() {
+            removeExistingEuroPrices();
+            log('🧹 Всички евро цени премахнати');
+        },
+        
+        status: function() {
+            const euroElements = document.querySelectorAll('.' + EURO_CLASS);
+            const processedElements = document.querySelectorAll('[' + PROCESSED_ATTR + ']');
+            const duplicates = document.querySelectorAll('[' + PROCESSED_ATTR + '] .' + EURO_CLASS);
+            
+            console.log('📊 Status:');
+            console.log('- Евро цени на страницата:', euroElements.length);
+            console.log('- Обработени елементи:', processedElements.length);
+            console.log('- Потенциални дублирания:', duplicates.length);
+            
+            // Показваме примери от дублиранията
+            if (duplicates.length > 0) {
+                console.log('🔍 Примери от дублирания:');
+                Array.from(duplicates).slice(0, 3).forEach((el, i) => {
+                    console.log(`${i + 1}. ${el.closest('[' + PROCESSED_ATTR + ']').outerHTML.substring(0, 200)}...`);
+                });
+            }
+            
+            return {
+                euroPrices: euroElements.length,
+                processedElements: processedElements.length,
+                duplicates: duplicates.length
+            };
+        },
+        
+        fixDuplicates: function() {
+            log('🔧 Поправяне на дублирания...');
+            
+            // Намираме всички елементи с повече от една евро цена
+            const elementsWithMultipleEuros = Array.from(document.querySelectorAll('[' + PROCESSED_ATTR + ']'))
+                .filter(el => el.querySelectorAll('.' + EURO_CLASS).length > 1);
+            
+            elementsWithMultipleEuros.forEach(element => {
+                const euroElements = element.querySelectorAll('.' + EURO_CLASS);
+                // Оставяме само първата евро цена
+                for (let i = 1; i < euroElements.length; i++) {
+                    euroElements[i].remove();
+                }
+            });
+            
+            log('Премахнати дублирания от ' + elementsWithMultipleEuros.length + ' елемента');
+            return elementsWithMultipleEuros.length;
+        }
+    };
+    
+    // Стартираме
+    init();
+    
+})();
+</script>
+
+<style>
+.euro-price-kaielectric {
+    color: #666 !important;
+    font-size: 0.85em !important;
+    font-weight: normal !important;
+    margin-left: 5px !important;
+    white-space: nowrap !important;
+    display: inline !important;
+}
+
+/* Специални стилове за различни контексти */
+.product-thumb .euro-price-kaielectric {
+    color: #555 !important;
+    font-size: 0.8em !important;
+}
+
+.price-new .euro-price-kaielectric {
+    color: #e74c3c !important;
+    font-weight: 600 !important;
+}
+
+.price-old .euro-price-kaielectric {
+    text-decoration: line-through !important;
+    color: #999 !important;
+    font-size: 0.75em !important;
+}
+
+/* Cart/checkout стилове */
+.table .euro-price-kaielectric {
+    display: block !important;
+    margin-left: 0 !important;
+    margin-top: 2px !important;
+    font-size: 0.8em !important;
+    color: #777 !important;
+}
+
+/* Responsive стилове */
+@media (max-width: 768px) {
+    .euro-price-kaielectric {
+        display: block !important;
+        margin-left: 0 !important;
+        margin-top: 3px !important;
+        font-size: 0.8em !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .euro-price-kaielectric {
+        font-size: 0.75em !important;
+    }
+}
+
+/* Hover ефекти */
+.product-thumb:hover .euro-price-kaielectric {
+    color: #333 !important;
+    transition: color 0.3s ease;
+}
+
+/* Плавна анимация при появяване */
+.euro-price-kaielectric {
+    opacity: 0;
+    animation: fadeInEuroPrice 0.4s ease-in-out forwards;
+}
+
+@keyframes fadeInEuroPrice {
+    from { 
+        opacity: 0; 
+        transform: translateX(-5px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateX(0); 
+    }
+}
+
+.product_page_price .price-new > .euro-price-kaielectric,
+.product_page_price > .euro-price-kaielectric,
+.product_page_price .old-price-format > .euro-price-kaielectric,
+.content_price .old-price-format > .euro-price-kaielectric {
+    display: none !important;
+}
+</style>
+
 </body>
 </html>
