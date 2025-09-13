@@ -85,7 +85,7 @@ class ModelDataPictureUpload extends Model
     {
         $sql = "UPDATE "  . DB_PREFIX . "product SET image = '' WHERE ean='" . $data['barcode'] . "'";
         $this->db->query($sql);
-
+        
         $sql = "DELETE FROM " . DB_PREFIX . "product_image ";
         $sql .= "WHERE product_id = (SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE p.ean='" . $data['barcode'] . "')";
         $this->db->query($sql);

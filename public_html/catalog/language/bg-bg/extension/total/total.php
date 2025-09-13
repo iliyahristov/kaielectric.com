@@ -7,4 +7,4 @@
  *      PayPal: veskoto@gmail.com
  *      Bitcoin: 1P3Zk93fhKURWT1rXiYxiLGuJ59oETxuTi
  */
-$_['text_total'] = 'Общо';
+$_['text_total'] = 'Общо за плащане с ДДС';

@@ -120,37 +120,42 @@
 							<div class="title-product">
 								<h1 itemprop="name">{{ heading_title }}</h1>
 							</div>
-
-							{% if product.stock_status_id == 5 %}
-								<div class="alert alert-warning">
-									<strong>ИЗЧЕРПАНА НАЛИЧНОСТ</strong>
-								</div>
+							
+					        {% if stock == 'Out Of Stock' %}
+        						<h3 class="price-new">
+							        <strong style="font-size: large">ИЗЧЕРПАНА НАЛИЧНОСТ</strong>
+        						</h3>
 							{% else %}
 								{% if price %}
-									{# ========= Product - Price ========= #}
-									<div class="product_page_price price" itemprop="offers" itemscope
-									     itemtype="http://schema.org/Offer">
-										{% if not special %}
-											<span class="price-new">
-												<span itemprop="price" content="{{ price_value }}" id="price-old">{{ price }}</span>
-												<meta itemprop="priceCurrency" content="{{ currency }}"/>
-											</span>
-										{% else %}
-											<span class="price-new">
-												<span itemprop="price" content="{{ special_value }}" id="price-special">{{ special }}</span>
-												<meta itemprop="priceCurrency" content="{{ currency }}"/>
-											</span>
-					                        <span class="price-old" id="price-old">
-												{{ price }}
-										   </span>
+								{# ========= Product - Price ========= #}
+								<div class="product_page_price price" itemprop="offers" itemscope
+								     itemtype="http://schema.org/Offer">
+									{% if not special %}
+										<span class="price-new">
+											<span itemprop="price" content="{{ price_value }}" id="price-old">{{ price }}</span>
+											<meta itemprop="priceCurrency" content="{{ currency }}"/>
+										</span>
 
-											{% set discount_percent = ((price_value - special_value) / price_value) * 100 %}
-											<div style="color: red; font-weight: bold;">
-												Спестявате: {{ discount_percent | round(0) }}%
-											</div>
-										{% endif %}
-									</div>
+												{% else %}
+
+													<span class="price-new">
+											<span itemprop="price" content="{{ special_value }}" id="price-special">{{ special }}</span>
+											<meta itemprop="priceCurrency" content="{{ currency }}"/>
+										</span>
+				                        <span class="price-old" id="price-old">
+											{{ price }}
+									   </span>
+
+										{% set discount_percent = ((price_value - special_value) / price_value) * 100 %}
+										<div style="color: red; font-weight: bold;">
+											Спестявате: {{ discount_percent | round(0) }}%
+										</div>
+									{% endif %}
+
+								</div>
 								{% endif %}
+
+
 
 								{% if discounts %}
 								<ul class="list-unstyled text-success">
@@ -580,7 +585,7 @@
 				</div>
 			{% endif %}
 			<div class="content-product-mainbody clearfix row">
-{#				<h2>Описание {{ heading_title }}</h2>#}
+				{#<h2>Описание {{ heading_title }}</h2>#}
 
 				{% if col_position== 'inside' %}
 					{# ====  Column left inside==== #}
@@ -754,7 +759,6 @@
 										{% if specif %}
 											<a href="{{ specif }}" target="_blank">Техническа спесификация PDF</a>
 										{% endif %}
-
 									</h3>
 
 									{% if soconfig.get_settings('product_enableshipping') and soconfig.get_settings('product_contentshipping') %}

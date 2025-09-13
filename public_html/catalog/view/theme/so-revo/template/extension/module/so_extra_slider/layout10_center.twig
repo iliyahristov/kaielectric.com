@@ -87,16 +87,16 @@
 
 									{% if display_title   or  display_description  or  display_price %} 
 										<div class="right-block">
-											{% for x in 0..product.tag|length %}
-											{% if x < (product.tag|length - 1) %}
-											<a class="product-tag" href="{{product.href_tag[x]}}">{{product.tag[x]}}</a>, 
-											 {% else %} 
-									        {% if product.tag[x] is not empty  %}
-									        <a class="product-tag 22" href="{{product.href_tag[x]}}">{{product.tag[x]}}</a>
-									         {% endif %}
+											{#{% for x in 0..product.tag|length %}#}
+										 {#    {% if x < (product.tag|length - 1) %}#}
+											{#    <a class="product-tag" href="{{product.href_tag[x]}}">{{product.tag[x]}}</a>, #}
+											{# {% else %} #}
+									  {#          {% if product.tag[x] is not empty  %}#}
+									  {#          <a class="product-tag 22" href="{{product.href_tag[x]}}">{{product.tag[x]}}</a>#}
+									  {#       {% endif %}#}
 									        
-									        {% endif %}
-											{% endfor %}
+									  {#      {% endif %}#}
+											{#{% endfor %}#}
 												
 											{% if display_title %} 
 												<div class="caption">
