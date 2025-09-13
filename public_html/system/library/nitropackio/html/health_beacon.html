@@ -1,0 +1,9 @@
+<script type="text/javascript" nitro-exclude>
+(_ => {
+    var beaconData = new FormData();
+
+    beaconData.append('nitropack_beacon_health', '1');
+
+    navigator.sendBeacon(location.href, beaconData);
+})();
+</script>

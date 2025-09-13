@@ -1,0 +1,105 @@
+<script nitro-exclude>
+(async function() {
+    if (typeof localStorage === 'undefined') return;
+
+    var encodeToQueryString = function(myData) {
+        var out = [];
+
+        for (var key in myData) {
+            if (myData.hasOwnProperty(key)) {
+                out.push(key + '=' + encodeURIComponent(myData[key]));
+            }
+        }
+
+        return out.join('&');
+    }
+
+    var displayAsyncElements = function(key, html) {
+        var element = document.querySelectorAll('[data-nitro-async="' + key + '"]').values().next().value;
+
+        var replacement = document.createElement('div');
+        replacement.innerHTML = html;
+
+        // Replace data-src
+        replacement.querySelectorAll('img[data-src]').forEach(function(image) {
+            image.classList.add('nitro-lazy');
+            image.classList.remove('lazyload');
+            image.setAttribute('nitro-lazy-src', image.getAttribute('data-src'));
+        });
+
+        while (replacement.children.length > 0) {
+            element.parentNode.insertBefore(replacement.children[0], element);
+        }
+
+        // Remove the element
+        element.remove();
+    }
+
+    var fetchAsyncElements = function() {
+        return new Promise(function(accept, reject) {
+            var query = {};
+
+            document.querySelectorAll('[data-nitro-async]').forEach(function(element) {
+                var key = element.getAttribute('data-nitro-async');
+                var localDataString = localStorage.getItem("nitro-async-" + key);
+
+                if (localDataString) {
+                    // A local element exists
+                    var localData = JSON.parse(localDataString);
+
+                    if (localData.expiresAt > (new Date).getTime()) {
+                        // It hasn't expired yet, just display it
+                        displayAsyncElements(localData.key, localData.html);
+
+                        return;
+                    } else {
+                        // It has expired, remove it from localStorage
+                        localStorage.removeItem("nitro-async-" + key);
+                    }
+                }
+
+                // Request this element
+                query[key] = element.textContent;
+            });
+
+            if (Object.keys(query).length == 0) {
+                accept();
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("POST", '{url}', true);
+
+            xhr.addEventListener('load', function(e) {
+                // Add elements
+                var response = JSON.parse(e.target.response);
+
+                Object.keys(response).forEach(function(key) {
+                    displayAsyncElements(key, response[key].html);
+
+                    var localDataJson = {
+                        expiresAt : (new Date).getTime() + (response[key].expirationTime * 1000),
+                        key: key,
+                        html: response[key].html
+                    };
+
+                    localStorage.setItem("nitro-async-" + key, JSON.stringify(localDataJson));
+                });
+
+                // Mark the promise as resolved
+                accept();
+            });
+
+            //Send the proper header information along with the request
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(encodeToQueryString(query));
+        });
+    }
+
+    // Init here, depends on NitroPack resource loader
+    if (typeof NPRL == "object") {
+        NPRL.addPrerequisite(fetchAsyncElements());
+    }
+})();
+</script>
