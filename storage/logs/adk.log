@@ -1,0 +1,647 @@
+[0;94m2022-02-01 13:27:25	[error]	[0m[0;91mAdvertikon\Exception: adk: module's modifications need to be applied in /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php:122
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(186): Advertikon\Advertikon->__construct(NULL)
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql/query.php(20): Advertikon\Advertikon::instance()
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql.php(12): Advertikon\Sql\Query->__construct('language', false)
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(38): Advertikon\Sql::select('language')
+#4 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(210): Advertikon\Language::get_languages(Object(Advertikon\Adk_Gdpr\Advertikon))
+#5 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(140): Advertikon\Language->set_language_by_code('bg-bg')
+#6 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(431): Advertikon\Language->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#7 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(409): Advertikon\Advertikon->get_from_class_cache('Language')
+#8 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(397): Advertikon\Advertikon->language()
+#9 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(417): Advertikon\Translator->getLanguageCode()
+#10 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(37): Advertikon\Translator->load()
+#11 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(140): Advertikon\Translator->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#12 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(77): Advertikon\Advertikon->__construct(Object(Registry))
+#13 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(54): Advertikon\Adk_Gdpr\Advertikon->__construct(Object(Registry))
+#14 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(137): Advertikon\Adk_Gdpr\Advertikon::instance(Object(Registry))
+#15 /home/spacepsp/storage/modification/system/engine/action.php(71): ControllerExtensionModuleAdkGdpr->__construct(Object(Registry))
+#16 /home/spacepsp/storage/modification/system/engine/loader.php(48): Action->execute(Object(Registry), Array)
+#17 /home/spacepsp/mdo.spacep.space/admin/controller/extension/extension/module.php(31): Loader->controller('extension/modul...')
+#18 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionExtensionModule->install()
+#19 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#20 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#21 /home/spacepsp/storage/modification/system/engine/router.php(72): Action->execute(Object(Registry))
+#22 /home/spacepsp/storage/modification/system/engine/router.php(61): Router->execute(Object(Action))
+#23 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#24 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#25 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#26 {main}
+[0m<#>2022-02-01 13:27:25	[profiler]	[0;93mmodification: 0.00076 sec.
+[0m[0;94m2022-02-01 13:27:56	[error]	[0m[0;91mAdvertikon\Exception: adk: module's modifications need to be applied in /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php:122
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(186): Advertikon\Advertikon->__construct(NULL)
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql/query.php(20): Advertikon\Advertikon::instance()
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql.php(12): Advertikon\Sql\Query->__construct('language', false)
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(38): Advertikon\Sql::select('language')
+#4 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(210): Advertikon\Language::get_languages(Object(Advertikon\Adk_Gdpr\Advertikon))
+#5 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(140): Advertikon\Language->set_language_by_code('bg-bg')
+#6 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(431): Advertikon\Language->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#7 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(409): Advertikon\Advertikon->get_from_class_cache('Language')
+#8 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(397): Advertikon\Advertikon->language()
+#9 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(417): Advertikon\Translator->getLanguageCode()
+#10 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(37): Advertikon\Translator->load()
+#11 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(140): Advertikon\Translator->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#12 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(77): Advertikon\Advertikon->__construct(Object(Registry))
+#13 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(54): Advertikon\Adk_Gdpr\Advertikon->__construct(Object(Registry))
+#14 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(137): Advertikon\Adk_Gdpr\Advertikon::instance(Object(Registry))
+#15 /home/spacepsp/mdo.spacep.space/system/engine/action.php(71): ControllerExtensionModuleAdkGdpr->__construct(Object(Registry))
+#16 /home/spacepsp/mdo.spacep.space/system/engine/loader.php(48): Action->execute(Object(Registry), Array)
+#17 /home/spacepsp/mdo.spacep.space/admin/controller/extension/extension/module.php(31): Loader->controller('extension/modul...')
+#18 /home/spacepsp/mdo.spacep.space/system/engine/action.php(79): ControllerExtensionExtensionModule->install()
+#19 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#20 /home/spacepsp/mdo.spacep.space/system/engine/action.php(79): ControllerStartupRouter->index()
+#21 /home/spacepsp/mdo.spacep.space/system/engine/router.php(67): Action->execute(Object(Registry))
+#22 /home/spacepsp/mdo.spacep.space/system/engine/router.php(56): Router->execute(Object(Action))
+#23 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#24 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#25 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#26 {main}
+[0m<#>2022-02-01 13:27:56	[profiler]	[0;93mmodification: 0.00062 sec.
+[0m<#>2022-02-01 13:28:17	[profiler]	[0;93mmodification: 0.00053 sec.
+[0m[0;94m2022-02-01 13:28:17	[info]	[0mTable adk_gdpr_terms_acceptance is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 56
+2022-02-01 13:28:17	[info]	Table adk_gdpr_terms_version is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 66
+2022-02-01 13:28:17	[info]	Table adk_gdpr_request is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 84
+2022-02-01 13:28:17	[info]	Table adk_gdpr_breach_log is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 94
+2022-02-01 13:28:17	[info]	Create folder '/home/spacepsp/storage/adk/adk_gdpr/tmp/'. In file: /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php, line: 257
+2022-02-01 13:28:17	[info]	Config: module_adk_gdpr_start_date = 2022-02-01 13:28:17. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+<#>2022-02-01 13:28:22	[profiler]	[0;93mmodification: 0.00032 sec.
+[0m<#>2022-02-01 13:28:22	[profiler]	[0;93mVersion: 0.00075 sec.
+[0m[0;94m2022-02-01 13:28:22	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:28:22	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:28:27	[info]	[0mConfig: module_adk_gdpr_status = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-01 13:28:35	[info]	[0mConfig: module_adk_gdpr_in_account = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-01 13:28:38	[info]	[0mConfig: module_adk_gdpr_in_footer = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-01 13:28:46	[info]	[0mINSERT INTO `oc_adk_gdpr_terms_version` (`term_name`, `title`, `text`, `date`) VALUES ('Term Account', 'ОБЩИ УСЛОВИЯ', '&lt;p&gt;ОБЩИ УСЛОВИЯ&lt;br&gt;&lt;/p&gt;', NOW()). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:28:46	[info]	[0mConfig: module_adk_gdpr_track_account_terms = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-01 13:28:48	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:28:48	[info]	[0mINSERT INTO `oc_adk_gdpr_terms_version` (`term_name`, `title`, `text`, `date`) VALUES ('Term Checkout', 'Политика за защита на личните данни', '&lt;p&gt;Политика за защита на личните данни&lt;br&gt;&lt;/p&gt;', NOW()). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:28:48	[info]	[0mConfig: module_adk_gdpr_track_checkout_terms = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-01 13:28:48	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:28:53	[info]	[0mConfig: module_adk_gdpr_track_return_terms = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-01 13:30:44	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:30:44	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request` WHERE `email` = 'kokolina1888@gmail.com' AND `type` = 1 AND `status` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:30:44	[info]	[0mRun transaction #0. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+2022-02-01 13:30:44	[info]	SELECT * FROM `oc_setting` WHERE `key` = 'config_name'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:30:44	[info]	SELECT * FROM `oc_store`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:30:44	[info]	INSERT INTO `oc_adk_gdpr_request` (`type`, `status`, `date_added`, `email`, `store_id`, `language_code`, `code`, `expire`, `ip`) VALUES (1, 1, NOW(), 'kokolina1888@gmail.com', 0, 'bg-bg', '61f936045187f', DATE_ADD(NOW(), INTERVAL 365000 DAY), '213.231.137.61'). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:30:44	[info]	Run transaction #1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+<#>2022-02-01 13:30:44	[profiler]	[0;93mshortcode {authorize_url}: 0.00006 sec.
+[0m[0;94m2022-02-01 13:31:06	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:31:06	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:31:06	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 5 WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:32:02	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:02	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request` WHERE `email` = 'kokolina1888@gmail.com' AND `type` = 2 AND `status` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:32:02	[info]	[0mRun transaction #0. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+2022-02-01 13:32:02	[info]	SELECT * FROM `oc_setting` WHERE `key` = 'config_name'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:02	[info]	SELECT * FROM `oc_store`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:02	[info]	INSERT INTO `oc_adk_gdpr_request` (`type`, `status`, `date_added`, `email`, `store_id`, `language_code`, `code`, `expire`, `ip`) VALUES (2, 1, NOW(), 'kokolina1888@gmail.com', 0, 'bg-bg', '61f9365223025', DATE_ADD(NOW(), INTERVAL 365000 DAY), '213.231.137.61'). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:02	[info]	Run transaction #1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+<#>2022-02-01 13:32:02	[profiler]	[0;93mshortcode {authorize_url}: 0.00006 sec.
+[0m[0;94m2022-02-01 13:32:22	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:22	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request` WHERE `email` = 'mile.tomova@gmail.com' AND `type` = 2 AND `status` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:32:22	[info]	[0mRun transaction #0. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+2022-02-01 13:32:22	[info]	SELECT * FROM `oc_setting` WHERE `key` = 'config_name'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:22	[info]	SELECT * FROM `oc_store`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:22	[info]	INSERT INTO `oc_adk_gdpr_request` (`type`, `status`, `date_added`, `email`, `store_id`, `language_code`, `code`, `expire`, `ip`) VALUES (2, 1, NOW(), 'mile.tomova@gmail.com', 0, 'bg-bg', '61f93666a10e4', DATE_ADD(NOW(), INTERVAL 365000 DAY), '213.231.137.61'). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:22	[info]	Run transaction #1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+<#>2022-02-01 13:32:22	[profiler]	[0;93mshortcode {authorize_url}: 0.00003 sec.
+[0m<#>2022-02-01 13:32:43	[profiler]	[0;93mmodification: 0.00205 sec.
+[0m<#>2022-02-01 13:32:43	[profiler]	[0;93mVersion: 0.00008 sec.
+[0m[0;94m2022-02-01 13:32:43	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:32:43	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:33:06	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:06	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:06	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:06	[info]	SELECT * FROM `oc_customer_affiliate` as `a` LEFT JOIN `oc_customer` as `c` USING(`customer_id`) WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:06	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:33:06	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(572): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(482): Advertikon\Adk_Gdpr\Request->send_information('kokolina1888@gm...', Array)
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(960): Advertikon\Adk_Gdpr\Request->information('kokolina1888@gm...')
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(143): Advertikon\Adk_Gdpr\Request->do_fulfill(Object(Advertikon\DB_Result))
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(493): Advertikon\Adk_Gdpr\Request->fulfill('61f936045187f')
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->fulfill_request()
+#6 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#7 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#8 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#9 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#10 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#11 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#12 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#13 {main}
+[0m[0;94m2022-02-01 13:33:07	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:07	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:07	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:33:07	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:33:07	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:35:18	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:35:18	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:35:18	[error]	[0m[0;91mAdvertikon\Exception: Your request has been already authorized and put into the queue. Please wait when it will be fulfilled in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:460
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(125): Advertikon\Adk_Gdpr\Request->check_code('61f936045187f')
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(293): Advertikon\Adk_Gdpr\Request->authorize('61f936045187f')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->authorize()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m[0;94m2022-02-01 13:39:34	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:34	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:34	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:34	[info]	SELECT * FROM `oc_customer_affiliate` as `a` LEFT JOIN `oc_customer` as `c` USING(`customer_id`) WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:34	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:39:34	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(572): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(482): Advertikon\Adk_Gdpr\Request->send_information('kokolina1888@gm...', Array)
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(960): Advertikon\Adk_Gdpr\Request->information('kokolina1888@gm...')
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(143): Advertikon\Adk_Gdpr\Request->do_fulfill(Object(Advertikon\DB_Result))
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(493): Advertikon\Adk_Gdpr\Request->fulfill('61f936045187f')
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->fulfill_request()
+#6 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#7 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#8 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#9 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#10 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#11 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#12 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#13 {main}
+[0m[0;94m2022-02-01 13:39:35	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:35	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:35	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:35	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:39:35	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:39:44	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:44	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:39:44	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(937): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(153): Advertikon\Adk_Gdpr\Request->do_reject(Object(Advertikon\DB_Result))
+#2 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(519): Advertikon\Adk_Gdpr\Request->reject('61f936045187f')
+#3 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->reject_request()
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#6 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#7 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#9 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#10 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#11 {main}
+[0m[0;94m2022-02-01 13:39:44	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:44	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:44	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:39:44	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:39:44	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:40:52	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	SELECT * FROM `oc_customer_affiliate` as `a` LEFT JOIN `oc_customer` as `c` USING(`customer_id`) WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:40:52	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(572): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(482): Advertikon\Adk_Gdpr\Request->send_information('kokolina1888@gm...', Array)
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(960): Advertikon\Adk_Gdpr\Request->information('kokolina1888@gm...')
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(143): Advertikon\Adk_Gdpr\Request->do_fulfill(Object(Advertikon\DB_Result))
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(493): Advertikon\Adk_Gdpr\Request->fulfill('61f936045187f')
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->fulfill_request()
+#6 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#7 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#8 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#9 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#10 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#11 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#12 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#13 {main}
+[0m[0;94m2022-02-01 13:40:52	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:40:52	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:40:52	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:41:08	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:41:08	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:41:08	[error]	[0m[0;91mAdvertikon\Exception: Your request has been already authorized and put into the queue. Please wait when it will be fulfilled in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:460
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(125): Advertikon\Adk_Gdpr\Request->check_code('61f936045187f')
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(293): Advertikon\Adk_Gdpr\Request->authorize('61f936045187f')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->authorize()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m[0;94m2022-02-01 13:41:56	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:41:56	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request` WHERE `email` = 'mile.tomova@gmail.com' AND `type` = 2 AND `status` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:41:56	[error]	[0m[0;91mAdvertikon\Exception: You have already made a request of the same type. Please authorize it so that it can be fulfilled. The email with authorization code has been sent to your email. Check spam folder if the email isn't in the inbox folder in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:215
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(115): Advertikon\Adk_Gdpr\Request->send_confirmation_email('mile.tomova@gma...', 2)
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(241): Advertikon\Adk_Gdpr\Request->send('mile.tomova@gma...', '2')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->gdpr_request()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m<#>2022-02-01 13:42:45	[profiler]	[0;93mmodification: 0.00118 sec.
+[0m<#>2022-02-01 13:42:45	[profiler]	[0;93mVersion: 0.00005 sec.
+[0m[0;94m2022-02-01 13:42:45	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:42:45	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:43:03	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:43:03	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:43:03	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(937): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(153): Advertikon\Adk_Gdpr\Request->do_reject(Object(Advertikon\DB_Result))
+#2 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(519): Advertikon\Adk_Gdpr\Request->reject('61f936045187f')
+#3 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->reject_request()
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#6 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#7 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#9 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#10 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#11 {main}
+[0m[0;94m2022-02-01 13:43:04	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:43:04	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:43:04	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 13:43:04	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:43:04	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 13:45:35	[info]	[0mStart to rolling back the DB. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 150
+2022-02-01 13:45:35	[info]	Current version is . In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 154
+2022-02-01 13:45:35	[info]	Table oc_adk_gdpr_terms_acceptance has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-01 13:45:35	[info]	Table oc_adk_gdpr_terms_version has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-01 13:45:35	[info]	Table oc_adk_gdpr_request has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-01 13:45:35	[info]	Table oc_adk_gdpr_breach_log has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-01 13:45:35	[info]	Deleting folder '/home/spacepsp/storage/adk/adk_gdpr/'. In file: /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php, line: 275
+[0;94m2022-02-01 14:10:32	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 14:10:32	[error]	[0m[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 14:10:32	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 14:10:32	[error]	[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f936045187f'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 14:10:32	[error]	[0;91mAdvertikon\Exception: Unsupported request type in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:468
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(125): Advertikon\Adk_Gdpr\Request->check_code('61f936045187f')
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(293): Advertikon\Adk_Gdpr\Request->authorize('61f936045187f')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->authorize()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m[0;94m2022-02-01 16:05:11	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 16:05:11	[error]	[0m[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 16:05:11	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f93666a10e4'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 16:05:11	[error]	[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f93666a10e4'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 16:05:11	[error]	[0;91mAdvertikon\Exception: Unsupported request type in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:468
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(125): Advertikon\Adk_Gdpr\Request->check_code('61f93666a10e4')
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(293): Advertikon\Adk_Gdpr\Request->authorize('61f93666a10e4')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->authorize()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m[0;94m2022-02-01 19:23:22	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 19:23:22	[error]	[0m[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 19:23:22	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f93666a10e4'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 19:23:22	[error]	[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f93666a10e4'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 19:23:22	[error]	[0;91mAdvertikon\Exception: Unsupported request type in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:468
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(125): Advertikon\Adk_Gdpr\Request->check_code('61f93666a10e4')
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(293): Advertikon\Adk_Gdpr\Request->authorize('61f93666a10e4')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->authorize()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m[0;94m2022-02-01 20:50:33	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-01 20:50:33	[error]	[0m[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 20:50:33	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f93666a10e4'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-01 20:50:33	[error]	[0;91mError: Table 'spacepsp_kai.oc_adk_gdpr_request' doesn't exist<br />Error No: 1146<br />SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '61f93666a10e4'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1425
+[0m2022-02-01 20:50:33	[error]	[0;91mAdvertikon\Exception: Unsupported request type in /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php:468
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(125): Advertikon\Adk_Gdpr\Request->check_code('61f93666a10e4')
+#1 /home/spacepsp/mdo.spacep.space/catalog/controller/extension/module/adk_gdpr.php(293): Advertikon\Adk_Gdpr\Request->authorize('61f93666a10e4')
+#2 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->authorize()
+#3 /home/spacepsp/mdo.spacep.space/catalog/controller/startup/router.php(29): Action->execute(Object(Registry))
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#5 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#6 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#7 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#8 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#9 /home/spacepsp/mdo.spacep.space/index.php(20): start('catalog')
+#10 {main}
+[0m[0;94m2022-02-04 07:01:51	[info]	[0mmodule is disabled. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/term.php, line: 206
+[0;94m2022-02-04 07:08:03	[info]	[0mmodule is disabled. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/term.php, line: 206
+<#>2022-02-12 17:06:52	[profiler]	[0;93mmodification: 0.00091 sec.
+[0m[0;94m2022-02-12 17:06:52	[info]	[0mTable adk_gdpr_terms_acceptance is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 56
+2022-02-12 17:06:52	[info]	Table adk_gdpr_terms_version is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 66
+2022-02-12 17:06:52	[info]	Table adk_gdpr_request is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 84
+2022-02-12 17:06:52	[info]	Table adk_gdpr_breach_log is created. In file: /home/spacepsp/mdo.spacep.space/admin/model/extension/module/adk_gdpr.php, line: 94
+2022-02-12 17:06:52	[info]	Create folder '/home/spacepsp/storage/adk/adk_gdpr/tmp/'. In file: /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php, line: 257
+2022-02-12 17:06:52	[info]	Config: module_adk_gdpr_start_date = 2022-02-12 17:06:52. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+<#>2022-02-12 17:06:57	[profiler]	[0;93mmodification: 0.00026 sec.
+[0m<#>2022-02-12 17:06:57	[profiler]	[0;93mVersion: 0.00013 sec.
+[0m[0;94m2022-02-12 17:06:57	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:06:57	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:07:32	[info]	[0mINSERT INTO `oc_adk_gdpr_terms_version` (`term_name`, `title`, `text`, `date`) VALUES ('Term Account', 'ОБЩИ УСЛОВИЯ', '&lt;p&gt;ОБЩИ УСЛОВИЯ&lt;br&gt;&lt;/p&gt;', NOW()). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:07:32	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:07:32	[info]	[0mConfig: module_adk_gdpr_status = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-12 17:07:32	[info]	[0mConfig: module_adk_gdpr_in_account = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-12 17:07:32	[info]	[0mConfig: module_adk_gdpr_track_account_terms = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-12 17:07:33	[info]	[0mConfig: module_adk_gdpr_in_footer = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-12 17:07:35	[info]	[0mINSERT INTO `oc_adk_gdpr_terms_version` (`term_name`, `title`, `text`, `date`) VALUES ('Term Checkout', 'Политика за защита на личните данни', '&lt;p&gt;Политика за защита на личните данни&lt;br&gt;&lt;/p&gt;', NOW()). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:07:35	[info]	[0mConfig: module_adk_gdpr_track_checkout_terms = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/setting.php, line: 81
+[0;94m2022-02-12 17:07:35	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:09:15	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:15	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request` WHERE `email` = 'kokolina1888@gmail.com' AND `type` = 1 AND `status` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:09:15	[info]	[0mRun transaction #0. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+2022-02-12 17:09:15	[info]	SELECT * FROM `oc_setting` WHERE `key` = 'config_name'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:15	[info]	SELECT * FROM `oc_store`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:15	[info]	INSERT INTO `oc_adk_gdpr_request` (`type`, `status`, `date_added`, `email`, `store_id`, `language_code`, `code`, `expire`, `ip`) VALUES (1, 1, NOW(), 'kokolina1888@gmail.com', 0, 'bg-bg', '6207e9bb5fca7', DATE_ADD(NOW(), INTERVAL 365000 DAY), '213.231.137.61'). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:15	[info]	Run transaction #1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+<#>2022-02-12 17:09:15	[profiler]	[0;93mshortcode {authorize_url}: 0.00006 sec.
+[0m<#>2022-02-12 17:09:37	[profiler]	[0;93mmodification: 0.00038 sec.
+[0m<#>2022-02-12 17:09:37	[profiler]	[0;93mVersion: 0.00008 sec.
+[0m[0;94m2022-02-12 17:09:37	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:09:37	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:10:26	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:26	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request` WHERE `email` = 'kokolina1888@gmail.com' AND `type` = 2 AND `status` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:10:26	[info]	[0mRun transaction #0. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+2022-02-12 17:10:26	[info]	SELECT * FROM `oc_setting` WHERE `key` = 'config_name'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:26	[info]	SELECT * FROM `oc_store`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:26	[info]	INSERT INTO `oc_adk_gdpr_request` (`type`, `status`, `date_added`, `email`, `store_id`, `language_code`, `code`, `expire`, `ip`) VALUES (2, 1, NOW(), 'kokolina1888@gmail.com', 0, 'bg-bg', '6207ea02bbad2', DATE_ADD(NOW(), INTERVAL 365000 DAY), '213.231.137.61'). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:26	[info]	Run transaction #1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/transaction.php, line: 82
+<#>2022-02-12 17:10:26	[profiler]	[0;93mshortcode {authorize_url}: 0.00007 sec.
+[0m<#>2022-02-12 17:10:35	[profiler]	[0;93mmodification: 0.00036 sec.
+[0m<#>2022-02-12 17:10:35	[profiler]	[0;93mVersion: 0.00007 sec.
+[0m[0;94m2022-02-12 17:10:35	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:10:35	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:11:25	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:11:25	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '6207e9bb5fca7'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:11:25	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 5 WHERE `code` = '6207e9bb5fca7'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:11:58	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:11:58	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '6207ea02bbad2'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:11:58	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 5 WHERE `code` = '6207ea02bbad2'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+<#>2022-02-12 17:12:14	[profiler]	[0;93mmodification: 0.00058 sec.
+[0m<#>2022-02-12 17:12:14	[profiler]	[0;93mVersion: 0.00006 sec.
+[0m[0;94m2022-02-12 17:12:14	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:14	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:12:45	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '6207e9bb5fca7'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	SELECT * FROM `oc_customer_affiliate` as `a` LEFT JOIN `oc_customer` as `c` USING(`customer_id`) WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:12:45	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(572): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(482): Advertikon\Adk_Gdpr\Request->send_information('kokolina1888@gm...', Array)
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(960): Advertikon\Adk_Gdpr\Request->information('kokolina1888@gm...')
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(143): Advertikon\Adk_Gdpr\Request->do_fulfill(Object(Advertikon\DB_Result))
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(493): Advertikon\Adk_Gdpr\Request->fulfill('6207e9bb5fca7')
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->fulfill_request()
+#6 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#7 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#8 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#9 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#10 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#11 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#12 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#13 {main}
+[0m[0;94m2022-02-12 17:12:45	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:12:45	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:12:45	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+<#>2022-02-12 17:13:44	[profiler]	[0;93mmodification: 0.00119 sec.
+[0m<#>2022-02-12 17:13:44	[profiler]	[0;93mVersion: 0.00007 sec.
+[0m[0;94m2022-02-12 17:13:44	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:44	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:13:59	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '6207e9bb5fca7'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	SELECT * FROM `oc_customer_affiliate` as `a` LEFT JOIN `oc_customer` as `c` USING(`customer_id`) WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:13:59	[error]	[0m[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(572): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(482): Advertikon\Adk_Gdpr\Request->send_information('kokolina1888@gm...', Array)
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(960): Advertikon\Adk_Gdpr\Request->information('kokolina1888@gm...')
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(143): Advertikon\Adk_Gdpr\Request->do_fulfill(Object(Advertikon\DB_Result))
+#4 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(493): Advertikon\Adk_Gdpr\Request->fulfill('6207e9bb5fca7')
+#5 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->fulfill_request()
+#6 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#7 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#8 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#9 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#10 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#11 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#12 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#13 {main}
+[0m[0;94m2022-02-12 17:13:59	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:13:59	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:13:59	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+<#>2022-02-12 17:15:14	[profiler]	[0;93mmodification: 0.00029 sec.
+[0m<#>2022-02-12 17:15:14	[profiler]	[0;93mVersion: 0.00005 sec.
+[0m[0;94m2022-02-12 17:15:14	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	SELECT DISTINCT `title` FROM `oc_adk_gdpr_terms_version`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	SELECT * FROM `oc_adk_gdpr_terms_version` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:14	[info]	SELECT `information_id`, `title` FROM `oc_information_description` WHERE `language_id` = 1. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:15:30	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '6207ea02bbad2'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_customer` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_order` WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_customer_affiliate` as `a` LEFT JOIN `oc_customer` as `c` USING(`customer_id`) WHERE `email` = 'kokolina1888@gmail.com'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	SELECT * FROM `oc_adk_gdpr_request` WHERE `code` = '6207ea02bbad2'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:15:30	[info]	[0merasing adk_gdpr_request. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/accounts.php, line: 297
+2022-02-12 17:15:30	[info]	DELETE FROM `oc_adk_gdpr_request` WHERE `request_id` = 2. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 3, `date_done` = NOW() WHERE `code` = '6207ea02bbad2'. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:30	[error]	[0;91mException: Error: E-Mail message required! in /home/spacepsp/mdo.spacep.space/system/library/mail.php:135
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(1003): Mail->send()
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(982): Advertikon\Adk_Gdpr\Request->notify_customer('kokolina1888@gm...', '2')
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/request.php(143): Advertikon\Adk_Gdpr\Request->do_fulfill(Object(Advertikon\DB_Result))
+#3 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(493): Advertikon\Adk_Gdpr\Request->fulfill('6207ea02bbad2')
+#4 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionModuleAdkGdpr->fulfill_request()
+#5 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#6 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#7 /home/spacepsp/storage/modification/system/engine/router.php(81): Action->execute(Object(Registry))
+#8 /home/spacepsp/storage/modification/system/engine/router.php(70): Router->execute(Object(Action))
+#9 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#10 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#11 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#12 {main}
+[0m[0;94m2022-02-12 17:15:31	[info]	[0mUPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:31	[info]	SELECT * FROM `oc_adk_gdpr_request` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:31	[info]	UPDATE `oc_adk_gdpr_request` SET `status` = 4 WHERE `expire` < NOW(). In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+2022-02-12 17:15:31	[info]	SELECT COUNT(*) as 'count' FROM `oc_adk_gdpr_request`. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:15:31	[info]	[0mSELECT * FROM `oc_adk_gdpr_terms_acceptance` LIMIT 0, 10. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/query.php, line: 1394
+[0;94m2022-02-12 17:52:43	[error]	[0m[0;91mAdvertikon\Exception: adk: module's modifications need to be applied in /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php:122
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(186): Advertikon\Advertikon->__construct(NULL)
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql/query.php(20): Advertikon\Advertikon::instance()
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql.php(12): Advertikon\Sql\Query->__construct('language', false)
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(38): Advertikon\Sql::select('language')
+#4 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(210): Advertikon\Language::get_languages(Object(Advertikon\Adk_Gdpr\Advertikon))
+#5 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(140): Advertikon\Language->set_language_by_code('bg-bg')
+#6 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(431): Advertikon\Language->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#7 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(409): Advertikon\Advertikon->get_from_class_cache('Language')
+#8 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(397): Advertikon\Advertikon->language()
+#9 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(417): Advertikon\Translator->getLanguageCode()
+#10 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(37): Advertikon\Translator->load()
+#11 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(140): Advertikon\Translator->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#12 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(77): Advertikon\Advertikon->__construct(Object(Registry))
+#13 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(54): Advertikon\Adk_Gdpr\Advertikon->__construct(Object(Registry))
+#14 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(137): Advertikon\Adk_Gdpr\Advertikon::instance(Object(Registry))
+#15 /home/spacepsp/storage/modification/system/engine/action.php(71): ControllerExtensionModuleAdkGdpr->__construct(Object(Registry))
+#16 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#17 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#18 /home/spacepsp/storage/modification/system/engine/router.php(72): Action->execute(Object(Registry))
+#19 /home/spacepsp/storage/modification/system/engine/router.php(61): Router->execute(Object(Action))
+#20 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#21 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#22 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#23 {main}
+[0m<#>2022-02-12 17:52:43	[profiler]	[0;93mmodification: 0.00063 sec.
+[0m[0;94m2022-02-12 17:53:08	[error]	[0m[0;91mAdvertikon\Exception: adk: module's modifications need to be applied in /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php:122
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(186): Advertikon\Advertikon->__construct(NULL)
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql/query.php(20): Advertikon\Advertikon::instance()
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql.php(12): Advertikon\Sql\Query->__construct('language', false)
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(38): Advertikon\Sql::select('language')
+#4 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(210): Advertikon\Language::get_languages(Object(Advertikon\Adk_Gdpr\Advertikon))
+#5 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(140): Advertikon\Language->set_language_by_code('bg-bg')
+#6 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(431): Advertikon\Language->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#7 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(409): Advertikon\Advertikon->get_from_class_cache('Language')
+#8 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(397): Advertikon\Advertikon->language()
+#9 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(417): Advertikon\Translator->getLanguageCode()
+#10 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(37): Advertikon\Translator->load()
+#11 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(140): Advertikon\Translator->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#12 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(77): Advertikon\Advertikon->__construct(Object(Registry))
+#13 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(54): Advertikon\Adk_Gdpr\Advertikon->__construct(Object(Registry))
+#14 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(137): Advertikon\Adk_Gdpr\Advertikon::instance(Object(Registry))
+#15 /home/spacepsp/storage/modification/system/engine/action.php(71): ControllerExtensionModuleAdkGdpr->__construct(Object(Registry))
+#16 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#17 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#18 /home/spacepsp/storage/modification/system/engine/router.php(72): Action->execute(Object(Registry))
+#19 /home/spacepsp/storage/modification/system/engine/router.php(61): Router->execute(Object(Action))
+#20 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#21 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#22 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#23 {main}
+[0m<#>2022-02-12 17:53:08	[profiler]	[0;93mmodification: 0.00065 sec.
+[0m[0;94m2022-02-12 17:53:43	[error]	[0m[0;91mAdvertikon\Exception: adk: module's modifications need to be applied in /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php:122
+Stack trace:
+#0 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(186): Advertikon\Advertikon->__construct(NULL)
+#1 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql/query.php(20): Advertikon\Advertikon::instance()
+#2 /home/spacepsp/mdo.spacep.space/system/library/advertikon/sql.php(12): Advertikon\Sql\Query->__construct('language', false)
+#3 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(38): Advertikon\Sql::select('language')
+#4 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(210): Advertikon\Language::get_languages(Object(Advertikon\Adk_Gdpr\Advertikon))
+#5 /home/spacepsp/mdo.spacep.space/system/library/advertikon/language.php(140): Advertikon\Language->set_language_by_code('bg-bg')
+#6 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(431): Advertikon\Language->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#7 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(409): Advertikon\Advertikon->get_from_class_cache('Language')
+#8 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(397): Advertikon\Advertikon->language()
+#9 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(417): Advertikon\Translator->getLanguageCode()
+#10 /home/spacepsp/mdo.spacep.space/system/library/advertikon/translator.php(37): Advertikon\Translator->load()
+#11 /home/spacepsp/mdo.spacep.space/system/library/advertikon/advertikon.php(140): Advertikon\Translator->__construct(Object(Advertikon\Adk_Gdpr\Advertikon))
+#12 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(77): Advertikon\Advertikon->__construct(Object(Registry))
+#13 /home/spacepsp/mdo.spacep.space/system/library/advertikon/adk_gdpr/advertikon.php(54): Advertikon\Adk_Gdpr\Advertikon->__construct(Object(Registry))
+#14 /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php(137): Advertikon\Adk_Gdpr\Advertikon::instance(Object(Registry))
+#15 /home/spacepsp/storage/modification/system/engine/action.php(71): ControllerExtensionModuleAdkGdpr->__construct(Object(Registry))
+#16 /home/spacepsp/storage/modification/system/engine/loader.php(48): Action->execute(Object(Registry), Array)
+#17 /home/spacepsp/mdo.spacep.space/admin/controller/extension/extension/module.php(54): Loader->controller('extension/modul...')
+#18 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerExtensionExtensionModule->uninstall()
+#19 /home/spacepsp/mdo.spacep.space/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#20 /home/spacepsp/storage/modification/system/engine/action.php(79): ControllerStartupRouter->index()
+#21 /home/spacepsp/storage/modification/system/engine/router.php(72): Action->execute(Object(Registry))
+#22 /home/spacepsp/storage/modification/system/engine/router.php(61): Router->execute(Object(Action))
+#23 /home/spacepsp/mdo.spacep.space/system/framework.php(164): Router->dispatch(Object(Action), Object(Action))
+#24 /home/spacepsp/mdo.spacep.space/system/startup.php(104): require_once('/home/spacepsp/...')
+#25 /home/spacepsp/mdo.spacep.space/admin/index.php(19): start('admin')
+#26 {main}
+[0m2022-02-12 17:53:43	[info]	Start to rolling back the DB. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 150
+2022-02-12 17:53:43	[info]	Current version is . In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 154
+2022-02-12 17:53:43	[info]	Table oc_adk_gdpr_terms_acceptance has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-12 17:53:43	[info]	Table oc_adk_gdpr_terms_version has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-12 17:53:43	[info]	Table oc_adk_gdpr_request has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-12 17:53:43	[info]	Table oc_adk_gdpr_breach_log has been deleted. In file: /home/spacepsp/mdo.spacep.space/system/library/advertikon/trait_update.php, line: 298
+2022-02-12 17:53:43	[info]	Deleting folder '/home/spacepsp/storage/adk/adk_gdpr/'. In file: /home/spacepsp/mdo.spacep.space/admin/controller/extension/module/adk_gdpr.php, line: 275

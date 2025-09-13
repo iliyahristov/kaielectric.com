@@ -1,0 +1,174 @@
+2024-06-17 14:54:14 - 
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <td class="text-right"><input type="text" name="product_image[{{ image_row }}][sort_order]" value="{{ product_image.sort_order }}" placeholder="{{ entry_sort_order }}" class="form-control" /></td>
+FILE: admin/view/template/catalog/product_form.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <img data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}" title="{{ product.name }} " class="lazyload img-responsive" />
+FILE: catalog/view/theme/so-mobile/template/soconfig/listing.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <img data-sizes="auto" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="{{ product.thumb }}" title="{{ product.name }} " class="lazyload img-responsive" />
+FILE: catalog/view/theme/so-revo/template/soconfig/listing.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <h3>{{ text_option }}</h3>
+FILE: catalog/view/theme/so-mobile/template/product/product.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: 'product_id' => $product_info['product_id'],
+FILE: catalog/controller/extension/module/featured.php
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+FILE: catalog/view/theme/default/template/extension/module/featured_categories.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+FILE: catalog/view/theme/default/template/extension/module/featured_manufacturers.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+FILE: catalog/view/theme/so-revo/template/extension/module/featured_categories.twig
+
+
+MOD: So Color Swatch
+NOT FOUND!
+CODE: <img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" />
+FILE: catalog/view/theme/so-revo/template/extension/module/featured_manufacturers.twig
+
+
+MOD: So Product Feature
+NOT FOUND!
+CODE: $this->db->query("INSERT INTO " . DB_PREFIX . "product_description SET product_id = '" . (int)$product_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($value['name']) . "', description = '" . $this->db->escape($value['description']) . "', tag = '" . $this->db->escape($value['tag']) . "', meta_title = '" . $this->db->escape($value['meta_title']) . "', meta_description = '" . $this->db->escape($value['meta_description']) . "', meta_keyword = '" . $this->db->escape($value['meta_keyword']) . "'");
+FILE: admin/model/catalog/product.php
+
+
+MOD: So Countdown Popup
+NOT FOUND!
+CODE: </footer>
+FILE: catalog/view/theme/so-mobile/template/common/footer.twig
+
+
+MOD: So Countdown Popup
+NOT FOUND!
+CODE: </footer>
+FILE: catalog/view/theme/so-revo/template/common/footer.twig
+
+
+MOD: Simple Blog
+NOT FOUND!
+CODE: $categories = $this->model_catalog_category->getCategories(0);
+FILE: catalog/controller/common/header.php
+----------------------------------------------------------------
+MOD: d_opencart_patch
+MISSING FILE!
+/home/kaielect/public_html/admin/controller/extension/installer.php
+
+
+MOD: NitroPack.io
+NOT FOUND!
+CODE: if ($this->config->get('module_country_prices_prices')) {
+FILE: catalog/controller/startup/startup.php
+
+
+MOD: sitemap.xml from Google Sitemap
+NOT FOUND!
+CODE: $this->response->setOutput($output);
+FILE: catalog/controller/extension/feed/google_sitemap.php
+
+
+MOD: WebP Image Converter
+NOT FOUND!
+CODE: return JOURNAL3_STATIC_URL . 'image/' . $image_new;
+FILE: catalog/model/tool/image.php
+----------------------------------------------------------------
+MOD: WebP Image Converter
+MISSING FILE!
+/home/kaielect/public_html/catalog/model/extension/module/category_based_image_resizer.php
+----------------------------------------------------------------
+MOD: WebP Image Converter
+MISSING FILE!
+/home/kaielect/public_html/system/library/journal3/cache.php
+----------------------------------------------------------------
+MOD: WebP Image Converter
+MISSING FILE!
+/home/kaielect/public_html/system/journal2/classes/journal2_cache.php
+----------------------------------------------------------------
+MOD: WebP Image Converter
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/module/lscache.php
+----------------------------------------------------------------
+MOD: WebP Image Converter
+MISSING FILE!
+/home/kaielect/public_html/catalog/model/tool/pdf_invoice.php
+
+
+MOD: Two Factor Authentication for Open Cart 3
+NOT FOUND!
+CODE: $file = DIR_TEMPLATE . $filename . '.twig';
+FILE: system/library/template/twig.php
+
+
+MOD: Two Factor Authentication for Open Cart 3
+NOT FOUND!
+CODE: <li><a href="{{ password }}">{{ text_password }}</a></li>
+FILE: catalog/view/theme/default/template/account/account.twig
+
+
+MOD: Two Factor Authentication for Open Cart 3
+NOT FOUND!
+CODE: <a href="{{ password }}" class="list-group-item">{{ text_password }}</a>
+FILE: catalog/view/theme/so-revo/template/extension/module/account.twig
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/payment/paysera.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/payment/fibank.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/payment/stripe.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/payment/vivawallet.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/payment/borica.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/controller/extension/payment/fibank.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/catalog/model/extension/payment/mypos_virtual.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/admin/language/bg/common/column_left.php
+----------------------------------------------------------------
+MOD: TK - Checkout
+MISSING FILE!
+/home/kaielect/public_html/admin/language/en/common/column_left.php

@@ -1,0 +1,94 @@
+{
+    "codename": "d_gdpr_module",
+    "version": "1.0.0",
+    "name": "GDPR Module",
+    "description": "This is the base for your tipical module. Use  this as a guide to make an awesome module.",
+    "index": "extension/module/d_gdpr_module",
+    "author": {
+        "name": "Shopunity",
+        "email": "info@shopunity.com",
+        "url": "https://shopunity.net/"
+    },
+    "opencart_version": [
+        "2.0.1.0",
+        "2.0.1.1",
+        "2.0.2.0",
+        "2.0.3.1",
+        "2.1.0.1",
+        "2.1.0.2",
+        "2.2.0.0",
+        "2.3.0.0",
+        "2.3.0.1",
+        "2.3.0.2",
+        "3.0.0.0",
+        "3.0.1.1",
+        "3.0.1.2",
+        "3.0.2.0"
+    ],
+    "type": "module",
+    "license": {
+        "type": "free",
+        "url": "https://shopunity.net/licenses/free"
+    },
+    "install": {
+        "url": "extension/extension/module/install&extension=d_gdpr_module"
+    },
+    "uninstall": {
+        "url": "extension/extension/module/uninstall&extension=d_gdpr_module"
+    },
+    "support": {
+        "email": "support@shopunity.com",
+        "url": "https://shopunity.net/"
+    },
+    "required": {
+        "d_opencart_patch": ">= 1.0.0",
+        "d_event_manager": ">= 1.3.3",
+        "d_twig_manager": ">= 1.4.1",
+        "d_bootstrap_extra": ">= 1.0.1",
+        "d_bootstrap_switch": ">= 3.3.5",
+        "d_admin_style": ">= 1.0.0",
+        "d_vue" : ">= 2.5.16",
+        "d_underscore" : ">=1.9.1",
+        "d_vuex" : ">=3.0.1",
+        "d_vue_i18n" : ">=8.0.0",
+        "d_alertify" : ">=1.11.1",
+        "d_simple_html_dom" : ">=2.0.0"
+    },
+    "files": [
+        "admin/controller/extension/event/d_gdpr_module.php",
+        "admin/controller/extension/module/d_gdpr_module.php",
+        "admin/language/en-gb/extension/module/d_gdpr_module.php",
+        "admin/model/extension/module/d_gdpr_module.php",
+
+        "catalog/controller/extension/event/d_gdpr_module.php",
+        "catalog/controller/extension/module/d_gdpr_module.php",
+        "catalog/language/en-gb/extension/module/d_gdpr_module.php",
+        "catalog/model/extension/module/d_gdpr_module.php",
+
+        "system/config/d_gdpr_module.php",
+        "system/library/d_shopunity/extension/d_gdpr_module.json"
+    ],
+    "dirs": [
+        "admin/controller/extension/d_gdpr_module/",
+        "admin/language/en-gb/extension/d_gdpr_module/",
+        "admin/view/image/d_gdpr_module/",
+        "admin/view/javascript/d_gdpr_module/dist/",
+        "admin/view/javascript/d_gdpr_module/library/",
+        "admin/view/stylesheet/d_gdpr_module/",
+        "admin/view/template/extension/d_gdpr_module/",
+
+        "catalog/view/javascript/d_gdpr_module/library/",
+        "catalog/view/theme/default/stylesheet/d_gdpr_module/",
+        "catalog/view/theme/default/template/extension/d_gdpr_module/",
+
+        "image/catalog/d_gdpr_module/",
+
+        "system/library/d_inky_premailer/"
+    ],
+    "changelog": [
+        {
+            "varsion":"1.0.0",
+            "change": "First version"
+        }
+    ]
+}
