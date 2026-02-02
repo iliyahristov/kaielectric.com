@@ -53,6 +53,7 @@
                                     </div>
                                 </div>
                             </div><!--1-->
+
                             <div class="form-group col-sm-4">
                                 <label class="col-sm-4 control-label">От ред</label>
                                 <div class="col-sm-8">
@@ -62,6 +63,7 @@
                                     </div>
                                 </div>
                             </div><!--1-->
+
                             <div class="form-group col-sm-4">
                                 <label class="col-sm-4 control-label">До ред</label>
                                 <div class="col-sm-8">
@@ -71,6 +73,7 @@
                                     </div>
                                 </div>
                             </div><!--1-->
+
                             <div class="form-group col-sm-4 required">
                                 <label class="col-sm-4 control-label">Снимки от колона</label>
                                 <div class="col-sm-8">
@@ -83,6 +86,7 @@
                                     </div>
                                 </div>
                             </div><!--1-->
+
                             <div class="form-group col-sm-4">
                                 <label class="col-sm-4 control-label">Снимки до колона</label>
                                 <div class="col-sm-8">
@@ -95,23 +99,48 @@
                                     </div>
                                 </div>
                             </div><!--1-->
+
+                            {# НОВО: Колона за име на снимката #}
+                            <div class="form-group col-sm-4">
+                                <label class="col-sm-4 control-label">Име на снимка (колона)</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="data[picture_name]" value="{{ picture_name }}"
+                                               placeholder="C" class="form-control"/>
+                                        {% if error_picture_name %}
+                                            <div class="text-danger">{{ error_picture_name }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div><!--1-->
+
                             <div class="form-group required col-sm-4">
                                 <label class="col-sm-4 control-label">Файл с данни</label>
                                 <div class="col-sm-8">
                                     <div class="input-group">
                                         <input type="file" name="data_file" class="form-control"/>
+                                        {% if error_data_file %}
+                                            <div class="text-danger">{{ error_data_file }}</div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div><!--1-->
+
                             <div class="form-group col-sm-4">
                                 <label class="col-sm-4 control-label">Изтрий старите снимки на продуктите</label>
                                 <div class="col-sm-8">
-                                    <input type="checkbox" name="data[delete_existing]" value="1" class="form-control"/>
+                                    <input type="checkbox" name="data[delete_existing]" value="1" class="form-control"
+                                           {% if delete_existing %}checked="checked"{% endif %}/>
                                 </div>
                             </div><!--1-->
                         </div>
+
                         <br/>
-                        <p>* Ако полето <strong>"Снимки до колона"</strong> е празно ще вземе снимки само от колоната посочена в <strong>"Снимки от колона"</strong></p>
+                        <p>* Ако полето <strong>"Снимки до колона"</strong> е празно ще вземе снимки само от колоната
+                            посочена в <strong>"Снимки от колона"</strong></p>
+
+                        <p>* Полето <strong>"Име на снимка (колона)"</strong> е по желание – ако е празно, ще се ползва
+                            старото поведение за именуване.</p>
                     </fieldset>
                 </form>
             </div>

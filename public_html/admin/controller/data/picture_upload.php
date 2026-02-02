@@ -35,11 +35,20 @@ class ControllerDataPictureUpload extends Controller
             $data['error_picture'] = $this->error['picture'];
         }
 
+        // НОВО: error за колоната с име на снимка (ако решиш да е задължителна)
+        if (isset($this->error['picture_name'])) {
+            $data['error_picture_name'] = $this->error['picture_name'];
+        }
+
         $data['barcode'] = '';
         $data['from_row'] = '';
         $data['to_row'] = '';
         $data['picture'] = '';
         $data['picture_to'] = '';
+
+        // НОВО: колона с име на снимка
+        $data['picture_name'] = '';
+
         $data['delete_existing'] = false;
 
         if (!empty($post_data)) {
@@ -58,6 +67,12 @@ class ControllerDataPictureUpload extends Controller
             if (!empty($post_data['picture_to'])) {
                 $data['picture_to'] = $post_data['picture_to'];
             }
+
+            // НОВО: запазваме въведената колона за име на снимка
+            if (!empty($post_data['picture_name'])) {
+                $data['picture_name'] = $post_data['picture_name'];
+            }
+
             if (isset($post_data['delete_existing'])) {
                 $data['delete_existing'] = $post_data['delete_existing'];
             }
@@ -79,8 +94,16 @@ class ControllerDataPictureUpload extends Controller
     public function add()
     {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+
             $barcode_col = strtoupper(trim($_POST['data']['barcode']));
             $picture_col = strtoupper(trim($_POST['data']['picture']));
+
+            // НОВО: колона за име на снимката (може да е празна)
+            $picture_name_col = '';
+            if (!empty($_POST['data']['picture_name'])) {
+                $picture_name_col = strtoupper(trim($_POST['data']['picture_name']));
+            }
+
             $delete_existing = isset($_POST['data']['delete_existing']) ? $_POST['data']['delete_existing'] : false;
 
             if (!empty($_POST['data']['picture_to'])) {
@@ -108,10 +131,12 @@ class ControllerDataPictureUpload extends Controller
 
             $updated = 0;
             $products = 0;
+
             $this->load->model('data/picture_upload');
 
             for ($row = $firstRow; $row <= $lastRow; $row++) {
                 $data = [];
+
                 if (isset($barcode_col) && !empty($barcode_col)) {
                     $data['barcode'] = strip_tags($worksheet->getCell($barcode_col . $row)->getCalculatedValue());
 
@@ -123,19 +148,27 @@ class ControllerDataPictureUpload extends Controller
                     $startColumn = PHPExcel_Cell::columnIndexFromString($picture_col);
                     $endColumn = PHPExcel_Cell::columnIndexFromString($picture_to_col);
 
+                    // НОВО: вземаме името на снимката от колоната (веднъж за реда)
+                    $data['picture_name'] = '';
+                    if (!empty($picture_name_col)) {
+                        $data['picture_name'] = strip_tags($worksheet->getCell($picture_name_col . $row)->getCalculatedValue());
+                    }
+
                     for ($columnIndex = $startColumn; $columnIndex <= $endColumn; $columnIndex++) {
                         $column = PHPExcel_Cell::stringFromColumnIndex($columnIndex - 1);
                         $data['picture'] = strip_tags($worksheet->getCell($column . $row)->getCalculatedValue());
 
                         if (!empty($data['picture'])) {
                             if ($position == 1 && $delete_existing) {
+                                // НОВО: подава picture_name вътре в $data
                                 $result = $this->model_data_picture_upload->update_product_picture($data);
                             } else if ($position > 1) {
+                                // НОВО: подава picture_name вътре в $data
                                 $result = $this->model_data_picture_upload->add_picture($data, $position);
                             } else {
                                 $result = true;
                             }
-                            
+
                             $position++;
                             if ($result) {
                                 $updated++;
@@ -168,6 +201,13 @@ class ControllerDataPictureUpload extends Controller
         if (empty($_POST['data']['picture'])) {
             $this->error['picture'] = 'Въведете колона за снимка!';
         }
+
+        // Ако искаш колоната за име да е ЗАДЪЛЖИТЕЛНА, разкоментирай:
+        /*
+        if (empty($_POST['data']['picture_name'])) {
+            $this->error['picture_name'] = 'Въведете колона за име на снимка!';
+        }
+        */
 
         if ($_FILES['data_file']['size'] == 0) {
             $this->error['data_file'] = 'Изберете валиден файл!';
