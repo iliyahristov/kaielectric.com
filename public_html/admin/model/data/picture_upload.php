@@ -4,13 +4,6 @@ class ModelDataPictureUpload extends Model
 {
     /**
      * Sanitize a user-provided filename (base name, without extension) to something safe.
-     * Keeps latin letters/numbers/underscore/dash. Everything else becomes underscore.
-     *
-     * If the result becomes empty (e.g. name is only Cyrillic), caller should fall back
-     * to a barcode-based name.
-     *
-     * @param string $name
-     * @return string
      */
     private function sanitizeFileBase($name)
     {
@@ -21,13 +14,8 @@ class ModelDataPictureUpload extends Model
             return '';
         }
 
-        // If user provided "file.jpg" - keep only the base name.
         $name = pathinfo($name, PATHINFO_FILENAME);
-
-        // Replace path separators just in case.
         $name = str_replace(array('/', '\\'), '_', $name);
-
-        // Keep only safe characters.
         $name = preg_replace('/[^A-Za-z0-9_-]+/', '_', $name);
         $name = preg_replace('/_+/', '_', $name);
         $name = trim($name, '_-');
@@ -36,13 +24,27 @@ class ModelDataPictureUpload extends Model
     }
 
     /**
+     * Намира product_id по баркод или model (с и без водещи нули)
+     */
+    private function findProductId($barcode)
+    {
+        if (empty($barcode)) {
+            return false;
+        }
+
+        $barcode_trimmed = ltrim($barcode, '0');
+
+        $query = $this->db->query("SELECT product_id FROM " . DB_PREFIX . "product WHERE `ean` = '" . $this->db->escape($barcode) . "' OR `model` = '" . $this->db->escape($barcode) . "' OR `model` = '" . $this->db->escape($barcode_trimmed) . "' LIMIT 1");
+
+        if ($query->num_rows) {
+            return (int)$query->row['product_id'];
+        }
+
+        return false;
+    }
+
+    /**
      * Download remote image and save it in catalog/products with deterministic filename.
-     *
-     * @param string      $url
-     * @param string      $barcode
-     * @param int         $position   0 for main image; 1..N for additional images
-     * @param string|null $desired    Desired base filename from spreadsheet (optional)
-     * @return string|false           Relative image path (catalog/...) or false on error
      */
     private function downloadAndSaveImage($url, $barcode, $position, $desired = null)
     {
@@ -50,8 +52,6 @@ class ModelDataPictureUpload extends Model
             return false;
         }
 
-        // Determine extension based on remote content.
-        // Note: exif_imagetype() can return false; we fall back to .jpg.
         $type = @exif_imagetype($url);
 
         switch ($type) {
@@ -74,14 +74,11 @@ class ModelDataPictureUpload extends Model
 
         $dir = DIR_IMAGE . 'catalog/products/';
 
-        // Build filename.
         $base = $this->sanitizeFileBase($desired);
 
         if ($base === '') {
-            // Backward compatible fallback.
             $base = $barcode . '_' . (int)$position;
         } else {
-            // If there are multiple images in a row, suffix by position to keep names unique.
             if ((int)$position > 0) {
                 $base .= '_' . (int)$position;
             }
@@ -90,7 +87,6 @@ class ModelDataPictureUpload extends Model
         $file_name = $base . $extension;
         $save_file_loc = $dir . $file_name;
 
-        // Ensure directory exists (in case of a new install).
         if (!is_dir($dir)) {
             @mkdir($dir, 0755, true);
         }
@@ -106,6 +102,7 @@ class ModelDataPictureUpload extends Model
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_exec($ch);
 
         if (curl_errno($ch)) {
@@ -128,15 +125,18 @@ class ModelDataPictureUpload extends Model
 
     public function add_picture($data, $position)
     {
+        $product_id = $this->findProductId($data['barcode']);
+        if (!$product_id) {
+            return false;
+        }
+
         $desired = isset($data['picture_name']) ? $data['picture_name'] : null;
         $image_path = $this->downloadAndSaveImage($data['picture'], $data['barcode'], (int)$position, $desired);
         if (!$image_path) {
             return false;
         }
 
-        $sql = "INSERT INTO " . DB_PREFIX . "product_image (product_id, image, sort_order) ";
-        $sql .= "SELECT p.product_id, '" . $this->db->escape($image_path) . "', '" . (int)$position . "' ";
-        $sql .= "FROM " . DB_PREFIX . "product p WHERE p.ean='" . $this->db->escape($data['barcode']) . "'";
+        $sql = "INSERT INTO " . DB_PREFIX . "product_image (product_id, image, sort_order) VALUES ('" . (int)$product_id . "', '" . $this->db->escape($image_path) . "', '" . (int)$position . "')";
 
         $this->db->query($sql);
 
@@ -145,14 +145,18 @@ class ModelDataPictureUpload extends Model
 
     public function update_product_picture($data)
     {
+        $product_id = $this->findProductId($data['barcode']);
+        if (!$product_id) {
+            return false;
+        }
+
         $desired = isset($data['picture_name']) ? $data['picture_name'] : null;
         $image_path = $this->downloadAndSaveImage($data['picture'], $data['barcode'], 0, $desired);
         if (!$image_path) {
             return false;
         }
 
-        $sql = "UPDATE " . DB_PREFIX . "product SET image='" . $this->db->escape($image_path) . "' ";
-        $sql .= "WHERE ean='" . $this->db->escape($data['barcode']) . "'";
+        $sql = "UPDATE " . DB_PREFIX . "product SET image='" . $this->db->escape($image_path) . "' WHERE product_id='" . (int)$product_id . "'";
         $this->db->query($sql);
 
         return true;
@@ -160,11 +164,15 @@ class ModelDataPictureUpload extends Model
 
     public function delete_picture($data)
     {
-        $sql = "UPDATE " . DB_PREFIX . "product SET image = '' WHERE ean='" . $this->db->escape($data['barcode']) . "'";
+        $product_id = $this->findProductId($data['barcode']);
+        if (!$product_id) {
+            return false;
+        }
+
+        $sql = "UPDATE " . DB_PREFIX . "product SET image = '' WHERE product_id='" . (int)$product_id . "'";
         $this->db->query($sql);
 
-        $sql = "DELETE FROM " . DB_PREFIX . "product_image ";
-        $sql .= "WHERE product_id = (SELECT DISTINCT p.product_id FROM " . DB_PREFIX . "product p WHERE p.ean='" . $this->db->escape($data['barcode']) . "')";
+        $sql = "DELETE FROM " . DB_PREFIX . "product_image WHERE product_id = '" . (int)$product_id . "'";
         $this->db->query($sql);
 
         return true;
